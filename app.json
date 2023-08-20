@@ -7,6 +7,14 @@
       "ios",
       "android",
       "web"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "07e7106d-d2c9-42f1-a65b-ebd20e6bb9b9"
+      }
+    },
+    "android": {
+      "package": "com.trthanr.blank"
+    }
   }
 }
