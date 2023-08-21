@@ -11,6 +11,7 @@ import {
   Provider,
   DatePicker,
   DatePickerView,
+  Modal,
 } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -20,14 +21,18 @@ import {
   faTrash,
   faUser,
   faCalendar,
+  faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
 import enUS from "@ant-design/react-native/lib/locale-provider/en_US";
 import dayjs from "dayjs";
 
-export default function Account() {
-  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar);
+interface Props {
+  isShowDeleteButton?: boolean;
+}
+const Account = ({ isShowDeleteButton = false }: Props) => {
+  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit);
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -36,66 +41,31 @@ export default function Account() {
     dayjs(new Date()).format("DD/MM/YYYY")
   );
 
-  const options = [
-    {
-      label: (
-        <View>
-          <Text>
-            <FontAwesomeIcon icon="male" />
-            Account 1
-          </Text>
-        </View>
-      ),
-      value: "1",
-    },
-    {
-      label: (
-        <View>
-          <Text>
-            <FontAwesomeIcon icon="male" />
-            Account 1
-          </Text>
-        </View>
-      ),
-      value: "2",
-    },
-  ];
-
   return (
-    <View style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+    <View
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       {isShowDatePicker && (
-        <Provider locale={enUS}>
-          <DatePicker
-            visible={isShowDatePicker}
-            mode="date"
-            value={new Date()}
-            minDate={new Date(2015, 7, 6)}
-            maxDate={new Date(2026, 11, 3)}
-            format="YYYY-MM-DD"
-            okText="Chọn"
-            dismissText="Thoát"
-            onOk={() => setIsShowDatePicker(false)}
-            onDismiss={() => setIsShowDatePicker(false)}
-            onChange={(value) => setValueDatepicker(dayjs(value).format("DD/MM/YYYY"))}
-          >
-            <Text> 22323 </Text>
-          </DatePicker>
-        </Provider>
+        <DatePicker
+          visible={isShowDatePicker}
+          mode="date"
+          value={new Date()}
+          minDate={new Date(2015, 7, 6)}
+          maxDate={new Date(2026, 11, 3)}
+          format="YYYY-MM-DD"
+          okText="Chọn"
+          dismissText="Thoát"
+          onOk={() => setIsShowDatePicker(false)}
+          onDismiss={() => setIsShowDatePicker(false)}
+          onChange={(value) =>
+            setValueDatepicker(dayjs(value).format("DD/MM/YYYY"))
+          }
+        ></DatePicker>
       )}
-      <View
-        style={{
-          height: windowHeight / 4,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Image
-          style={styles.tinyLogo}
-          source={{
-            uri: "https://reactnative.dev/img/tiny_logo.png",
-          }}
-        />
-      </View>
 
       <WhiteSpace />
       <Card
@@ -103,16 +73,6 @@ export default function Account() {
           width: windowWidth - 15,
         }}
       >
-        <Card.Header
-          title={
-            <Text style={{ color: "#1870bc", fontSize: 18, fontWeight: "bold" }}>
-              Thông tin tài khoản
-            </Text>
-          }
-          thumbStyle={{ width: 30, height: 30 }}
-          thumb="https://gw.alipayobjects.com/zos/rmsportal/MRhHctKOineMbKAZslML.jpg"
-          style={{}}
-        />
         <Card.Body>
           <InputItem
             clear
@@ -125,7 +85,10 @@ export default function Account() {
             placeholder="Ngày sinh dự kiến"
             style={{ marginLeft: 20, borderBottomWidth: 1 }}
             extra={
-              <Button onPress={() => setIsShowDatePicker(true)} style={{ borderColor: "white" }}>
+              <Button
+                onPress={() => setIsShowDatePicker(true)}
+                style={{ borderColor: "white" }}
+              >
                 <FontAwesomeIcon icon={["fas", "calendar"]} />
               </Button>
             }
@@ -144,19 +107,32 @@ export default function Account() {
             flexDirection: "row",
             width: "100%",
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: isShowDeleteButton ? "space-between" : "center",
             paddingHorizontal: 30,
           }}
         >
-          <Button type="warning">
-            <FontAwesomeIcon icon={["fas", "trash"]} style={{ color: "white" }} />
-            <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
-              Xóa tài khoản
-            </Text>
-          </Button>
+          {isShowDeleteButton && (
+            <Button type="warning">
+              <FontAwesomeIcon
+                icon={["fas", "trash"]}
+                style={{ color: "white" }}
+              />
+              <Text
+                style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}
+              >
+                Xóa tài khoản
+              </Text>
+            </Button>
+          )}
+
           <Button type="primary">
-            <FontAwesomeIcon icon={["fas", "user"]} style={{ color: "white" }} />
-            <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
+            <FontAwesomeIcon
+              icon={["fas", "edit"]}
+              style={{ color: "white" }}
+            />
+            <Text
+              style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}
+            >
               Tạo tài khoản
             </Text>
           </Button>
@@ -164,7 +140,9 @@ export default function Account() {
       </Card>
     </View>
   );
-}
+};
+
+export default Account;
 
 const styles = StyleSheet.create({
   container: {

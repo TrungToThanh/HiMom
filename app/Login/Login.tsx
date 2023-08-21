@@ -11,8 +11,17 @@ import {
 } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  faCheckSquare,
+  faEye,
+  faEyeSlash,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function Login() {
+  library.add(faCheckSquare, faEye, faEyeSlash, faUser);
+
   const RadioItem = Radio.RadioItem;
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -22,10 +31,7 @@ export default function Login() {
     {
       label: (
         <View>
-          <Text>
-            <FontAwesomeIcon icon="male" />
-            Account 1
-          </Text>
+          <Text>Account 1</Text>
         </View>
       ),
       value: "1",
@@ -33,10 +39,7 @@ export default function Login() {
     {
       label: (
         <View>
-          <Text>
-            <FontAwesomeIcon icon="male" />
-            Account 1
-          </Text>
+          <Text>Account 1</Text>
         </View>
       ),
       value: "2",
@@ -44,38 +47,19 @@ export default function Login() {
   ];
 
   return (
-    <View style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <View
-        style={{
-          height: windowHeight / 4,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Image
-          style={styles.tinyLogo}
-          source={{
-            uri: "https://reactnative.dev/img/tiny_logo.png",
-          }}
-        />
-      </View>
-
+    <View
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <WhiteSpace />
       <Card
         style={{
           width: windowWidth - 15,
         }}
       >
-        <Card.Header
-          title={
-            <Text style={{ color: "#1870bc", fontSize: 18, fontWeight: "bold" }}>
-              Thông tin đăng nhập
-            </Text>
-          }
-          thumbStyle={{ width: 30, height: 30 }}
-          thumb="https://gw.alipayobjects.com/zos/rmsportal/MRhHctKOineMbKAZslML.jpg"
-          style={{}}
-        />
         <Card.Body>
           <Text
             style={{
@@ -108,12 +92,17 @@ export default function Login() {
           </Text>
           <InputItem
             clear
+            textAlign="center"
             type={typeInput ? "password" : "text"}
             maxLength={8}
             placeholder="Mã đăng nhập"
             style={{ marginLeft: 20, marginRight: 30, borderBottomWidth: 1 }}
             extra={
-              <Button onPress={() => setTypeInput(!typeInput)} type="ghost" size="small">
+              <Button
+                onPress={() => setTypeInput(!typeInput)}
+                type="ghost"
+                size="small"
+              >
                 <FontAwesomeIcon icon={typeInput ? "eye" : "eye-slash"} />
               </Button>
             }
@@ -131,7 +120,11 @@ export default function Login() {
           }}
         >
           <Button type="primary">
-            <FontAwesomeIcon icon="check-circle" color="white" />
+            <FontAwesomeIcon
+              icon={["fas", "user"]}
+              style={{ color: "white" }}
+              size={20}
+            />
             <Text style={{ color: "white", paddingLeft: 10 }}>Đăng nhập</Text>
           </Button>
         </View>
