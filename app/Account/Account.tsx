@@ -14,15 +14,27 @@ import {
 } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faCheckSquare,
+  faCoffee,
+  faTrash,
+  faUser,
+  faCalendar,
+} from "@fortawesome/free-solid-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+
 import enUS from "@ant-design/react-native/lib/locale-provider/en_US";
+import dayjs from "dayjs";
 
 export default function Account() {
-  const RadioItem = Radio.RadioItem;
+  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar);
+
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const [typeInput, setTypeInput] = useState(true);
   const [isShowDatePicker, setIsShowDatePicker] = useState(false);
-  const [valueDatePicker, setValueDatepicker] = useState<any>();
+  const [valueDatePicker, setValueDatepicker] = useState<any>(
+    dayjs(new Date()).format("DD/MM/YYYY")
+  );
 
   const options = [
     {
@@ -64,7 +76,7 @@ export default function Account() {
             dismissText="Thoát"
             onOk={() => setIsShowDatePicker(false)}
             onDismiss={() => setIsShowDatePicker(false)}
-            onChange={(value) => setValueDatepicker(value)}
+            onChange={(value) => setValueDatepicker(dayjs(value).format("DD/MM/YYYY"))}
           >
             <Text> 22323 </Text>
           </DatePicker>
@@ -114,14 +126,14 @@ export default function Account() {
             style={{ marginLeft: 20, borderBottomWidth: 1 }}
             extra={
               <Button onPress={() => setIsShowDatePicker(true)} style={{ borderColor: "white" }}>
-                <FontAwesomeIcon icon={"calendar"} />
+                <FontAwesomeIcon icon={["fas", "calendar"]} />
               </Button>
             }
             value={String(valueDatePicker)}
           ></InputItem>
           <InputItem
             clear
-            type={typeInput ? "password" : "text"}
+            type={"text"}
             maxLength={8}
             placeholder="Mã đăng nhập"
             style={{ marginLeft: 20, borderBottomWidth: 1, marginRight: 50 }}
@@ -137,13 +149,13 @@ export default function Account() {
           }}
         >
           <Button type="warning">
-            <FontAwesomeIcon icon="trash" color="white" />
+            <FontAwesomeIcon icon={["fas", "trash"]} style={{ color: "white" }} />
             <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
               Xóa tài khoản
             </Text>
           </Button>
           <Button type="primary">
-            <FontAwesomeIcon icon="user-circle" color="white" />
+            <FontAwesomeIcon icon={["fas", "user"]} style={{ color: "white" }} />
             <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
               Tạo tài khoản
             </Text>
