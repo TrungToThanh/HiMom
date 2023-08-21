@@ -2,6 +2,7 @@ import { AppLoading, Font } from "expo";
 import React, { useEffect, useState } from "react";
 import { View, StatusBar, StyleSheet } from "react-native";
 import Login from "./app/Login/Login";
+import Account from "./app/Account/Account";
 
 export default function App() {
   // const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +23,8 @@ export default function App() {
     <View>
       <StatusBar animated={true} backgroundColor="white" />
       {/* <SafeAreaView> */}
-      <Login />
+      {/* <Login /> */}
+      <Account />
       {/* </SafeAreaView> */}
     </View>
   );

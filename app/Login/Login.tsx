@@ -10,16 +10,39 @@ import {
   Checkbox,
 } from "@ant-design/react-native";
 
-const options = [
-  { label: "1212", value: "1" },
-  { label: "1212", value: "2" },
-];
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
 export default function Login() {
   const RadioItem = Radio.RadioItem;
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const [typeInput, setTypeInput] = useState(true);
+
+  const options = [
+    {
+      label: (
+        <View>
+          <Text>
+            <FontAwesomeIcon icon="male" />
+            Account 1
+          </Text>
+        </View>
+      ),
+      value: "1",
+    },
+    {
+      label: (
+        <View>
+          <Text>
+            <FontAwesomeIcon icon="male" />
+            Account 1
+          </Text>
+        </View>
+      ),
+      value: "2",
+    },
+  ];
+
   return (
     <View style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <View
@@ -41,7 +64,6 @@ export default function Login() {
       <Card
         style={{
           width: windowWidth - 15,
-          padding: 10,
         }}
       >
         <Card.Header
@@ -89,8 +111,12 @@ export default function Login() {
             type={typeInput ? "password" : "text"}
             maxLength={8}
             placeholder="Mã đăng nhập"
-            style={{ marginLeft: 20, borderBottomWidth: 1 }}
-            extra={<Button onPress={() => setTypeInput(!typeInput)}> Show </Button>}
+            style={{ marginLeft: 20, marginRight: 30, borderBottomWidth: 1 }}
+            extra={
+              <Button onPress={() => setTypeInput(!typeInput)} type="ghost" size="small">
+                <FontAwesomeIcon icon={typeInput ? "eye" : "eye-slash"} />
+              </Button>
+            }
           ></InputItem>
         </Card.Body>
         <View
@@ -105,7 +131,8 @@ export default function Login() {
           }}
         >
           <Button type="primary">
-            <Text style={{ color: "white" }}> Đăng nhập</Text>
+            <FontAwesomeIcon icon="check-circle" color="white" />
+            <Text style={{ color: "white", paddingLeft: 10 }}>Đăng nhập</Text>
           </Button>
         </View>
       </Card>
