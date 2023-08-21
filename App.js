@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { AppLoading, Font } from "expo";
 import { View, Text, StatusBar, SafeAreaView, StyleSheet } from "react-native";
 import Login from "./app/Login/Login";
 

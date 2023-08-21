@@ -1,15 +1,6 @@
+import { Radio, List, Button, InputItem, Card, WhiteSpace } from "@ant-design/react-native";
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
-import {
-  Button,
-  Card,
-  Checkbox,
-  InputItem,
-  List,
-  Radio,
-  WhiteSpace,
-  WingBlank,
-} from "antd-mobile-rn";
 
 export default function Login() {
   const RadioItem = Radio.RadioItem;
@@ -22,7 +13,6 @@ export default function Login() {
         }}
       />
       <WhiteSpace />
-      <Text> Thông tin đăng nhập </Text>
       <View
         style={{
           display: "flex",
@@ -31,18 +21,33 @@ export default function Login() {
           width: "100%",
         }}
       >
-        <List
-          renderHeader={"Thông tin đăng nhập"}
-          renderFooter={
-            <Button style={{ width: "50%", backgroundColor: "primary" }}> Đăng nhập </Button>
-          }
-          style={{ width: "100%" }}
-        >
-          <InputItem clear error placeholder="Mã đăng nhập">
-            Mã đăng nhập
-          </InputItem>
-        </List>
+        <Card style={{ width: "100%" }}>
+          <Card.Header
+            title="Thông tin đăng nhập"
+            thumbStyle={{ width: 30, height: 30 }}
+            thumb="https://gw.alipayobjects.com/zos/rmsportal/MRhHctKOineMbKAZslML.jpg"
+          />
+          <List renderHeader={"Tài khoản:"} style={{ width: "100%" }}>
+            <Radio.Group
+              style={{
+                width: "100%",
+                //   flexDirection: "row",
+                //   justifyContent: "space-around",
+                paddingVertical: 6,
+              }}
+            >
+              <Radio value={1}>A</Radio>
+              <Radio value={2}>B</Radio>
+              <Radio value={3}>C</Radio>
+              <Radio value={4}>D</Radio>
+            </Radio.Group>
+          </List>
+          <List renderHeader={"Mã đăng nhập"} style={{ width: "100%" }}>
+            <InputItem clear error placeholder="Mã đăng nhập"></InputItem>
+          </List>
+        </Card>
       </View>
+      <Button style={{ width: "50%", backgroundColor: "primary" }}> Đăng nhập </Button>
     </View>
   );
 }
