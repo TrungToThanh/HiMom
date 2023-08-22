@@ -99,7 +99,7 @@ export default function Main() {
             borderLeftWidth: 0,
             borderBottomWidth: isShowLogin ? 1 : 0,
           }}
-          disabled={true}
+          // disabled={isDisableButtonLogin}
         >
           <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>
             Đăng nhập
@@ -120,7 +120,20 @@ export default function Main() {
           </Text>
         </Button>
       </View>
-      <View>{isShowLogin ? <Login /> : <Account />}</View>
+      <View>
+        {isShowLogin ? (
+          <Login listAccountBaby={listAccountBaby} />
+        ) : (
+          <Account
+            setIsLoading={() => {
+              setIsLoading(true);
+              setTimeout(() => {
+                setIsLoading(false);
+              }, 300);
+            }}
+          />
+        )}
+      </View>
     </View>
   );
 }

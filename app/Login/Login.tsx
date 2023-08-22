@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import {
   Radio,
@@ -19,7 +19,11 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
-export default function Login() {
+interface Props {
+  listAccountBaby: any;
+}
+const Login = ({ listAccountBaby }: Props) => {
+  console.log("listAccountBaby", listAccountBaby);
   library.add(faCheckSquare, faEye, faEyeSlash, faUser);
 
   const RadioItem = Radio.RadioItem;
@@ -45,6 +49,12 @@ export default function Login() {
       value: "2",
     },
   ];
+
+  const listBaby = useMemo(() => {
+    const a =
+      listAccountBaby && listAccountBaby?.map((item) => console.log(item));
+    return a;
+  }, [listAccountBaby]);
 
   return (
     <View
@@ -76,8 +86,11 @@ export default function Login() {
               marginLeft: 30,
               marginRight: 20,
             }}
-            options={options}
-          ></Radio.Group>
+            // options={options}
+          >
+            {listAccountBaby &&
+              listAccountBaby?.map((item) => <Text> {item?.nameBaby}</Text>)}
+          </Radio.Group>
 
           <Text
             style={{
@@ -131,7 +144,9 @@ export default function Login() {
       </Card>
     </View>
   );
-}
+};
+
+export default Login;
 
 const styles = StyleSheet.create({
   container: {

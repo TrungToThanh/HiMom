@@ -15,6 +15,9 @@
     },
     "android": {
       "package": "com.trthanr.blank"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }

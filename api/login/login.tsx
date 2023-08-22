@@ -1,6 +1,6 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
-import { MSGError } from "../const/MSG";
 import dayjs from "dayjs";
 import { nameDB } from "../database";
 
@@ -17,7 +17,7 @@ export const createABabyTable = () => {
   });
 };
 
-export const insertValueBabyToBabyList = (values) => {
+export const insertValueBabyToBabyList = (nameBaby, birthday, password) => {
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
@@ -26,7 +26,7 @@ export const insertValueBabyToBabyList = (values) => {
       );
       tx.executeSql(
         `INSERT INTO ${nameTable} (nameBaby, birthday, password) values (?, ?, ?)`,
-        [String(values.name), values.expectBirthday, String(values.password)],
+        [nameBaby, birthday, password],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => resolve(false)
       );
@@ -37,18 +37,24 @@ export const insertValueBabyToBabyList = (values) => {
 export const getAllBabyInBabyList = () => {
   const [db, setDb] = useState(SQLite.openDatabase(nameDB));
   const [listAccountBaby, setListBaby] = useState();
-
+  var items = new Array();
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql(
-        `SELECT * FROM  ${nameTable}`,
+        `SELECT * FROM ${nameTable}`,
         null,
         (txObj, resultSet) => {
-          const value = Array.from(resultSet.rows);
-          setListBaby(value);
+          const value = resultSet.rows;
+          console.log("resultSet", resultSet);
+          var len = resultSet.rows.length;
+          for (var i = 0; i < len; i++) {
+            items.push(resultSet.rows.item(i));
+          }
+          console.log(items);
+          items && items.length > 0 && setListBaby(items);
         },
         (txObj, error) => {
-          _.noop;
+          console.log("resultSet", error);
         }
       );
     });
@@ -79,11 +85,17 @@ export const getProfileAllowItemId = (itemId) => {
         (txObj, resultSet) => {
           if (resultSet.rows.length > 0) {
             const listBaby = Array.from(resultSet.rows);
-            const babyNeedToGet = listBaby?.find((item) => Number(item.id) === Number(itemId));
+            const babyNeedToGet = listBaby?.find(
+              (item) => Number(item.id) === Number(itemId)
+            );
             if (babyNeedToGet) {
               setIsShowInfo(false);
-              const expectDay = dayjs(babyNeedToGet?.birthday).format("MM/DD/YYYY");
-              setExpectBirthday(dayjs(babyNeedToGet?.birthday).format("DD/MM/YYYY"));
+              const expectDay = dayjs(babyNeedToGet?.birthday).format(
+                "MM/DD/YYYY"
+              );
+              setExpectBirthday(
+                dayjs(babyNeedToGet?.birthday).format("DD/MM/YYYY")
+              );
               setExpectBirthdayNoFormat(babyNeedToGet?.birthday);
               setNameBaby(babyNeedToGet?.nameBaby);
               setPassword(babyNeedToGet?.password);
@@ -97,7 +109,8 @@ export const getProfileAllowItemId = (itemId) => {
                 },
                 {
                   label: "Ngày sinh (dự kiến):",
-                  value: dayjs(babyNeedToGet?.birthday).format("DD/MM/YYYY") || "",
+                  value:
+                    dayjs(babyNeedToGet?.birthday).format("DD/MM/YYYY") || "",
                 },
               ];
               setInfoBaby(infoBabyDetails);
@@ -110,9 +123,7 @@ export const getProfileAllowItemId = (itemId) => {
             }
           }
         },
-        (txObj, error) => {
-          _.noop;
-        }
+        (txObj, error) => {}
       );
     });
     setIsLoading(false);
@@ -150,7 +161,12 @@ export const updateValueOfABabyInBabyList = (values, id) => {
     db.transaction((tx) => {
       tx.executeSql(
         `UPDATE ${nameTable} SET nameBaby = ?, birthday = ?, password = ? WHERE id = ?`,
-        [String(values.name), values.expectBirthday, String(values.password), Number(id)],
+        [
+          String(values.name),
+          values.expectBirthday,
+          String(values.password),
+          Number(id),
+        ],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => resolve(false)
       );

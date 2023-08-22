@@ -12,6 +12,7 @@ import {
   DatePicker,
   DatePickerView,
   Modal,
+  Toast,
 } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -27,19 +28,25 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 
 import enUS from "@ant-design/react-native/lib/locale-provider/en_US";
 import dayjs from "dayjs";
+import { insertValueBabyToBabyList } from "../../api/login/login";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 interface Props {
   isShowDeleteButton?: boolean;
+  setIsLoading: () => void;
 }
-const Account = ({ isShowDeleteButton = false }: Props) => {
+const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
   library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit);
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
+
   const [isShowDatePicker, setIsShowDatePicker] = useState(false);
-  const [valueDatePicker, setValueDatepicker] = useState<any>(
+  const [valueDatePicker, setValueDatePicker] = useState<any>(
     dayjs(new Date()).format("DD/MM/YYYY")
   );
+  const [isNameBaby, setIsNameBaby] = useState("");
+  const [isPassword, setIsPassword] = useState("");
 
   return (
     <View
@@ -62,7 +69,7 @@ const Account = ({ isShowDeleteButton = false }: Props) => {
           onOk={() => setIsShowDatePicker(false)}
           onDismiss={() => setIsShowDatePicker(false)}
           onChange={(value) =>
-            setValueDatepicker(dayjs(value).format("DD/MM/YYYY"))
+            setValueDatePicker(dayjs(value).format("DD/MM/YYYY"))
           }
         ></DatePicker>
       )}
@@ -79,6 +86,7 @@ const Account = ({ isShowDeleteButton = false }: Props) => {
             maxLength={50}
             placeholder="Tên em bé"
             style={{ marginLeft: 20, marginRight: 50, borderBottomWidth: 1 }}
+            onChangeText={(value) => setIsNameBaby(value)}
           ></InputItem>
           <InputItem
             editable={false}
@@ -100,6 +108,7 @@ const Account = ({ isShowDeleteButton = false }: Props) => {
             maxLength={8}
             placeholder="Mã đăng nhập"
             style={{ marginLeft: 20, borderBottomWidth: 1, marginRight: 50 }}
+            onChangeText={(value) => setIsPassword(value)}
           ></InputItem>
         </Card.Body>
         <View
@@ -125,7 +134,21 @@ const Account = ({ isShowDeleteButton = false }: Props) => {
             </Button>
           )}
 
-          <Button type="primary">
+          <Button
+            type="primary"
+            onPress={() =>
+              insertValueBabyToBabyList(
+                isNameBaby,
+                valueDatePicker,
+                isPassword
+              ).then((isRes) => {
+                isRes
+                  ? Toast.success("Đã cập nhập thành công!")
+                  : Toast.fail("Thất bại!");
+                setIsLoading();
+              })
+            }
+          >
             <FontAwesomeIcon
               icon={["fas", "edit"]}
               style={{ color: "white" }}
