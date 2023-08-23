@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import { Button, InputItem, Card, WhiteSpace, DatePicker, Toast } from "@ant-design/react-native";
 
@@ -14,14 +14,31 @@ import {
 import { library } from "@fortawesome/fontawesome-svg-core";
 
 import dayjs from "dayjs";
-import { insertValueBabyToBabyList } from "../../api/login/login";
+import {
+  deleteAItemBabyFromBabyList,
+  insertValueBabyToBabyList,
+  updateValueOfABabyInBabyList,
+} from "../../api/login/login";
+import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   isShowDeleteButton?: boolean;
   setIsLoading: () => void;
+  listAccountBaby?: any;
+  nameRouteUserId?: number;
 }
-const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
+const Account = ({
+  isShowDeleteButton = false,
+  setIsLoading,
+  listAccountBaby,
+  nameRouteUserId,
+}: Props) => {
   library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit);
+
+  const [isNameBaby, setIsNameBaby] = useState("");
+  const [isPassword, setIsPassword] = useState("");
+  const navigation = useNavigation();
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -30,9 +47,20 @@ const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
   const [valueDatePicker, setValueDatePicker] = useState<any>(
     dayjs(new Date()).format("DD/MM/YYYY")
   );
-  const [isNameBaby, setIsNameBaby] = useState("");
-  const [isPassword, setIsPassword] = useState("");
-
+  useEffect(() => {
+    if (isShowDeleteButton && nameRouteUserId && listAccountBaby?.length > 0) {
+      const idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
+      console.log("idCurrent", idCurrent);
+      if (idCurrent) {
+        setIsNameBaby(idCurrent?.nameBaby);
+        setIsPassword(idCurrent?.password);
+        setValueDatePicker(idCurrent?.birthday);
+      }
+    }
+  }, [isShowDeleteButton, nameRouteUserId, listAccountBaby]);
+  console.log("nameRouteUserId", nameRouteUserId, listAccountBaby);
   return (
     <View
       style={{
@@ -58,11 +86,19 @@ const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
       )}
 
       <WhiteSpace />
+
       <Card
         style={{
           width: windowWidth - 15,
         }}
       >
+        <CardHeader
+          title={
+            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+              Thông tin tài khoản:
+            </Text>
+          }
+        ></CardHeader>
         <Card.Body>
           <InputItem
             clear
@@ -70,6 +106,7 @@ const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
             placeholder="Tên em bé"
             style={{ marginLeft: 20, marginRight: 50, borderBottomWidth: 1 }}
             onChangeText={(value) => setIsNameBaby(value)}
+            value={isNameBaby}
           ></InputItem>
           <InputItem
             editable={false}
@@ -89,6 +126,7 @@ const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
             placeholder="Mã đăng nhập"
             style={{ marginLeft: 20, borderBottomWidth: 1, marginRight: 50 }}
             onChangeText={(value) => setIsPassword(value)}
+            value={isPassword}
           ></InputItem>
         </Card.Body>
         <View
@@ -101,7 +139,21 @@ const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
           }}
         >
           {isShowDeleteButton && (
-            <Button type="warning">
+            <Button
+              type="warning"
+              onPress={() =>
+                deleteAItemBabyFromBabyList(nameRouteUserId).then((isRes) => {
+                  if (isRes) {
+                    Toast.success("Đã xóa thành công!");
+                    setIsLoading();
+                    // @ts-ignore
+                    navigation.navigate("Main");
+                  } else {
+                    Toast.fail("Thất bại!");
+                  }
+                })
+              }
+            >
               <FontAwesomeIcon icon={["fas", "trash"]} style={{ color: "white" }} />
               <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
                 Xóa tài khoản
@@ -111,16 +163,42 @@ const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
 
           <Button
             type="primary"
-            onPress={() =>
-              insertValueBabyToBabyList(isNameBaby, valueDatePicker, isPassword).then((isRes) => {
-                isRes ? Toast.success("Đã cập nhập thành công!") : Toast.fail("Thất bại!");
-                setIsLoading();
-              })
-            }
+            onPress={() => {
+              if (isShowDeleteButton) {
+                updateValueOfABabyInBabyList(
+                  isNameBaby,
+                  valueDatePicker,
+                  isPassword,
+                  nameRouteUserId
+                ).then((isRes) => {
+                  if (isRes) {
+                    Toast.success("Đã lưu thành công!");
+                    setIsLoading();
+                    // @ts-ignore
+                    navigation.navigate("Main");
+                    navigation.reset;
+                  } else {
+                    Toast.fail("Thất bại!");
+                  }
+                });
+              } else {
+                insertValueBabyToBabyList(isNameBaby, valueDatePicker, isPassword).then((isRes) => {
+                  if (isRes) {
+                    Toast.success("Đã tạo mới thành công!");
+                    setIsLoading();
+                    // @ts-ignore
+                    navigation.navigate("Main");
+                    navigation.reset;
+                  } else {
+                    Toast.fail("Thất bại!");
+                  }
+                });
+              }
+            }}
           >
             <FontAwesomeIcon icon={["fas", "edit"]} style={{ color: "white" }} />
             <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
-              Tạo tài khoản
+              {isShowDeleteButton ? "Lưu thông tin" : "Tạo tài khoản"}
             </Text>
           </Button>
         </View>

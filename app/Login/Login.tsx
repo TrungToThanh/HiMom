@@ -1,17 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-import {
-  Radio,
-  Button,
-  InputItem,
-  Card,
-  WhiteSpace,
-  Toast,
-} from "@ant-design/react-native";
+import { Radio, Button, InputItem, Card, WhiteSpace, Toast } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCheckSquare, faEye, faEyeSlash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   listAccountBaby: any;
@@ -19,6 +13,7 @@ interface Props {
 const Login = ({ listAccountBaby }: Props) => {
   const [userId, setUserId] = useState(0);
   const [passwordInput, setPasswordInput] = useState("");
+  const navigation = useNavigation();
 
   library.add(faCheckSquare, faEye, faEyeSlash, faUser);
 
@@ -35,12 +30,15 @@ const Login = ({ listAccountBaby }: Props) => {
       );
       if (isHasAccount) {
         console.log("OK");
+        // @ts-ignore
+        userId && navigation.navigate("Home", { userId: Number(userId) });
       } else {
         console.log("NOT OK");
-        Toast.fail("Không tìm thấy tài khoản!");
+        Toast.fail("Sai mã đăng nhập!");
       }
     }
   };
+
   return (
     <View
       style={{

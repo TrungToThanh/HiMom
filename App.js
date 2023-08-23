@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { View, StatusBar, StyleSheet } from "react-native";
+import { View, StatusBar, StyleSheet, Text, Dimensions } from "react-native";
 
-import Main from "./app/Main";
-
-import {
-  Provider
-} from "@ant-design/react-native";
+import { Provider } from "@ant-design/react-native";
 
 import enUS from "@ant-design/react-native/lib/locale-provider/en_US";
 
-export default function App() {
+import MyRoutes from "./app/router";
 
+export default function App() {
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
   return (
-    <Provider locale={enUS}> 
-    <View>
-      <StatusBar animated={true} backgroundColor="white" />
-      <Main />
-    </View>
+    <Provider locale={enUS}>
+      <View width={windowWidth} height={windowHeight}>
+        <StatusBar animated={true} backgroundColor="blue" />
+        <MyRoutes />
+      </View>
     </Provider>
   );
 }

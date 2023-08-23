@@ -132,36 +132,30 @@ export const getAllBabyInBabyList = () => {
 //   };
 // };
 
-// export const deleteAItemBabyFromBabyList = (values) => {
-//   const db = SQLite.openDatabase(nameDB);
-//   return new Promise(function (resolve) {
-//     db.transaction((tx) => {
-//       tx.executeSql(
-//         `DELETE FROM ${nameTable} WHERE id = ?`,
-//         [values],
-//         (txObj, resultSet) => resolve(true),
-//         (txObj, error) => resolve(false)
-//       );
-//     });
-//   });
-// };
+export const deleteAItemBabyFromBabyList = (id) => {
+  const db = SQLite.openDatabase(nameDB);
+  return new Promise(function (resolve) {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `DELETE FROM ${nameTable} WHERE id = ?`,
+        [Number(id)],
+        (txObj, resultSet) => resolve(true),
+        (txObj, error) => false
+      );
+    });
+  });
+};
 
-// export const updateValueOfABabyInBabyList = (values, id) => {
-//   const db = SQLite.openDatabase(nameDB);
-//   return new Promise(function (resolve) {
-//     db.transaction((tx) => {
-//       tx.executeSql(
-//         `UPDATE ${nameTable} SET nameBaby = ?, birthday = ?, password = ? WHERE id = ?`,
-//         [String(values.name), values.expectBirthday, String(values.password), Number(id)],
-//         (txObj, resultSet) => resolve(true),
-//         (txObj, error) => resolve(false)
-//       );
-//       tx.executeSql(
-//         `SELECT * FROM  ${nameTable}`,
-//         null,
-//         (txObj, resultSet) => resolve(true),
-//         (txObj, error) => resolve(false)
-//       );
-//     });
-//   });
-// };
+export const updateValueOfABabyInBabyList = (nameBaby, birthday, password, id) => {
+  const db = SQLite.openDatabase(nameDB);
+  return new Promise(function (resolve) {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `UPDATE ${nameTable} SET nameBaby = ?, birthday = ?, password = ? WHERE id = ?`,
+        [nameBaby, birthday, password, Number(id)],
+        (txObj, resultSet) => resolve(true),
+        (txObj, error) => false
+      );
+    });
+  });
+};
