@@ -87,7 +87,7 @@ export const getAllBabyInBabyList = () => {
 //             if (babyNeedToGet) {
 //               setIsShowInfo(false);
 //               const expectDay = dayjs(babyNeedToGet?.birthday).format("MM/DD/YYYY");
-//               setExpectBirthday(dayjs(babyNeedToGet?.birthday).format("DD/MM/YYYY"));
+//               setExpectBirthday(dayjs(babyNeedToGet?.birthday).format("DD-MM-YYYY"));
 //               setExpectBirthdayNoFormat(babyNeedToGet?.birthday);
 //               setNameBaby(babyNeedToGet?.nameBaby);
 //               setPassword(babyNeedToGet?.password);
@@ -101,7 +101,7 @@ export const getAllBabyInBabyList = () => {
 //                 },
 //                 {
 //                   label: "Ngày sinh (dự kiến):",
-//                   value: dayjs(babyNeedToGet?.birthday).format("DD/MM/YYYY") || "",
+//                   value: dayjs(babyNeedToGet?.birthday).format("DD-MM-YYYY") || "",
 //                 },
 //               ];
 //               setInfoBaby(infoBabyDetails);

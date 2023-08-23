@@ -45,7 +45,7 @@ const Account = ({
 
   const [isShowDatePicker, setIsShowDatePicker] = useState(false);
   const [valueDatePicker, setValueDatePicker] = useState<any>(
-    dayjs(new Date()).format("DD/MM/YYYY")
+    dayjs(new Date()).format("DD-MM-YYYY")
   );
   useEffect(() => {
     if (isShowDeleteButton && nameRouteUserId && listAccountBaby?.length > 0) {
@@ -81,7 +81,7 @@ const Account = ({
           dismissText="Thoát"
           onOk={() => setIsShowDatePicker(false)}
           onDismiss={() => setIsShowDatePicker(false)}
-          onChange={(value) => setValueDatePicker(dayjs(value).format("DD/MM/YYYY"))}
+          onChange={(value) => setValueDatePicker(dayjs(value).format("DD-MM-YYYY"))}
         ></DatePicker>
       )}
 

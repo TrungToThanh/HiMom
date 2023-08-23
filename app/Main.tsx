@@ -26,7 +26,6 @@ export default function Main() {
       setIsLoading(false);
     };
     loading();
-    console.log("121212");
   }, []);
 
   const { listAccountBaby } = getAllBabyInBabyList();

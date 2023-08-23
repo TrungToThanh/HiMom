@@ -16,6 +16,7 @@ import { faCheckSquare, faEye, faEyeSlash, faUser } from "@fortawesome/free-soli
 import Account from "../Account/Account";
 import { getAllBabyInBabyList } from "../../api/login/login";
 import { useRoute } from "@react-navigation/native";
+import ProcessBaby from "../Process/Process";
 
 const Home = () => {
   const route = useRoute();
@@ -63,11 +64,7 @@ const Home = () => {
             1 <ActivityIndicator />
           </Text>
         </View>
-        <View style={styles.tabsStyle}>
-          <Text>
-            2 <ActivityIndicator />
-          </Text>
-        </View>
+        <ProcessBaby nameRouteUserId={nameRouteUserId} listAccountBaby={listAccountBaby} />
         <View style={styles.tabsStyle}>
           <Text>
             3 <ActivityIndicator />
