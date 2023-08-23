@@ -1,19 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-import {
-  Radio,
-  Icon,
-  Button,
-  InputItem,
-  Card,
-  WhiteSpace,
-  Checkbox,
-  Provider,
-  DatePicker,
-  DatePickerView,
-  Modal,
-  Toast,
-} from "@ant-design/react-native";
+import { Button, InputItem, Card, WhiteSpace, DatePicker, Toast } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
@@ -26,10 +13,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
-import enUS from "@ant-design/react-native/lib/locale-provider/en_US";
 import dayjs from "dayjs";
 import { insertValueBabyToBabyList } from "../../api/login/login";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 interface Props {
   isShowDeleteButton?: boolean;
@@ -68,9 +53,7 @@ const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
           dismissText="Thoát"
           onOk={() => setIsShowDatePicker(false)}
           onDismiss={() => setIsShowDatePicker(false)}
-          onChange={(value) =>
-            setValueDatePicker(dayjs(value).format("DD/MM/YYYY"))
-          }
+          onChange={(value) => setValueDatePicker(dayjs(value).format("DD/MM/YYYY"))}
         ></DatePicker>
       )}
 
@@ -93,10 +76,7 @@ const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
             placeholder="Ngày sinh dự kiến"
             style={{ marginLeft: 20, borderBottomWidth: 1 }}
             extra={
-              <Button
-                onPress={() => setIsShowDatePicker(true)}
-                style={{ borderColor: "white" }}
-              >
+              <Button onPress={() => setIsShowDatePicker(true)} style={{ borderColor: "white" }}>
                 <FontAwesomeIcon icon={["fas", "calendar"]} />
               </Button>
             }
@@ -122,13 +102,8 @@ const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
         >
           {isShowDeleteButton && (
             <Button type="warning">
-              <FontAwesomeIcon
-                icon={["fas", "trash"]}
-                style={{ color: "white" }}
-              />
-              <Text
-                style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}
-              >
+              <FontAwesomeIcon icon={["fas", "trash"]} style={{ color: "white" }} />
+              <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
                 Xóa tài khoản
               </Text>
             </Button>
@@ -137,25 +112,14 @@ const Account = ({ isShowDeleteButton = false, setIsLoading }: Props) => {
           <Button
             type="primary"
             onPress={() =>
-              insertValueBabyToBabyList(
-                isNameBaby,
-                valueDatePicker,
-                isPassword
-              ).then((isRes) => {
-                isRes
-                  ? Toast.success("Đã cập nhập thành công!")
-                  : Toast.fail("Thất bại!");
+              insertValueBabyToBabyList(isNameBaby, valueDatePicker, isPassword).then((isRes) => {
+                isRes ? Toast.success("Đã cập nhập thành công!") : Toast.fail("Thất bại!");
                 setIsLoading();
               })
             }
           >
-            <FontAwesomeIcon
-              icon={["fas", "edit"]}
-              style={{ color: "white" }}
-            />
-            <Text
-              style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}
-            >
+            <FontAwesomeIcon icon={["fas", "edit"]} style={{ color: "white" }} />
+            <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
               Tạo tài khoản
             </Text>
           </Button>

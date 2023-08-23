@@ -18,6 +18,7 @@ export const createABabyTable = () => {
 };
 
 export const insertValueBabyToBabyList = (nameBaby, birthday, password) => {
+  console.log(nameBaby, birthday, password);
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
@@ -28,7 +29,7 @@ export const insertValueBabyToBabyList = (nameBaby, birthday, password) => {
         `INSERT INTO ${nameTable} (nameBaby, birthday, password) values (?, ?, ?)`,
         [nameBaby, birthday, password],
         (txObj, resultSet) => resolve(true),
-        (txObj, error) => resolve(false)
+        (txObj, error) => false
       );
     });
   });
@@ -36,7 +37,7 @@ export const insertValueBabyToBabyList = (nameBaby, birthday, password) => {
 
 export const getAllBabyInBabyList = () => {
   const [db, setDb] = useState(SQLite.openDatabase(nameDB));
-  const [listAccountBaby, setListBaby] = useState();
+  const [listAccountBaby, setListBaby] = useState<any>();
   var items = new Array();
   useEffect(() => {
     db.transaction((tx) => {
@@ -50,12 +51,9 @@ export const getAllBabyInBabyList = () => {
           for (var i = 0; i < len; i++) {
             items.push(resultSet.rows.item(i));
           }
-          console.log(items);
           items && items.length > 0 && setListBaby(items);
         },
-        (txObj, error) => {
-          console.log("resultSet", error);
-        }
+        (txObj, error) => false
       );
     });
   }, [db]);
@@ -64,118 +62,106 @@ export const getAllBabyInBabyList = () => {
   };
 };
 
-export const getProfileAllowItemId = (itemId) => {
-  const now = new Date();
-  const [db, setDb] = useState(SQLite.openDatabase(nameDB));
-  const [isLoading, setIsLoading] = useState(true);
-  const [isShowInfo, setIsShowInfo] = useState(true);
-  const [infoBaby, setInfoBaby] = useState();
-  const [percent, setPercent] = useState(0);
-  const [diffDay, setDiffDay] = useState(0);
-  const [expectBirthday, setExpectBirthday] = useState();
-  const [nameBaby, setNameBaby] = useState();
-  const [expectBirthdayNoFormat, setExpectBirthdayNoFormat] = useState();
-  const [password, setPassword] = useState();
+// export const getProfileAllowItemId = (itemId) => {
+//   const now = new Date();
+//   const [db, setDb] = useState(SQLite.openDatabase(nameDB));
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [isShowInfo, setIsShowInfo] = useState(true);
+//   const [infoBaby, setInfoBaby] = useState();
+//   const [percent, setPercent] = useState(0);
+//   const [diffDay, setDiffDay] = useState(0);
+//   const [expectBirthday, setExpectBirthday] = useState();
+//   const [nameBaby, setNameBaby] = useState();
+//   const [expectBirthdayNoFormat, setExpectBirthdayNoFormat] = useState();
+//   const [password, setPassword] = useState();
 
-  useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        `SELECT * FROM  ${nameTable}`,
-        null,
-        (txObj, resultSet) => {
-          if (resultSet.rows.length > 0) {
-            const listBaby = Array.from(resultSet.rows);
-            const babyNeedToGet = listBaby?.find(
-              (item) => Number(item.id) === Number(itemId)
-            );
-            if (babyNeedToGet) {
-              setIsShowInfo(false);
-              const expectDay = dayjs(babyNeedToGet?.birthday).format(
-                "MM/DD/YYYY"
-              );
-              setExpectBirthday(
-                dayjs(babyNeedToGet?.birthday).format("DD/MM/YYYY")
-              );
-              setExpectBirthdayNoFormat(babyNeedToGet?.birthday);
-              setNameBaby(babyNeedToGet?.nameBaby);
-              setPassword(babyNeedToGet?.password);
-              const dateNow = dayjs(now)?.format("MM/DD/YYYY");
-              const diffDay = dayjs(expectDay)?.diff(dayjs(dateNow), "days");
-              const infoBabyDetails = [
-                {
-                  label: "Tên của bé:",
-                  value: babyNeedToGet?.nameBaby || "",
-                  bold: true,
-                },
-                {
-                  label: "Ngày sinh (dự kiến):",
-                  value:
-                    dayjs(babyNeedToGet?.birthday).format("DD/MM/YYYY") || "",
-                },
-              ];
-              setInfoBaby(infoBabyDetails);
-              setPercent(
-                Math.round(((280 - diffDay) * 100) / 280) < 100
-                  ? Math.round(((280 - diffDay) * 100) / 280)
-                  : 100
-              );
-              setDiffDay(diffDay);
-            }
-          }
-        },
-        (txObj, error) => {}
-      );
-    });
-    setIsLoading(false);
-  }, [db]);
-  return {
-    isLoading,
-    isShowInfo,
-    infoBaby,
-    percent,
-    diffDay,
-    expectBirthday,
-    nameBaby,
-    expectBirthdayNoFormat,
-    password,
-  };
-};
+//   useEffect(() => {
+//     db.transaction((tx) => {
+//       tx.executeSql(
+//         `SELECT * FROM  ${nameTable}`,
+//         null,
+//         (txObj, resultSet) => {
+//           if (resultSet.rows.length > 0) {
+//             const listBaby = Array.from(resultSet.rows);
+//             const babyNeedToGet = listBaby?.find((item) => Number(item.id) === Number(itemId));
+//             if (babyNeedToGet) {
+//               setIsShowInfo(false);
+//               const expectDay = dayjs(babyNeedToGet?.birthday).format("MM/DD/YYYY");
+//               setExpectBirthday(dayjs(babyNeedToGet?.birthday).format("DD/MM/YYYY"));
+//               setExpectBirthdayNoFormat(babyNeedToGet?.birthday);
+//               setNameBaby(babyNeedToGet?.nameBaby);
+//               setPassword(babyNeedToGet?.password);
+//               const dateNow = dayjs(now)?.format("MM/DD/YYYY");
+//               const diffDay = dayjs(expectDay)?.diff(dayjs(dateNow), "days");
+//               const infoBabyDetails = [
+//                 {
+//                   label: "Tên của bé:",
+//                   value: babyNeedToGet?.nameBaby || "",
+//                   bold: true,
+//                 },
+//                 {
+//                   label: "Ngày sinh (dự kiến):",
+//                   value: dayjs(babyNeedToGet?.birthday).format("DD/MM/YYYY") || "",
+//                 },
+//               ];
+//               setInfoBaby(infoBabyDetails);
+//               setPercent(
+//                 Math.round(((280 - diffDay) * 100) / 280) < 100
+//                   ? Math.round(((280 - diffDay) * 100) / 280)
+//                   : 100
+//               );
+//               setDiffDay(diffDay);
+//             }
+//           }
+//         },
+//         (txObj, error) => {}
+//       );
+//     });
+//     setIsLoading(false);
+//   }, [db]);
+//   return {
+//     isLoading,
+//     isShowInfo,
+//     infoBaby,
+//     percent,
+//     diffDay,
+//     expectBirthday,
+//     nameBaby,
+//     expectBirthdayNoFormat,
+//     password,
+//   };
+// };
 
-export const deleteAItemBabyFromBabyList = (values) => {
-  const db = SQLite.openDatabase(nameDB);
-  return new Promise(function (resolve) {
-    db.transaction((tx) => {
-      tx.executeSql(
-        `DELETE FROM ${nameTable} WHERE id = ?`,
-        [values],
-        (txObj, resultSet) => resolve(true),
-        (txObj, error) => resolve(false)
-      );
-    });
-  });
-};
+// export const deleteAItemBabyFromBabyList = (values) => {
+//   const db = SQLite.openDatabase(nameDB);
+//   return new Promise(function (resolve) {
+//     db.transaction((tx) => {
+//       tx.executeSql(
+//         `DELETE FROM ${nameTable} WHERE id = ?`,
+//         [values],
+//         (txObj, resultSet) => resolve(true),
+//         (txObj, error) => resolve(false)
+//       );
+//     });
+//   });
+// };
 
-export const updateValueOfABabyInBabyList = (values, id) => {
-  const db = SQLite.openDatabase(nameDB);
-  return new Promise(function (resolve) {
-    db.transaction((tx) => {
-      tx.executeSql(
-        `UPDATE ${nameTable} SET nameBaby = ?, birthday = ?, password = ? WHERE id = ?`,
-        [
-          String(values.name),
-          values.expectBirthday,
-          String(values.password),
-          Number(id),
-        ],
-        (txObj, resultSet) => resolve(true),
-        (txObj, error) => resolve(false)
-      );
-      tx.executeSql(
-        `SELECT * FROM  ${nameTable}`,
-        null,
-        (txObj, resultSet) => resolve(true),
-        (txObj, error) => resolve(false)
-      );
-    });
-  });
-};
+// export const updateValueOfABabyInBabyList = (values, id) => {
+//   const db = SQLite.openDatabase(nameDB);
+//   return new Promise(function (resolve) {
+//     db.transaction((tx) => {
+//       tx.executeSql(
+//         `UPDATE ${nameTable} SET nameBaby = ?, birthday = ?, password = ? WHERE id = ?`,
+//         [String(values.name), values.expectBirthday, String(values.password), Number(id)],
+//         (txObj, resultSet) => resolve(true),
+//         (txObj, error) => resolve(false)
+//       );
+//       tx.executeSql(
+//         `SELECT * FROM  ${nameTable}`,
+//         null,
+//         (txObj, resultSet) => resolve(true),
+//         (txObj, error) => resolve(false)
+//       );
+//     });
+//   });
+// };
