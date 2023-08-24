@@ -8,7 +8,7 @@ import * as Font from "expo-font";
 
 import Login from "./Login/Login";
 import Account from "./Account/Account";
-import { getAllBabyInBabyList } from "../api/login/login";
+import { getAllBabyInBabyList } from "../../api/login/login";
 
 export default function Main() {
   const windowWidth = Dimensions.get("window").width;

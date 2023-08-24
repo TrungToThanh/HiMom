@@ -5,7 +5,7 @@ import { Provider } from "@ant-design/react-native";
 
 import enUS from "@ant-design/react-native/lib/locale-provider/en_US";
 
-import MyRoutes from "./app/router";
+import MyRoutes from "./app/component/router";
 
 export default function App() {
   const windowWidth = Dimensions.get("window").width;

@@ -18,7 +18,7 @@ import {
   deleteAItemBabyFromBabyList,
   insertValueBabyToBabyList,
   updateValueOfABabyInBabyList,
-} from "../../api/login/login";
+} from "../../../api/login/login";
 import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import { useNavigation } from "@react-navigation/native";
 
