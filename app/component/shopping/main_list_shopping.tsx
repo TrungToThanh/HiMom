@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import {
   Button,
@@ -39,7 +39,11 @@ import {
   getAllItemShoppingMain,
   insertANewItemToShoppingMain,
 } from "../../../api/shopping/shopping_main";
-import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import {
+  FlatList,
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 import "react-native-gesture-handler";
 import SwipeActionComponent from "../../const/swipe_action_component";
 import { TableItemList } from "../../const/type";
@@ -56,7 +60,15 @@ const MainShop = ({
   listAccountBaby,
   nameRouteUserId,
 }: Props) => {
-  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd);
+  library.add(
+    faCheckSquare,
+    faCoffee,
+    faTrash,
+    faUser,
+    faCalendar,
+    faEdit,
+    faAdd
+  );
   const windowWidth = Dimensions.get("window").width;
   const RadioItem = Radio.RadioItem;
   const navigation = useNavigation();
@@ -67,21 +79,29 @@ const MainShop = ({
   const [isNameTableSelected, setNameTableSelected] = useState<any>();
   const [isNameItem, setNameItem] = useState("");
 
-  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } =
-    getAllItemShoppingMain(nameRouteUserId);
+  const [refreshing, setRefreshing] = useState(true);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(false);
+    setTimeout(() => {
+      setRefreshing(true);
+    }, 500);
+  }, []);
 
   const handleAddItem = () => {
     if (isNameTableSelected && isNameItem) {
-      console.log(isNameTableSelected, isNameItem);
-      insertANewItemToShoppingMain(isNameTableSelected, nameRouteUserId, isNameItem).then(
-        (isRes) => {
-          if (isRes) {
-            Toast.success("Đã tạo thành công!");
-          } else {
-            Toast.fail("Tạo thất bại!");
-          }
+      insertANewItemToShoppingMain(
+        isNameTableSelected,
+        nameRouteUserId,
+        isNameItem
+      ).then((isRes) => {
+        onRefresh();
+        if (isRes) {
+          Toast.success("Đã tạo thành công!");
+        } else {
+          Toast.fail("Tạo thất bại!");
         }
-      );
+      });
     }
   };
   const handleLeftAction = [
@@ -116,61 +136,89 @@ const MainShop = ({
         >
           <CardHeader
             title={
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text
+                  style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
+                >
                   Quá trình chuẩn bị:
                 </Text>
-                <Button size="small" type="ghost" onPress={() => setShowEvent(true)}>
+                <Button
+                  size="small"
+                  type="ghost"
+                  onPress={() => setShowEvent(true)}
+                >
                   <FontAwesomeIcon size={14} icon={faAdd} />
-                  <Text style={{ fontSize: 12, fontWeight: "400" }}>Thêm danh mục</Text>
+                  <Text style={{ fontSize: 12, fontWeight: "400" }}>
+                    Thêm danh mục
+                  </Text>
                 </Button>
               </View>
             }
           ></CardHeader>
           <CardBody>
             <View style={{ width: windowWidth - 20 }}>
-              <Accordion activeSections={isPanelActive} onChange={(value) => setPanelActive(value)}>
+              <Accordion
+                activeSections={isPanelActive}
+                onChange={(value) => setPanelActive(value)}
+              >
                 <Accordion.Panel header="Chuẩn bị của mẹ" key="0">
-                  <SwipeActionComponent
-                    listAllItems={listAllItemsMom}
-                    handleLeftAction={handleLeftAction}
-                    handleOnClick={(itemId) =>
-                      // @ts-ignore
-                      navigation.navigate("DetailShopList", {
-                        userId: Number(nameRouteUserId),
-                        typeTable: TableItemList.mom,
-                        itemId: itemId,
-                      })
-                    }
-                  />
+                  {refreshing && (
+                    <SwipeActionComponent
+                      nameRouteUserId={nameRouteUserId}
+                      tableItemList={TableItemList.mom}
+                      handleLeftAction={handleLeftAction}
+                      setIsLoading={() => onRefresh()}
+                      handleOnClick={(itemId) =>
+                        // @ts-ignore
+                        navigation.navigate("DetailShopList", {
+                          userId: Number(nameRouteUserId),
+                          typeTable: TableItemList.mom,
+                          itemId: itemId,
+                        })
+                      }
+                    />
+                  )}
                 </Accordion.Panel>
                 <Accordion.Panel header="Chuẩn bị của bé" key="1">
-                  <SwipeActionComponent
-                    listAllItems={listAllItemsBaby}
-                    handleLeftAction={handleLeftAction}
-                    handleOnClick={(itemId) =>
-                      // @ts-ignore
-                      navigation.navigate("DetailShopList", {
-                        userId: Number(nameRouteUserId),
-                        typeTable: TableItemList.baby,
-                        itemId: itemId,
-                      })
-                    }
-                  />
+                  {refreshing && (
+                    <SwipeActionComponent
+                      nameRouteUserId={nameRouteUserId}
+                      tableItemList={TableItemList.baby}
+                      handleLeftAction={handleLeftAction}
+                      setIsLoading={() => onRefresh()}
+                      handleOnClick={(itemId) =>
+                        // @ts-ignore
+                        navigation.navigate("DetailShopList", {
+                          userId: Number(nameRouteUserId),
+                          typeTable: TableItemList.baby,
+                          itemId: itemId,
+                        })
+                      }
+                    />
+                  )}
                 </Accordion.Panel>
                 <Accordion.Panel header="Chuẩn bị khác" key="2">
-                  <SwipeActionComponent
-                    listAllItems={listAllItemsOther}
-                    handleLeftAction={handleLeftAction}
-                    handleOnClick={(itemId) =>
-                      // @ts-ignore
-                      navigation.navigate("DetailShopList", {
-                        userId: Number(nameRouteUserId),
-                        typeTable: TableItemList.other,
-                        itemId: itemId,
-                      })
-                    }
-                  />
+                  {refreshing && (
+                    <SwipeActionComponent
+                      nameRouteUserId={nameRouteUserId}
+                      tableItemList={TableItemList.other}
+                      handleLeftAction={handleLeftAction}
+                      setIsLoading={() => onRefresh()}
+                      handleOnClick={(itemId) =>
+                        // @ts-ignore
+                        navigation.navigate("DetailShopList", {
+                          userId: Number(nameRouteUserId),
+                          typeTable: TableItemList.other,
+                          itemId: itemId,
+                        })
+                      }
+                    />
+                  )}
                 </Accordion.Panel>
               </Accordion>
             </View>
@@ -185,7 +233,11 @@ const MainShop = ({
           transparent
           animationType="fade"
           title={
-            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>Thêm sự kiện</Text>
+            <Text
+              style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
+            >
+              Thêm sự kiện
+            </Text>
           }
           footer={[
             {
@@ -213,18 +265,26 @@ const MainShop = ({
             <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
               Danh mục cần thêm:
             </Text>
-            <Radio.Group onChange={(value) => setNameTableSelected(value?.target?.value)}>
+            <Radio.Group
+              onChange={(value) => setNameTableSelected(value?.target?.value)}
+            >
               <RadioItem value={"mom"}>Danh mục của mẹ</RadioItem>
               <RadioItem value={"baby"}>Danh mục của bé</RadioItem>
               <RadioItem value={"other"}>Danh mục khác</RadioItem>
             </Radio.Group>
-            <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>Tên sự kiện:</Text>
+            <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
+              Tên sự kiện:
+            </Text>
             <InputItem
               placeholder="Tên sự kiện"
               multiline
               textBreakStrategy="highQuality"
               onChangeText={(value) => setNameItem(value?.trim())}
-              style={{ borderBottomWidth: 1, borderColor: "#1870bc", marginRight: 50 }}
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#1870bc",
+                marginRight: 50,
+              }}
             ></InputItem>
           </View>
         </Modal>

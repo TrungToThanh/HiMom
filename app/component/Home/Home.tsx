@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import {
   Radio,
@@ -23,6 +23,12 @@ import { useRoute } from "@react-navigation/native";
 import MainShop from "../shopping/main_list_shopping";
 import ProcessBaby from "../Process/Process";
 import Account from "../Account/Account";
+import {
+  GestureHandlerRootView,
+  RefreshControl,
+  ScrollView,
+} from "react-native-gesture-handler";
+import LoadingData from "../../const/loading";
 
 const Home = () => {
   const route = useRoute();
@@ -47,62 +53,70 @@ const Home = () => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
 
+  const [showProcess, setShowProcess] = useState(true);
+  const [showMainList, setShowMainList] = useState(true);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
   if (!listAccountBaby || listAccountBaby?.length < 1 || isLoading)
-    return (
-      <View
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>
-          Loading <ActivityIndicator />
-        </Text>
-      </View>
-    );
+    return <LoadingData />;
 
   return (
-    <View style={{ width: windowWidth }}>
-      <Tabs
-        tabs={tabs}
-        tabBarPosition="bottom"
-        style={{ minHeight: windowHeight - 50 }}
-      >
-        <View style={styles.tabsStyle}>
-          <Text>
-            1 <ActivityIndicator />
-          </Text>
-        </View>
-        <ProcessBaby
-          nameRouteUserId={nameRouteUserId}
-          listAccountBaby={listAccountBaby}
-        />
-        <MainShop
-          nameRouteUserId={nameRouteUserId}
-          listAccountBaby={listAccountBaby}
-          isShowDeleteButton={true}
-          setIsLoading={() => {
-            setIsLoading(true);
-            setTimeout(() => {
-              setIsLoading(false);
-            }, 300);
-          }}
-        />
+    <GestureHandlerRootView>
+      <View style={{ width: windowWidth }}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <Tabs
+            tabs={tabs}
+            tabBarPosition="bottom"
+            style={{ minHeight: windowHeight - 50 }}
+          >
+            <View style={styles.tabsStyle}>
+              <Text>
+                1 <ActivityIndicator />
+              </Text>
+            </View>
+            <ProcessBaby
+              nameRouteUserId={nameRouteUserId}
+              listAccountBaby={listAccountBaby}
+            />
+            {showMainList ? (
+              <MainShop
+                nameRouteUserId={nameRouteUserId}
+                listAccountBaby={listAccountBaby}
+                isShowDeleteButton={true}
+                setIsLoading={() => undefined}
+              />
+            ) : (
+              <LoadingData />
+            )}
 
-        <Account
-          nameRouteUserId={nameRouteUserId}
-          listAccountBaby={listAccountBaby}
-          isShowDeleteButton={true}
-          setIsLoading={() => {
-            setIsLoading(true);
-            setTimeout(() => {
-              setIsLoading(false);
-            }, 300);
-          }}
-        />
-      </Tabs>
-    </View>
+            <Account
+              nameRouteUserId={nameRouteUserId}
+              listAccountBaby={listAccountBaby}
+              isShowDeleteButton={true}
+              setIsLoading={() => {
+                onRefresh();
+                // setIsLoading(true);
+                // setTimeout(() => {
+                //   setIsLoading(false);
+                // }, 300);
+              }}
+            />
+          </Tabs>
+        </ScrollView>
+      </View>
+    </GestureHandlerRootView>
   );
 };
 

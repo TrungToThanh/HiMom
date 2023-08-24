@@ -1,22 +1,45 @@
-import React from "react";
-import { Dimensions, Image, ScrollView, Text } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  Text,
+  RefreshControl,
+} from "react-native";
 import { Result, SwipeAction, View } from "@ant-design/react-native";
 import { FlatList } from "react-native-gesture-handler";
 import EmptyData from "./no_data";
+import { getAllItemShoppingMain } from "../../api/shopping/shopping_main";
+import { TableItemList } from "./type";
 
 interface Props {
-  listAllItems?: any;
+  tableItemList: TableItemList;
   handleLeftAction?: any;
   handleOnClick: (itemId) => void;
+  setIsLoading: () => void;
+  nameRouteUserId: number | string;
 }
-const SwipeActionComponent = ({ listAllItems, handleLeftAction, handleOnClick }: Props) => {
+const SwipeActionComponent = ({
+  tableItemList,
+  handleLeftAction,
+  handleOnClick,
+  setIsLoading,
+  nameRouteUserId,
+}: Props) => {
   const windowWidth = Dimensions.get("window").width;
+
+  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } =
+    getAllItemShoppingMain(nameRouteUserId);
 
   return (
     <FlatList
-      data={listAllItems}
-      scrollEnabled={true}
-      initialNumToRender={4}
+      data={
+        tableItemList === TableItemList.mom
+          ? listAllItemsMom
+          : tableItemList === TableItemList.baby
+          ? listAllItemsBaby
+          : listAllItemsOther
+      }
       renderItem={({ item, index }) => (
         <SwipeAction
           left={handleLeftAction}
@@ -48,7 +71,6 @@ const SwipeActionComponent = ({ listAllItems, handleLeftAction, handleOnClick }:
       )}
       keyExtractor={(item) => item.id}
       ListEmptyComponent={<EmptyData />}
-      refreshing={true}
     />
   );
 };
