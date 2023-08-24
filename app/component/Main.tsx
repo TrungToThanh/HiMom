@@ -9,6 +9,7 @@ import * as Font from "expo-font";
 import Login from "./login/login";
 import { getAllBabyInBabyList } from "../../api/login/login";
 import Account from "./account/Account";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function Main() {
   const windowWidth = Dimensions.get("window").width;
@@ -50,79 +51,81 @@ export default function Main() {
     );
 
   return (
-    <View
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <GestureHandlerRootView>
       <View
         style={{
-          height: windowHeight / 4,
           display: "flex",
           justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <Image
-          style={styles.tinyLogo}
-          source={{
-            uri: "https://reactnative.dev/img/tiny_logo.png",
-          }}
-        />
-      </View>
-
-      <WhiteSpace />
-
-      <View
-        style={{
-          flexDirection: "row",
-          width: windowWidth,
-          display: "flex",
-          justifyContent: "space-around",
-        }}
-      >
-        <Button
-          onPress={() => setIsShowLogin(true)}
-          type="ghost"
+        <View
           style={{
-            borderTopWidth: 0,
-            borderRightWidth: 0,
-            borderLeftWidth: 0,
-            borderBottomWidth: isShowLogin ? 1 : 0,
-          }}
-          disabled={isDisableButtonLogin}
-        >
-          <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng nhập</Text>
-        </Button>
-        <Button
-          onPress={() => setIsShowLogin(false)}
-          type="ghost"
-          style={{
-            borderTopWidth: 0,
-            borderRightWidth: 0,
-            borderLeftWidth: 0,
-            borderBottomWidth: isShowLogin ? 0 : 1,
+            height: windowHeight / 4,
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng ký</Text>
-        </Button>
-      </View>
-      <View>
-        {isShowLogin ? (
-          <Login listAccountBaby={listAccountBaby} />
-        ) : (
-          <Account
-            setIsLoading={() => {
-              setIsLoading(true);
-              setTimeout(() => {
-                setIsLoading(false);
-              }, 300);
+          <Image
+            style={styles.tinyLogo}
+            source={{
+              uri: "https://reactnative.dev/img/tiny_logo.png",
             }}
           />
-        )}
+        </View>
+
+        <WhiteSpace />
+
+        <View
+          style={{
+            flexDirection: "row",
+            width: windowWidth,
+            display: "flex",
+            justifyContent: "space-around",
+          }}
+        >
+          <Button
+            onPress={() => setIsShowLogin(true)}
+            type="ghost"
+            style={{
+              borderTopWidth: 0,
+              borderRightWidth: 0,
+              borderLeftWidth: 0,
+              borderBottomWidth: isShowLogin ? 1 : 0,
+            }}
+            disabled={isDisableButtonLogin}
+          >
+            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng nhập</Text>
+          </Button>
+          <Button
+            onPress={() => setIsShowLogin(false)}
+            type="ghost"
+            style={{
+              borderTopWidth: 0,
+              borderRightWidth: 0,
+              borderLeftWidth: 0,
+              borderBottomWidth: isShowLogin ? 0 : 1,
+            }}
+          >
+            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng ký</Text>
+          </Button>
+        </View>
+        <View>
+          {isShowLogin ? (
+            <Login listAccountBaby={listAccountBaby} />
+          ) : (
+            <Account
+              setIsLoading={() => {
+                setIsLoading(true);
+                setTimeout(() => {
+                  setIsLoading(false);
+                }, 300);
+              }}
+            />
+          )}
+        </View>
       </View>
-    </View>
+    </GestureHandlerRootView>
   );
 }
 

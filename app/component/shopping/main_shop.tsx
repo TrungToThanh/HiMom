@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-import { Button, InputItem, Card, WhiteSpace, DatePicker, Toast } from "@ant-design/react-native";
+import {
+  Button,
+  InputItem,
+  Card,
+  WhiteSpace,
+  DatePicker,
+  Toast,
+  Accordion,
+  Modal,
+  Radio,
+} from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
@@ -10,6 +20,7 @@ import {
   faUser,
   faCalendar,
   faEdit,
+  faAdd,
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -21,7 +32,14 @@ import {
 } from "../../../api/login/login";
 import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import { useNavigation } from "@react-navigation/native";
-
+import CardBody from "@ant-design/react-native/lib/card/CardBody";
+import EmptyData from "../../const/no_data";
+import {
+  getAllItemShoppingMain,
+  insertANewItemToShoppingMain,
+} from "../../../api/shopping/shopping_main";
+import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
+import "react-native-gesture-handler";
 interface Props {
   isShowDeleteButton?: boolean;
   setIsLoading: () => void;
@@ -34,176 +52,150 @@ const MainShop = ({
   listAccountBaby,
   nameRouteUserId,
 }: Props) => {
-  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit);
-
-  const [isNameBaby, setIsNameBaby] = useState("");
-  const [isPassword, setIsPassword] = useState("");
-  const navigation = useNavigation();
-
+  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd);
   const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
+  const RadioItem = Radio.RadioItem;
 
-  const [isShowDatePicker, setIsShowDatePicker] = useState(false);
-  const [valueDatePicker, setValueDatePicker] = useState<any>(
-    dayjs(new Date()).format("DD-MM-YYYY")
-  );
-  useEffect(() => {
-    if (isShowDeleteButton && nameRouteUserId && listAccountBaby?.length > 0) {
-      const idCurrent = listAccountBaby?.find(
-        (item) => Number(item.id) === Number(nameRouteUserId)
+  const [isShowEvent, setShowEvent] = useState<boolean>(false);
+  const [isPanelActive, setPanelActive] = useState([0]);
+
+  const [isNameTableSelected, setNameTableSelected] = useState<any>();
+  const [isNameItem, setNameItem] = useState("");
+
+  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } =
+    getAllItemShoppingMain(nameRouteUserId);
+
+  const handleAddItem = () => {
+    if (isNameTableSelected && isNameItem) {
+      console.log(isNameTableSelected, isNameItem);
+      insertANewItemToShoppingMain(isNameTableSelected, nameRouteUserId, isNameItem).then(
+        (isRes) => {
+          if (isRes) {
+            Toast.success("Đã tạo thành công!");
+          } else {
+            Toast.fail("Tạo thất bại!");
+          }
+        }
       );
-      console.log("idCurrent", idCurrent);
-      if (idCurrent) {
-        setIsNameBaby(idCurrent?.nameBaby);
-        setIsPassword(idCurrent?.password);
-        setValueDatePicker(idCurrent?.birthday);
-      }
     }
-  }, [isShowDeleteButton, nameRouteUserId, listAccountBaby]);
-  console.log("nameRouteUserId", nameRouteUserId, listAccountBaby);
+  };
   return (
-    <View
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {isShowDatePicker && (
-        <DatePicker
-          visible={isShowDatePicker}
-          mode="date"
-          value={new Date()}
-          minDate={new Date(2015, 7, 6)}
-          maxDate={new Date(2026, 11, 3)}
-          format="YYYY-MM-DD"
-          okText="Chọn"
-          dismissText="Thoát"
-          onOk={() => setIsShowDatePicker(false)}
-          onDismiss={() => setIsShowDatePicker(false)}
-          onChange={(value) => setValueDatePicker(dayjs(value).format("DD-MM-YYYY"))}
-        ></DatePicker>
-      )}
-
-      <WhiteSpace />
-
-      <Card
+    <GestureHandlerRootView>
+      <View
         style={{
-          width: windowWidth - 15,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <CardHeader
-          title={
-            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
-              Thông tin tài khoản:
-            </Text>
-          }
-        ></CardHeader>
-        <Card.Body>
-          <InputItem
-            clear
-            maxLength={50}
-            placeholder="Tên em bé"
-            style={{ marginLeft: 20, marginRight: 50, borderBottomWidth: 1 }}
-            onChangeText={(value) => setIsNameBaby(value)}
-            value={isNameBaby}
-          ></InputItem>
-          <InputItem
-            editable={false}
-            placeholder="Ngày sinh dự kiến"
-            style={{ marginLeft: 20, borderBottomWidth: 1 }}
-            extra={
-              <Button onPress={() => setIsShowDatePicker(true)} style={{ borderColor: "white" }}>
-                <FontAwesomeIcon icon={["fas", "calendar"]} />
-              </Button>
-            }
-            value={String(valueDatePicker)}
-          ></InputItem>
-          <InputItem
-            clear
-            type={"text"}
-            maxLength={8}
-            placeholder="Mã đăng nhập"
-            style={{ marginLeft: 20, borderBottomWidth: 1, marginRight: 50 }}
-            onChangeText={(value) => setIsPassword(value)}
-            value={isPassword}
-          ></InputItem>
-        </Card.Body>
-        <View
+        <WhiteSpace />
+
+        <Card
           style={{
-            flexDirection: "row",
-            width: "100%",
-            display: "flex",
-            justifyContent: isShowDeleteButton ? "space-between" : "center",
-            paddingHorizontal: 30,
+            width: windowWidth - 15,
           }}
         >
-          {isShowDeleteButton && (
-            <Button
-              type="warning"
-              onPress={() =>
-                deleteAItemBabyFromBabyList(nameRouteUserId).then((isRes) => {
-                  if (isRes) {
-                    Toast.success("Đã xóa thành công!");
-                    setIsLoading();
-                    // @ts-ignore
-                    navigation.navigate("Main");
-                  } else {
-                    Toast.fail("Thất bại!");
-                  }
-                })
-              }
-            >
-              <FontAwesomeIcon icon={["fas", "trash"]} style={{ color: "white" }} />
-              <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
-                Xóa tài khoản
-              </Text>
-            </Button>
-          )}
-
-          <Button
-            type="primary"
-            onPress={() => {
-              if (isShowDeleteButton) {
-                updateValueOfABabyInBabyList(
-                  isNameBaby,
-                  valueDatePicker,
-                  isPassword,
-                  nameRouteUserId
-                ).then((isRes) => {
-                  if (isRes) {
-                    Toast.success("Đã lưu thành công!");
-                    setIsLoading();
-                    // @ts-ignore
-                    navigation.navigate("Main");
-                    navigation.reset;
-                  } else {
-                    Toast.fail("Thất bại!");
-                  }
-                });
-              } else {
-                insertValueBabyToBabyList(isNameBaby, valueDatePicker, isPassword).then((isRes) => {
-                  if (isRes) {
-                    Toast.success("Đã tạo mới thành công!");
-                    setIsLoading();
-                    // @ts-ignore
-                    navigation.navigate("Main");
-                    navigation.reset;
-                  } else {
-                    Toast.fail("Thất bại!");
-                  }
-                });
-              }
+          <CardHeader
+            title={
+              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+                  Quá trình chuẩn bị:
+                </Text>
+                <Button size="small" type="ghost" onPress={() => setShowEvent(true)}>
+                  <FontAwesomeIcon size={14} icon={faAdd} />
+                  <Text style={{ fontSize: 12, fontWeight: "400" }}>Thêm danh mục</Text>
+                </Button>
+              </View>
+            }
+          ></CardHeader>
+          <CardBody>
+            <View style={{ width: windowWidth }}>
+              <Accordion activeSections={isPanelActive} onChange={(value) => setPanelActive(value)}>
+                <Accordion.Panel header="Chuẩn bị của mẹ" key="0">
+                  <FlatList
+                    data={listAllItemsMom}
+                    renderItem={({ item }) => <Text> {item.nameItem} </Text>}
+                    keyExtractor={(item) => item.id}
+                    ListEmptyComponent={<EmptyData />}
+                    refreshing={true}
+                  />
+                </Accordion.Panel>
+                <Accordion.Panel header="Chuẩn bị của bé" key="1">
+                  <FlatList
+                    data={listAllItemsBaby}
+                    renderItem={({ item }) => <Text> {item.nameItem} </Text>}
+                    keyExtractor={(item) => item.id}
+                    ListEmptyComponent={<EmptyData />}
+                    refreshing={true}
+                  />
+                </Accordion.Panel>
+                <Accordion.Panel header="Chuẩn bị khác" key="2">
+                  <FlatList
+                    data={listAllItemsOther}
+                    renderItem={({ item }) => <Text> {item.nameItem} </Text>}
+                    keyExtractor={(item) => item.id}
+                    ListEmptyComponent={<EmptyData />}
+                    refreshing={true}
+                  />
+                </Accordion.Panel>
+              </Accordion>
+            </View>
+          </CardBody>
+        </Card>
+        <Modal
+          style={{
+            width: windowWidth - 10,
+          }}
+          popup={true}
+          visible={isShowEvent}
+          transparent
+          animationType="fade"
+          title={
+            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>Thêm sự kiện</Text>
+          }
+          footer={[
+            {
+              text: "Thoát",
+              onPress: () => setShowEvent(false),
+              style: "cancel",
+            },
+            {
+              text: "Thêm",
+              onPress: () => {
+                setShowEvent(false);
+                handleAddItem();
+              },
+            },
+          ]}
+        >
+          <View
+            style={{
+              width: windowWidth,
+              display: "flex",
+              justifyContent: "flex-start",
+              marginTop: 10,
             }}
           >
-            <FontAwesomeIcon icon={["fas", "edit"]} style={{ color: "white" }} />
-            <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
-              {isShowDeleteButton ? "Lưu thông tin" : "Tạo tài khoản"}
+            <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
+              Danh mục cần thêm:
             </Text>
-          </Button>
-        </View>
-      </Card>
-    </View>
+            <Radio.Group onChange={(value) => setNameTableSelected(value?.target?.value)}>
+              <RadioItem value={"mom"}>Danh mục của mẹ</RadioItem>
+              <RadioItem value={"baby"}>Danh mục của bé</RadioItem>
+              <RadioItem value={"other"}>Danh mục khác</RadioItem>
+            </Radio.Group>
+            <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>Tên sự kiện:</Text>
+            <InputItem
+              placeholder="Tên sự kiện"
+              multiline
+              textBreakStrategy="highQuality"
+              onChangeText={(value) => setNameItem(value?.trim())}
+              style={{ borderBottomWidth: 1, borderColor: "#1870bc", marginRight: 50 }}
+            ></InputItem>
+          </View>
+        </Modal>
+      </View>
+    </GestureHandlerRootView>
   );
 };
 
