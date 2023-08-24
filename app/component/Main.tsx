@@ -6,9 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
 import * as Font from "expo-font";
 
-import Login from "./Login/Login";
-import Account from "./Account/Account";
+import Login from "./login/login";
 import { getAllBabyInBabyList } from "../../api/login/login";
+import Account from "./account/Account";
 
 export default function Main() {
   const windowWidth = Dimensions.get("window").width;

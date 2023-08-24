@@ -13,10 +13,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCheckSquare, faEye, faEyeSlash, faUser } from "@fortawesome/free-solid-svg-icons";
-import Account from "../Account/Account";
 import { getAllBabyInBabyList } from "../../../api/login/login";
 import { useRoute } from "@react-navigation/native";
-import ProcessBaby from "../Process/Process";
+import ProcessBaby from "../process/process";
+import Account from "../account/Account";
 
 const Home = () => {
   const route = useRoute();
