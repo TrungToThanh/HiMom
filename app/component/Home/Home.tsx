@@ -12,12 +12,17 @@ import {
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faCheckSquare, faEye, faEyeSlash, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckSquare,
+  faEye,
+  faEyeSlash,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { getAllBabyInBabyList } from "../../../api/login/login";
 import { useRoute } from "@react-navigation/native";
-import ProcessBaby from "../process/process";
 import MainShop from "../shopping/main_list_shopping";
-import Account from "../account/account";
+import ProcessBaby from "../Process/Process";
+import Account from "../Account/Account";
 
 const Home = () => {
   const route = useRoute();
@@ -59,13 +64,20 @@ const Home = () => {
 
   return (
     <View style={{ width: windowWidth }}>
-      <Tabs tabs={tabs} tabBarPosition="bottom" style={{ minHeight: windowHeight - 50 }}>
+      <Tabs
+        tabs={tabs}
+        tabBarPosition="bottom"
+        style={{ minHeight: windowHeight - 50 }}
+      >
         <View style={styles.tabsStyle}>
           <Text>
             1 <ActivityIndicator />
           </Text>
         </View>
-        <ProcessBaby nameRouteUserId={nameRouteUserId} listAccountBaby={listAccountBaby} />
+        <ProcessBaby
+          nameRouteUserId={nameRouteUserId}
+          listAccountBaby={listAccountBaby}
+        />
         <MainShop
           nameRouteUserId={nameRouteUserId}
           listAccountBaby={listAccountBaby}

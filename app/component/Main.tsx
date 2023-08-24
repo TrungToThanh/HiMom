@@ -1,15 +1,20 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-import { Radio, Button, WhiteSpace, ActivityIndicator } from "@ant-design/react-native";
+import {
+  Radio,
+  Button,
+  WhiteSpace,
+  ActivityIndicator,
+} from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
 import * as Font from "expo-font";
 
-import Login from "./login/login";
 import { getAllBabyInBabyList } from "../../api/login/login";
-import Account from "./account/account";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Login from "./Login/Login";
+import Account from "./Account/Account";
 
 export default function Main() {
   const windowWidth = Dimensions.get("window").width;
@@ -23,7 +28,10 @@ export default function Main() {
         "antoutline",
         require("@ant-design/icons-react-native/fonts/antoutline.ttf")
       );
-      await Font.loadAsync("antfill", require("@ant-design/icons-react-native/fonts/antfill.ttf"));
+      await Font.loadAsync(
+        "antfill",
+        require("@ant-design/icons-react-native/fonts/antfill.ttf")
+      );
       setIsLoading(false);
     };
     loading();
@@ -95,7 +103,9 @@ export default function Main() {
             }}
             disabled={isDisableButtonLogin}
           >
-            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng nhập</Text>
+            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>
+              Đăng nhập
+            </Text>
           </Button>
           <Button
             onPress={() => setIsShowLogin(false)}
@@ -107,7 +117,9 @@ export default function Main() {
               borderBottomWidth: isShowLogin ? 0 : 1,
             }}
           >
-            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng ký</Text>
+            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>
+              Đăng ký
+            </Text>
           </Button>
         </View>
         <View>
