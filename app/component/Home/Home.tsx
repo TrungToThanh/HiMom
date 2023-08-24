@@ -16,8 +16,8 @@ import { faCheckSquare, faEye, faEyeSlash, faUser } from "@fortawesome/free-soli
 import { getAllBabyInBabyList } from "../../../api/login/login";
 import { useRoute } from "@react-navigation/native";
 import ProcessBaby from "../process/process";
-import MainShop from "../shopping/main_shop";
-import Account from "../account/Account";
+import MainShop from "../shopping/main_list_shopping";
+import Account from "../account/account";
 
 const Home = () => {
   const route = useRoute();

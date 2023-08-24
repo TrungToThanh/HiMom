@@ -10,6 +10,7 @@ import {
   Accordion,
   Modal,
   Radio,
+  SwipeAction,
 } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -38,8 +39,11 @@ import {
   getAllItemShoppingMain,
   insertANewItemToShoppingMain,
 } from "../../../api/shopping/shopping_main";
-import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
+import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import "react-native-gesture-handler";
+import SwipeActionComponent from "../../const/swipe_action_component";
+import { TableItemList } from "../../const/type";
+
 interface Props {
   isShowDeleteButton?: boolean;
   setIsLoading: () => void;
@@ -55,6 +59,7 @@ const MainShop = ({
   library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd);
   const windowWidth = Dimensions.get("window").width;
   const RadioItem = Radio.RadioItem;
+  const navigation = useNavigation();
 
   const [isShowEvent, setShowEvent] = useState<boolean>(false);
   const [isPanelActive, setPanelActive] = useState([0]);
@@ -79,6 +84,21 @@ const MainShop = ({
       );
     }
   };
+  const handleLeftAction = [
+    {
+      text: "Chỉnh",
+      onPress: () => console.log("more"),
+      backgroundColor: "orange",
+      color: "white",
+    },
+    {
+      text: "Xóa",
+      onPress: () => console.log("delete"),
+      backgroundColor: "red",
+      color: "white",
+    },
+  ];
+
   return (
     <GestureHandlerRootView>
       <View
@@ -89,7 +109,6 @@ const MainShop = ({
         }}
       >
         <WhiteSpace />
-
         <Card
           style={{
             width: windowWidth - 15,
@@ -109,33 +128,48 @@ const MainShop = ({
             }
           ></CardHeader>
           <CardBody>
-            <View style={{ width: windowWidth }}>
+            <View style={{ width: windowWidth - 20 }}>
               <Accordion activeSections={isPanelActive} onChange={(value) => setPanelActive(value)}>
                 <Accordion.Panel header="Chuẩn bị của mẹ" key="0">
-                  <FlatList
-                    data={listAllItemsMom}
-                    renderItem={({ item }) => <Text> {item.nameItem} </Text>}
-                    keyExtractor={(item) => item.id}
-                    ListEmptyComponent={<EmptyData />}
-                    refreshing={true}
+                  <SwipeActionComponent
+                    listAllItems={listAllItemsMom}
+                    handleLeftAction={handleLeftAction}
+                    handleOnClick={(itemId) =>
+                      // @ts-ignore
+                      navigation.navigate("DetailShopList", {
+                        userId: Number(nameRouteUserId),
+                        typeTable: TableItemList.mom,
+                        itemId: itemId,
+                      })
+                    }
                   />
                 </Accordion.Panel>
                 <Accordion.Panel header="Chuẩn bị của bé" key="1">
-                  <FlatList
-                    data={listAllItemsBaby}
-                    renderItem={({ item }) => <Text> {item.nameItem} </Text>}
-                    keyExtractor={(item) => item.id}
-                    ListEmptyComponent={<EmptyData />}
-                    refreshing={true}
+                  <SwipeActionComponent
+                    listAllItems={listAllItemsBaby}
+                    handleLeftAction={handleLeftAction}
+                    handleOnClick={(itemId) =>
+                      // @ts-ignore
+                      navigation.navigate("DetailShopList", {
+                        userId: Number(nameRouteUserId),
+                        typeTable: TableItemList.baby,
+                        itemId: itemId,
+                      })
+                    }
                   />
                 </Accordion.Panel>
                 <Accordion.Panel header="Chuẩn bị khác" key="2">
-                  <FlatList
-                    data={listAllItemsOther}
-                    renderItem={({ item }) => <Text> {item.nameItem} </Text>}
-                    keyExtractor={(item) => item.id}
-                    ListEmptyComponent={<EmptyData />}
-                    refreshing={true}
+                  <SwipeActionComponent
+                    listAllItems={listAllItemsOther}
+                    handleLeftAction={handleLeftAction}
+                    handleOnClick={(itemId) =>
+                      // @ts-ignore
+                      navigation.navigate("DetailShopList", {
+                        userId: Number(nameRouteUserId),
+                        typeTable: TableItemList.other,
+                        itemId: itemId,
+                      })
+                    }
                   />
                 </Accordion.Panel>
               </Accordion>

@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./home/home";
 import Main from "./main";
+import DetailShopList from "./shopping/detail_list_shopping";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,17 @@ function MyStack() {
           headerShown: false,
         }}
         getId={({ params }) => params.userId}
+      />
+      <Stack.Screen
+        name="DetailShopList"
+        component={DetailShopList}
+        options={{
+          title: "Danh mục chi tiết",
+          headerShown: false,
+        }}
+        getId={({ params }) => {
+          params.userId, params.typeTable, params.itemId;
+        }}
       />
     </Stack.Navigator>
   );

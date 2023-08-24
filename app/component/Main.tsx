@@ -8,7 +8,7 @@ import * as Font from "expo-font";
 
 import Login from "./login/login";
 import { getAllBabyInBabyList } from "../../api/login/login";
-import Account from "./account/Account";
+import Account from "./account/account";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function Main() {

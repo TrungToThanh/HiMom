@@ -4,3 +4,9 @@ export interface ProcessBabyBase {
   status: string;
   description: string;
 }
+
+export enum TableItemList {
+  mom = 0,
+  baby,
+  other
+}
