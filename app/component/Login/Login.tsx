@@ -23,17 +23,14 @@ const Login = ({ listAccountBaby }: Props) => {
   const [typeInput, setTypeInput] = useState(true);
 
   const handleLogin = () => {
-    console.log(userId, passwordInput);
     if (listAccountBaby && listAccountBaby?.length > 0) {
       const isHasAccount = listAccountBaby.some(
         (item) => +item.id === +userId && String(item.password) === String(passwordInput)
       );
       if (isHasAccount) {
-        console.log("OK");
         // @ts-ignore
         userId && navigation.navigate("Home", { userId: Number(userId) });
       } else {
-        console.log("NOT OK");
         Toast.fail("Sai mã đăng nhập!");
       }
     }

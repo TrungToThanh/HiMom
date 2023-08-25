@@ -113,7 +113,7 @@ const MainShop = ({
                 clear={true}
                 style={{ marginLeft: 20, borderBottomWidth: 1 }}
                 onChangeText={(value) => {
-                  console.log(value), (newName = value?.trim());
+                  newName = value?.trim();
                 }}
               />
             </View>,

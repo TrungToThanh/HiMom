@@ -69,6 +69,7 @@ const SwipeActionComponent = ({
           ? listAllItemsBaby
           : listAllItemsOther
       }
+      initialNumToRender={8}
       renderItem={({ item, index }) => (
         <SwipeAction
           left={handleLeftAction}
@@ -95,7 +96,7 @@ const SwipeActionComponent = ({
                   text={
                     <Text>
                       <FontAwesomeIcon icon={faCartShopping} color="white" size={12} />
-                      {` 12/99`}
+                      {` ${+item.numberIsBuyGoods || 0}/${+item.numberGoods || 0}`}
                     </Text>
                   }
                   size="small"

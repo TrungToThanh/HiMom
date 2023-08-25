@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
 import dayjs from "dayjs";
 import { nameDB } from "../database";
+import { TableItemList } from "../../app/const/type";
 
 export const createShoppingMainTable = (preName, nameRouteUserId) => {
   const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
@@ -59,7 +60,6 @@ export const getAllItemShoppingMain = (nameRouteUserId) => {
           null,
           (txObj, resultSet) => {
             const value = resultSet.rows;
-            console.log("resultSet", resultSet);
             var len = resultSet.rows.length;
             for (var i = 0; i < len; i++) {
               items.push(resultSet.rows.item(i));
@@ -85,7 +85,6 @@ export const getAllItemShoppingMain = (nameRouteUserId) => {
 export const deleteAItemsOfShoppingMain = (preName, id, nameRouteUserId) => {
   const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
   const db = SQLite.openDatabase(nameDB);
-  console.log("preName", preName, id);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
@@ -101,12 +100,39 @@ export const deleteAItemsOfShoppingMain = (preName, id, nameRouteUserId) => {
 export const updateNameOfAItemsOfShoppingMain = (preName, id, nameRouteUserId, nameItem) => {
   const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
   const db = SQLite.openDatabase(nameDB);
-  console.log("preName", preName, id, nameRouteUserId, nameItem);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
         `UPDATE ${nameTable} SET nameItem = ? WHERE id = ?`,
         [nameItem, Number(id)],
+        (txObj, resultSet) => resolve(true),
+        (txObj, error) => false
+      );
+    });
+  });
+};
+
+export const updateGoodOfAItemsOfShoppingMain = (
+  nameRouteTypeTable,
+  id,
+  nameRouteUserId,
+  numberGoods,
+  numberIsBuyGoods
+) => {
+  const preName =
+    nameRouteTypeTable === TableItemList.mom
+      ? "mom"
+      : nameRouteTypeTable === TableItemList.baby
+      ? "baby"
+      : "other";
+
+  const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
+  const db = SQLite.openDatabase(nameDB);
+  return new Promise(function (resolve) {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `UPDATE ${nameTable} SET numberGoods = ?, numberIsBuyGoods = ?  WHERE id = ?`,
+        [numberGoods, numberIsBuyGoods, Number(id)],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );

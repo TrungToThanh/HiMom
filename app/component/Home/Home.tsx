@@ -17,6 +17,7 @@ import {
   faCheckSquare,
   faEye,
   faEyeSlash,
+  faGear,
   faHomeUser,
   faSeedling,
   faStore,
@@ -29,6 +30,7 @@ import ProcessBaby from "../process/process";
 import Account from "../account/account";
 import { GestureHandlerRootView, RefreshControl, ScrollView } from "react-native-gesture-handler";
 import LoadingData from "../../const/loading";
+import SettingAccount from "../setting/setting";
 
 const Home = () => {
   const route = useRoute();
@@ -71,8 +73,8 @@ const Home = () => {
     {
       title: (
         <View style={{ justifyContent: "center", alignItems: "center", alignSelf: "center" }}>
-          <FontAwesomeIcon icon={faUser} color="#1870bc" />
-          <Text>Tài khoản</Text>
+          <FontAwesomeIcon icon={faGear} color="#1870bc" />
+          <Text>Cài đặt</Text>
         </View>
       ),
     },
@@ -119,18 +121,7 @@ const Home = () => {
               <LoadingData />
             )}
 
-            <Account
-              nameRouteUserId={nameRouteUserId}
-              listAccountBaby={listAccountBaby}
-              isShowDeleteButton={true}
-              setIsLoading={() => {
-                onRefresh();
-                // setIsLoading(true);
-                // setTimeout(() => {
-                //   setIsLoading(false);
-                // }, 300);
-              }}
-            />
+            <SettingAccount />
           </Tabs>
         </ScrollView>
       </View>

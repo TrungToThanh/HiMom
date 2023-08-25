@@ -24,7 +24,7 @@ import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   isShowDeleteButton?: boolean;
-  setIsLoading: () => void;
+  setIsLoading?: () => void;
   listAccountBaby?: any;
   nameRouteUserId?: number;
 }
@@ -52,7 +52,6 @@ const Account = ({
       const idCurrent = listAccountBaby?.find(
         (item) => Number(item.id) === Number(nameRouteUserId)
       );
-      console.log("idCurrent", idCurrent);
       if (idCurrent) {
         setIsNameBaby(idCurrent?.nameBaby);
         setIsPassword(idCurrent?.password);
@@ -60,7 +59,6 @@ const Account = ({
       }
     }
   }, [isShowDeleteButton, nameRouteUserId, listAccountBaby]);
-  console.log("nameRouteUserId", nameRouteUserId, listAccountBaby);
   return (
     <View
       style={{

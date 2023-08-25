@@ -18,7 +18,6 @@ export const createABabyTable = () => {
 };
 
 export const insertValueBabyToBabyList = (nameBaby, birthday, password) => {
-  console.log(nameBaby, birthday, password);
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
@@ -46,7 +45,6 @@ export const getAllBabyInBabyList = () => {
         null,
         (txObj, resultSet) => {
           const value = resultSet.rows;
-          console.log("resultSet", resultSet);
           var len = resultSet.rows.length;
           for (var i = 0; i < len; i++) {
             items.push(resultSet.rows.item(i));

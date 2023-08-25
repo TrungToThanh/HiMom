@@ -59,8 +59,6 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
       dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
         .subtract(280, "days")
         .format("DD-MM-YYYY");
-
-      console.log("idCurrent", dateParts, dateObject);
     }
     return dateObject;
   }, [listAccountBaby]);
@@ -113,12 +111,10 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
       );
 
     const newList = new Set(listEventCurrent);
-    console.log(newList);
     return Array.from(newList);
   }, [listEvent]);
 
   const handleAddEvent = () => {
-    console.log("nameEvent", nameEvent, dateEvent, desEvent, noteEvent);
     insertANewEvent(nameEvent, dateEvent, desEvent, noteEvent).then((isRes) => {
       setIsLoading(true);
       if (isRes) {
