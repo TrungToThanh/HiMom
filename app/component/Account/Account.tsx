@@ -69,27 +69,11 @@ const Account = ({
         alignItems: "center",
       }}
     >
-      {isShowDatePicker && (
-        <DatePicker
-          visible={isShowDatePicker}
-          mode="date"
-          value={new Date()}
-          minDate={new Date(2015, 7, 6)}
-          maxDate={new Date(2026, 11, 3)}
-          format="YYYY-MM-DD"
-          okText="Chọn"
-          dismissText="Thoát"
-          onOk={() => setIsShowDatePicker(false)}
-          onDismiss={() => setIsShowDatePicker(false)}
-          onChange={(value) => setValueDatePicker(dayjs(value).format("DD-MM-YYYY"))}
-        ></DatePicker>
-      )}
-
       <WhiteSpace />
-
       <Card
         style={{
-          width: windowWidth - 15,
+          width: windowWidth - 10,
+          height: windowHeight - 60,
         }}
       >
         <CardHeader
@@ -128,80 +112,98 @@ const Account = ({
             onChangeText={(value) => setIsPassword(value)}
             value={isPassword}
           ></InputItem>
-        </Card.Body>
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            display: "flex",
-            justifyContent: isShowDeleteButton ? "space-between" : "center",
-            paddingHorizontal: 30,
-          }}
-        >
-          {isShowDeleteButton && (
-            <Button
-              type="warning"
-              onPress={() =>
-                deleteAItemBabyFromBabyList(nameRouteUserId).then((isRes) => {
-                  if (isRes) {
-                    Toast.success("Đã xóa thành công!");
-                    setIsLoading();
-                    // @ts-ignore
-                    navigation.navigate("Main");
-                  } else {
-                    Toast.fail("Thất bại!");
-                  }
-                })
-              }
-            >
-              <FontAwesomeIcon icon={["fas", "trash"]} style={{ color: "white" }} />
-              <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
-                Xóa tài khoản
-              </Text>
-            </Button>
-          )}
 
-          <Button
-            type="primary"
-            onPress={() => {
-              if (isShowDeleteButton) {
-                updateValueOfABabyInBabyList(
-                  isNameBaby,
-                  valueDatePicker,
-                  isPassword,
-                  nameRouteUserId
-                ).then((isRes) => {
-                  if (isRes) {
-                    Toast.success("Đã lưu thành công!");
-                    setIsLoading();
-                    // @ts-ignore
-                    navigation.navigate("Main");
-                    navigation.reset;
-                  } else {
-                    Toast.fail("Thất bại!");
-                  }
-                });
-              } else {
-                insertValueBabyToBabyList(isNameBaby, valueDatePicker, isPassword).then((isRes) => {
-                  if (isRes) {
-                    Toast.success("Đã tạo mới thành công!");
-                    setIsLoading();
-                    // @ts-ignore
-                    navigation.navigate("Main");
-                    navigation.reset;
-                  } else {
-                    Toast.fail("Thất bại!");
-                  }
-                });
-              }
+          {isShowDatePicker && (
+            <DatePicker
+              visible={isShowDatePicker}
+              mode="date"
+              value={new Date()}
+              minDate={new Date(2015, 7, 6)}
+              maxDate={new Date(2026, 11, 3)}
+              format="YYYY-MM-DD"
+              okText="Chọn"
+              dismissText="Thoát"
+              onOk={() => setIsShowDatePicker(false)}
+              onDismiss={() => setIsShowDatePicker(false)}
+              onChange={(value) => setValueDatePicker(dayjs(value).format("DD-MM-YYYY"))}
+            ></DatePicker>
+          )}
+          <WhiteSpace />
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              display: "flex",
+              justifyContent: isShowDeleteButton ? "space-between" : "center",
+              paddingHorizontal: 30,
             }}
           >
-            <FontAwesomeIcon icon={["fas", "edit"]} style={{ color: "white" }} />
-            <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
-              {isShowDeleteButton ? "Lưu thông tin" : "Tạo tài khoản"}
-            </Text>
-          </Button>
-        </View>
+            {isShowDeleteButton && (
+              <Button
+                type="warning"
+                onPress={() =>
+                  deleteAItemBabyFromBabyList(nameRouteUserId).then((isRes) => {
+                    if (isRes) {
+                      Toast.success("Đã xóa thành công!");
+                      setIsLoading();
+                      // @ts-ignore
+                      navigation.navigate("Main");
+                    } else {
+                      Toast.fail("Thất bại!");
+                    }
+                  })
+                }
+              >
+                <FontAwesomeIcon icon={["fas", "trash"]} style={{ color: "white" }} />
+                <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
+                  Xóa tài khoản
+                </Text>
+              </Button>
+            )}
+            <Button
+              type="primary"
+              onPress={() => {
+                if (isShowDeleteButton) {
+                  updateValueOfABabyInBabyList(
+                    isNameBaby,
+                    valueDatePicker,
+                    isPassword,
+                    nameRouteUserId
+                  ).then((isRes) => {
+                    if (isRes) {
+                      Toast.success("Đã lưu thành công!");
+                      setIsLoading();
+                      // @ts-ignore
+                      navigation.navigate("Main");
+                      navigation.reset;
+                    } else {
+                      Toast.fail("Thất bại!");
+                    }
+                  });
+                } else {
+                  insertValueBabyToBabyList(isNameBaby, valueDatePicker, isPassword).then(
+                    (isRes) => {
+                      if (isRes) {
+                        Toast.success("Đã tạo mới thành công!");
+                        setIsLoading();
+                        // @ts-ignore
+                        navigation.navigate("Main");
+                        navigation.reset;
+                      } else {
+                        Toast.fail("Thất bại!");
+                      }
+                    }
+                  );
+                }
+              }}
+            >
+              <FontAwesomeIcon icon={["fas", "edit"]} style={{ color: "white" }} />
+              <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
+                {isShowDeleteButton ? "Lưu thông tin" : "Tạo tài khoản"}
+              </Text>
+            </Button>
+          </View>
+        </Card.Body>
       </Card>
     </View>
   );

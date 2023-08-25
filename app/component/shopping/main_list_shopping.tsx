@@ -22,28 +22,21 @@ import {
   faCalendar,
   faEdit,
   faAdd,
+  faBasketShopping,
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
-import dayjs from "dayjs";
-import {
-  deleteAItemBabyFromBabyList,
-  insertValueBabyToBabyList,
-  updateValueOfABabyInBabyList,
-} from "../../../api/login/login";
 import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import { useNavigation } from "@react-navigation/native";
 import CardBody from "@ant-design/react-native/lib/card/CardBody";
 import EmptyData from "../../const/no_data";
 import {
+  deleteAItemsOfShoppingMain,
   getAllItemShoppingMain,
   insertANewItemToShoppingMain,
+  updateNameOfAItemsOfShoppingMain,
 } from "../../../api/shopping/shopping_main";
-import {
-  FlatList,
-  GestureHandlerRootView,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import "react-native-gesture-handler";
 import SwipeActionComponent from "../../const/swipe_action_component";
 import { TableItemList } from "../../const/type";
@@ -67,18 +60,20 @@ const MainShop = ({
     faUser,
     faCalendar,
     faEdit,
-    faAdd
+    faAdd,
+    faBasketShopping
   );
   const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
   const RadioItem = Radio.RadioItem;
   const navigation = useNavigation();
 
   const [isShowEvent, setShowEvent] = useState<boolean>(false);
   const [isPanelActive, setPanelActive] = useState([0]);
+  const [isItemIdCurrent, setItemIdCurrent] = useState<number>();
 
   const [isNameTableSelected, setNameTableSelected] = useState<any>();
   const [isNameItem, setNameItem] = useState("");
-
   const [refreshing, setRefreshing] = useState(true);
 
   const onRefresh = useCallback(() => {
@@ -90,30 +85,109 @@ const MainShop = ({
 
   const handleAddItem = () => {
     if (isNameTableSelected && isNameItem) {
-      insertANewItemToShoppingMain(
-        isNameTableSelected,
-        nameRouteUserId,
-        isNameItem
-      ).then((isRes) => {
-        onRefresh();
-        if (isRes) {
-          Toast.success("Đã tạo thành công!");
-        } else {
-          Toast.fail("Tạo thất bại!");
+      insertANewItemToShoppingMain(isNameTableSelected, nameRouteUserId, isNameItem).then(
+        (isRes) => {
+          onRefresh();
+          setNameItem("");
+          if (isRes) {
+            Toast.success("Đã tạo thành công!");
+          } else {
+            Toast.fail("Tạo thất bại!");
+          }
         }
-      });
+      );
     }
   };
   const handleLeftAction = [
     {
-      text: "Chỉnh",
-      onPress: () => console.log("more"),
-      backgroundColor: "orange",
+      text: <FontAwesomeIcon icon={faEdit} color="white" />,
+      onPress: () => {
+        if (isItemIdCurrent && isPanelActive) {
+          let newName = isNameItem || "";
+          Modal.alert(
+            "Tên danh mục",
+            <View style={{ width: windowWidth }}>
+              <InputItem
+                defaultValue={newName}
+                placeholder="Nhập tên danh mục mới"
+                clear={true}
+                style={{ marginLeft: 20, borderBottomWidth: 1 }}
+                onChangeText={(value) => {
+                  console.log(value), (newName = value?.trim());
+                }}
+              />
+            </View>,
+            [
+              {
+                text: "Thoát",
+                style: "cancel",
+              },
+              {
+                text: "Đồng ý",
+                onPress: () => {
+                  const nameTable =
+                    isPanelActive?.at(0) === TableItemList.mom
+                      ? "mom"
+                      : isPanelActive?.at(0) === TableItemList.baby
+                      ? "baby"
+                      : "other";
+
+                  updateNameOfAItemsOfShoppingMain(
+                    nameTable,
+                    isItemIdCurrent,
+                    nameRouteUserId,
+                    newName
+                  ).then((isRes) => {
+                    onRefresh();
+                    setNameItem("");
+                    if (isRes) {
+                      Toast.success("Đã đổi tên thành công");
+                    } else {
+                      Toast.fail("Đổi tên thất bại");
+                    }
+                  });
+                },
+              },
+            ]
+          );
+        }
+      },
+      backgroundColor: "#1870bc",
       color: "white",
     },
     {
-      text: "Xóa",
-      onPress: () => console.log("delete"),
+      text: <FontAwesomeIcon icon={faTrash} color="white" />,
+      onPress: () => {
+        if (isItemIdCurrent && isPanelActive) {
+          const nameTable =
+            isPanelActive?.at(0) === TableItemList.mom
+              ? "mom"
+              : isPanelActive?.at(0) === TableItemList.baby
+              ? "baby"
+              : "other";
+
+          Modal.alert("Danh mục", "Bạn muốn xóa danh mục?", [
+            {
+              text: "Thoát",
+            },
+            {
+              text: "Đồng ý",
+              onPress: () => {
+                deleteAItemsOfShoppingMain(nameTable, isItemIdCurrent, nameRouteUserId).then(
+                  (isRes) => {
+                    onRefresh();
+                    if (isRes) {
+                      Toast.success("Đã xóa thành công");
+                    } else {
+                      Toast.fail("Xóa thất bại");
+                    }
+                  }
+                );
+              },
+            },
+          ]);
+        }
+      },
       backgroundColor: "red",
       color: "white",
     },
@@ -131,7 +205,8 @@ const MainShop = ({
         <WhiteSpace />
         <Card
           style={{
-            width: windowWidth - 15,
+            width: windowWidth - 10,
+            height: windowHeight - 60,
           }}
         >
           <CardHeader
@@ -142,31 +217,20 @@ const MainShop = ({
                   justifyContent: "space-between",
                 }}
               >
-                <Text
-                  style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
-                >
-                  Quá trình chuẩn bị:
+                <Text style={{ color: "#bf6623", fontSize: 16, fontWeight: "bold" }}>
+                  <FontAwesomeIcon icon={faBasketShopping} color="#bf6623" /> Quá trình chuẩn bị:
                 </Text>
-                <Button
-                  size="small"
-                  type="ghost"
-                  onPress={() => setShowEvent(true)}
-                >
+                <Button size="small" type="ghost" onPress={() => setShowEvent(true)}>
                   <FontAwesomeIcon size={14} icon={faAdd} />
-                  <Text style={{ fontSize: 12, fontWeight: "400" }}>
-                    Thêm danh mục
-                  </Text>
+                  <Text style={{ fontSize: 12, fontWeight: "400" }}>Thêm danh mục</Text>
                 </Button>
               </View>
             }
           ></CardHeader>
           <CardBody>
             <View style={{ width: windowWidth - 20 }}>
-              <Accordion
-                activeSections={isPanelActive}
-                onChange={(value) => setPanelActive(value)}
-              >
-                <Accordion.Panel header="Chuẩn bị của mẹ" key="0">
+              <Accordion activeSections={isPanelActive} onChange={(value) => setPanelActive(value)}>
+                <Accordion.Panel header="1. Chuẩn bị của mẹ" key="0">
                   {refreshing && (
                     <SwipeActionComponent
                       nameRouteUserId={nameRouteUserId}
@@ -181,10 +245,14 @@ const MainShop = ({
                           itemId: itemId,
                         })
                       }
+                      setItemId={(itemId, itemName) => {
+                        setItemIdCurrent(itemId);
+                        setNameItem(itemName);
+                      }}
                     />
                   )}
                 </Accordion.Panel>
-                <Accordion.Panel header="Chuẩn bị của bé" key="1">
+                <Accordion.Panel header="2. Chuẩn bị của bé" key="1">
                   {refreshing && (
                     <SwipeActionComponent
                       nameRouteUserId={nameRouteUserId}
@@ -199,10 +267,14 @@ const MainShop = ({
                           itemId: itemId,
                         })
                       }
+                      setItemId={(itemId, itemName) => {
+                        setItemIdCurrent(itemId);
+                        setNameItem(itemName);
+                      }}
                     />
                   )}
                 </Accordion.Panel>
-                <Accordion.Panel header="Chuẩn bị khác" key="2">
+                <Accordion.Panel header="3. Chuẩn bị khác" key="2">
                   {refreshing && (
                     <SwipeActionComponent
                       nameRouteUserId={nameRouteUserId}
@@ -217,6 +289,10 @@ const MainShop = ({
                           itemId: itemId,
                         })
                       }
+                      setItemId={(itemId, itemName) => {
+                        setItemIdCurrent(itemId);
+                        setNameItem(itemName);
+                      }}
                     />
                   )}
                 </Accordion.Panel>
@@ -233,11 +309,7 @@ const MainShop = ({
           transparent
           animationType="fade"
           title={
-            <Text
-              style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
-            >
-              Thêm sự kiện
-            </Text>
+            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>Thêm sự kiện</Text>
           }
           footer={[
             {
@@ -265,18 +337,14 @@ const MainShop = ({
             <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
               Danh mục cần thêm:
             </Text>
-            <Radio.Group
-              onChange={(value) => setNameTableSelected(value?.target?.value)}
-            >
+            <Radio.Group onChange={(value) => setNameTableSelected(value?.target?.value)}>
               <RadioItem value={"mom"}>Danh mục của mẹ</RadioItem>
               <RadioItem value={"baby"}>Danh mục của bé</RadioItem>
               <RadioItem value={"other"}>Danh mục khác</RadioItem>
             </Radio.Group>
-            <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
-              Tên sự kiện:
-            </Text>
+            <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>Tên sự kiện:</Text>
             <InputItem
-              placeholder="Tên sự kiện"
+              placeholder="Tên danh mục"
               multiline
               textBreakStrategy="highQuality"
               onChangeText={(value) => setNameItem(value?.trim())}

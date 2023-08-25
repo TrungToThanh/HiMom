@@ -4,8 +4,8 @@ import * as SQLite from "expo-sqlite";
 import dayjs from "dayjs";
 import { nameDB } from "../database";
 
-export const createShoppingMainTable = (preName) => {
-  const nameTable = `${preName}tableShoppingMain`;
+export const createShoppingMainTable = (preName, nameRouteUserId) => {
+  const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
@@ -82,14 +82,31 @@ export const getAllItemShoppingMain = (nameRouteUserId) => {
   };
 };
 
-export const deleteAItemsOfShoppingMain = (preName, id) => {
-  const nameTable = `${preName}tableShoppingMain`;
+export const deleteAItemsOfShoppingMain = (preName, id, nameRouteUserId) => {
+  const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
   const db = SQLite.openDatabase(nameDB);
+  console.log("preName", preName, id);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
         `DELETE FROM ${nameTable} WHERE id = ?`,
         [Number(id)],
+        (txObj, resultSet) => resolve(true),
+        (txObj, error) => false
+      );
+    });
+  });
+};
+
+export const updateNameOfAItemsOfShoppingMain = (preName, id, nameRouteUserId, nameItem) => {
+  const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
+  const db = SQLite.openDatabase(nameDB);
+  console.log("preName", preName, id, nameRouteUserId, nameItem);
+  return new Promise(function (resolve) {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `UPDATE ${nameTable} SET nameItem = ? WHERE id = ?`,
+        [nameItem, Number(id)],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );

@@ -13,21 +13,21 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
+  faBasketShopping,
   faCheckSquare,
   faEye,
   faEyeSlash,
+  faHomeUser,
+  faSeedling,
+  faStore,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { getAllBabyInBabyList } from "../../../api/login/login";
 import { useRoute } from "@react-navigation/native";
 import MainShop from "../shopping/main_list_shopping";
-import ProcessBaby from "../Process/Process";
-import Account from "../Account/Account";
-import {
-  GestureHandlerRootView,
-  RefreshControl,
-  ScrollView,
-} from "react-native-gesture-handler";
+import ProcessBaby from "../process/process";
+import Account from "../account/account";
+import { GestureHandlerRootView, RefreshControl, ScrollView } from "react-native-gesture-handler";
 import LoadingData from "../../const/loading";
 
 const Home = () => {
@@ -42,12 +42,40 @@ const Home = () => {
   }, []);
 
   const { listAccountBaby } = getAllBabyInBabyList();
-  library.add(faCheckSquare, faEye, faEyeSlash, faUser);
+  library.add(faCheckSquare, faEye, faEyeSlash, faUser, faBasketShopping, faHomeUser, faSeedling);
   const tabs = [
-    { title: "Trang chủ" },
-    { title: "Quá trình" },
-    { title: "Mua sắm" },
-    { title: "Tài khoản" },
+    {
+      title: (
+        <View style={{ justifyContent: "center", alignItems: "center", alignSelf: "center" }}>
+          <FontAwesomeIcon icon={faHomeUser} />
+          <Text>Trang chủ</Text>
+        </View>
+      ),
+    },
+    {
+      title: (
+        <View style={{ justifyContent: "center", alignItems: "center", alignSelf: "center" }}>
+          <FontAwesomeIcon icon={faSeedling} color="green" />
+          <Text>Quá trình</Text>
+        </View>
+      ),
+    },
+    {
+      title: (
+        <View style={{ justifyContent: "center", alignItems: "center", alignSelf: "center" }}>
+          <FontAwesomeIcon icon={faBasketShopping} color="#e28743" />
+          <Text>Chuẩn bị</Text>
+        </View>
+      ),
+    },
+    {
+      title: (
+        <View style={{ justifyContent: "center", alignItems: "center", alignSelf: "center" }}>
+          <FontAwesomeIcon icon={faUser} color="#1870bc" />
+          <Text>Tài khoản</Text>
+        </View>
+      ),
+    },
   ];
   const RadioItem = Radio.RadioItem;
   const windowWidth = Dimensions.get("window").width;
@@ -65,31 +93,21 @@ const Home = () => {
     }, 2000);
   }, []);
 
-  if (!listAccountBaby || listAccountBaby?.length < 1 || isLoading)
-    return <LoadingData />;
+  if (!listAccountBaby || listAccountBaby?.length < 1 || isLoading) return <LoadingData />;
 
   return (
     <GestureHandlerRootView>
       <View style={{ width: windowWidth }}>
         <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         >
-          <Tabs
-            tabs={tabs}
-            tabBarPosition="bottom"
-            style={{ minHeight: windowHeight - 50 }}
-          >
+          <Tabs tabs={tabs} tabBarPosition="bottom" style={{ minHeight: windowHeight - 50 }}>
             <View style={styles.tabsStyle}>
               <Text>
                 1 <ActivityIndicator />
               </Text>
             </View>
-            <ProcessBaby
-              nameRouteUserId={nameRouteUserId}
-              listAccountBaby={listAccountBaby}
-            />
+            <ProcessBaby nameRouteUserId={nameRouteUserId} listAccountBaby={listAccountBaby} />
             {showMainList ? (
               <MainShop
                 nameRouteUserId={nameRouteUserId}

@@ -23,6 +23,7 @@ import {
   faCalendar,
   faEdit,
   faAdd,
+  faSeedling,
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -39,7 +40,7 @@ interface Props {
   nameRouteUserId?: number;
 }
 const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
-  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd);
+  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd, faSeedling);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const Step = Steps.Step;
@@ -152,18 +153,20 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 10,
       }}
     >
+      <WhiteSpace />
       <Card
         style={{
-          width: windowWidth - 15,
+          width: windowWidth - 10,
+          height: windowHeight - 60,
         }}
       >
         <CardHeader
           title={
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+              <Text style={{ color: "green", fontSize: 16, fontWeight: "bold" }}>
+                <FontAwesomeIcon icon={faSeedling} color="green" />
                 Quá trình phát triển:
               </Text>
               <Button size="small" type="ghost" onPress={() => setShowEvent(true)}>
