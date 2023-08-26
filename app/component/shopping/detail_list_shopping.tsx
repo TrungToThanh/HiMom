@@ -32,15 +32,19 @@ const DetailShopList = () => {
 
   const [isShowDetailModal, setShowDetailModal] = useState<boolean>(false);
   const [isInfo, setShowInfo] = useState(false);
+  const [isCreate, setShowDetailModalToCreate] = useState(false);
   const [showComponent, setReload] = useState<boolean>(true);
   const [itemIdCurrent, setItemIdCurrent] = useState<number>();
 
   return (
     <GestureHandlerRootView>
-      {isShowDetailModal ? (
+      {isShowDetailModal || isCreate ? (
         <DetailShopModal
+          isCreate={isCreate}
           isInfo={isInfo}
-          setShowDetailModal={() => setShowDetailModal(false)}
+          setShowDetailModal={() => {
+            setShowDetailModal(false), setShowDetailModalToCreate(false);
+          }}
           setReload={() => {
             setReload(false);
             setTimeout(() => {
@@ -57,6 +61,9 @@ const DetailShopList = () => {
           {showComponent && (
             <DetailListModal
               setShowDetailModal={() => setShowDetailModal(true)}
+              setShowDetailModalToCreate={() =>
+                setShowDetailModalToCreate(true)
+              }
               setShowInfo={() => setShowInfo(true)}
               setReload={() => {
                 setShowInfo(false);

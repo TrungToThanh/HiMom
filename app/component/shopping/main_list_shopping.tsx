@@ -36,10 +36,16 @@ import {
   insertANewItemToShoppingMain,
   updateNameOfAItemsOfShoppingMain,
 } from "../../../api/shopping/shopping_main";
-import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import {
+  FlatList,
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 import "react-native-gesture-handler";
 import SwipeActionComponent from "../../const/swipe_action_component";
 import { TableItemList } from "../../const/type";
+import CardHeaderComponent from "./sub-component/cardHeader";
+import getDimensions from "../../hook/get_dimension";
 
 interface Props {
   isShowDeleteButton?: boolean;
@@ -63,8 +69,13 @@ const MainShop = ({
     faAdd,
     faBasketShopping
   );
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
+  const {
+    windowWidth,
+    windowHeight,
+    cardHeight,
+    headerCardHeight,
+    bodyCardHeight,
+  } = getDimensions();
   const RadioItem = Radio.RadioItem;
   const navigation = useNavigation();
 
@@ -85,17 +96,19 @@ const MainShop = ({
 
   const handleAddItem = () => {
     if (isNameTableSelected && isNameItem) {
-      insertANewItemToShoppingMain(isNameTableSelected, nameRouteUserId, isNameItem).then(
-        (isRes) => {
-          onRefresh();
-          setNameItem("");
-          if (isRes) {
-            Toast.success("Đã tạo thành công!");
-          } else {
-            Toast.fail("Tạo thất bại!");
-          }
+      insertANewItemToShoppingMain(
+        isNameTableSelected,
+        nameRouteUserId,
+        isNameItem
+      ).then((isRes) => {
+        onRefresh();
+        setNameItem("");
+        if (isRes) {
+          Toast.success("Đã tạo thành công!");
+        } else {
+          Toast.fail("Tạo thất bại!");
         }
-      );
+      });
     }
   };
   const handleLeftAction = [
@@ -173,16 +186,18 @@ const MainShop = ({
             {
               text: "Đồng ý",
               onPress: () => {
-                deleteAItemsOfShoppingMain(nameTable, isItemIdCurrent, nameRouteUserId).then(
-                  (isRes) => {
-                    onRefresh();
-                    if (isRes) {
-                      Toast.success("Đã xóa thành công");
-                    } else {
-                      Toast.fail("Xóa thất bại");
-                    }
+                deleteAItemsOfShoppingMain(
+                  nameTable,
+                  isItemIdCurrent,
+                  nameRouteUserId
+                ).then((isRes) => {
+                  onRefresh();
+                  if (isRes) {
+                    Toast.success("Đã xóa thành công");
+                  } else {
+                    Toast.fail("Xóa thất bại");
                   }
-                );
+                });
               },
             },
           ]);
@@ -202,99 +217,111 @@ const MainShop = ({
           alignItems: "center",
         }}
       >
-        <WhiteSpace />
         <Card
           style={{
             width: windowWidth - 10,
-            height: windowHeight - 60,
+            height: cardHeight,
           }}
         >
           <CardHeader
             title={
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={{ color: "#bf6623", fontSize: 16, fontWeight: "bold" }}>
-                  <FontAwesomeIcon icon={faBasketShopping} color="#bf6623" /> Quá trình chuẩn bị:
-                </Text>
-                <Button size="small" type="ghost" onPress={() => setShowEvent(true)}>
-                  <FontAwesomeIcon size={14} icon={faAdd} />
-                  <Text style={{ fontSize: 12, fontWeight: "400" }}>Thêm danh mục</Text>
-                </Button>
-              </View>
+              <CardHeaderComponent
+                iconName={faAdd}
+                nameHeader="Quá trình chuẩn bị"
+                textButton="Thêm danh mục"
+                setShowDetailModal={() => setShowEvent(true)}
+              />
             }
           ></CardHeader>
           <CardBody>
-            <View style={{ width: windowWidth - 20 }}>
-              <Accordion activeSections={isPanelActive} onChange={(value) => setPanelActive(value)}>
+            <View style={{ width: windowWidth - 10 }}>
+              <Accordion
+                activeSections={isPanelActive}
+                onChange={(value) => setPanelActive(value)}
+              >
                 <Accordion.Panel header="1. Chuẩn bị của mẹ" key="0">
-                  {refreshing && (
-                    <SwipeActionComponent
-                      nameRouteUserId={nameRouteUserId}
-                      tableItemList={TableItemList.mom}
-                      handleLeftAction={handleLeftAction}
-                      setIsLoading={() => onRefresh()}
-                      handleOnClick={(itemId) =>
-                        // @ts-ignore
-                        navigation.navigate("DetailShopList", {
-                          userId: Number(nameRouteUserId),
-                          typeTable: TableItemList.mom,
-                          itemId: itemId,
-                        })
-                      }
-                      setItemId={(itemId, itemName) => {
-                        setItemIdCurrent(itemId);
-                        setNameItem(itemName);
-                      }}
-                    />
-                  )}
+                  <ScrollView
+                    style={{
+                      maxHeight: bodyCardHeight - 60,
+                    }}
+                  >
+                    {refreshing && (
+                      <SwipeActionComponent
+                        nameRouteUserId={nameRouteUserId}
+                        tableItemList={TableItemList.mom}
+                        handleLeftAction={handleLeftAction}
+                        setIsLoading={() => onRefresh()}
+                        handleOnClick={(itemId) =>
+                          // @ts-ignore
+                          navigation.navigate("DetailShopList", {
+                            userId: Number(nameRouteUserId),
+                            typeTable: TableItemList.mom,
+                            itemId: itemId,
+                          })
+                        }
+                        setItemId={(itemId, itemName) => {
+                          setItemIdCurrent(itemId);
+                          setNameItem(itemName);
+                        }}
+                      />
+                    )}
+                  </ScrollView>
                 </Accordion.Panel>
                 <Accordion.Panel header="2. Chuẩn bị của bé" key="1">
-                  {refreshing && (
-                    <SwipeActionComponent
-                      nameRouteUserId={nameRouteUserId}
-                      tableItemList={TableItemList.baby}
-                      handleLeftAction={handleLeftAction}
-                      setIsLoading={() => onRefresh()}
-                      handleOnClick={(itemId) =>
-                        // @ts-ignore
-                        navigation.navigate("DetailShopList", {
-                          userId: Number(nameRouteUserId),
-                          typeTable: TableItemList.baby,
-                          itemId: itemId,
-                        })
-                      }
-                      setItemId={(itemId, itemName) => {
-                        setItemIdCurrent(itemId);
-                        setNameItem(itemName);
-                      }}
-                    />
-                  )}
+                  <ScrollView
+                    style={{
+                      maxHeight: bodyCardHeight - 60,
+                    }}
+                  >
+                    {refreshing && (
+                      <SwipeActionComponent
+                        nameRouteUserId={nameRouteUserId}
+                        tableItemList={TableItemList.baby}
+                        handleLeftAction={handleLeftAction}
+                        setIsLoading={() => onRefresh()}
+                        handleOnClick={(itemId) =>
+                          // @ts-ignore
+                          navigation.navigate("DetailShopList", {
+                            userId: Number(nameRouteUserId),
+                            typeTable: TableItemList.baby,
+                            itemId: itemId,
+                          })
+                        }
+                        setItemId={(itemId, itemName) => {
+                          setItemIdCurrent(itemId);
+                          setNameItem(itemName);
+                        }}
+                      />
+                    )}
+                  </ScrollView>
                 </Accordion.Panel>
                 <Accordion.Panel header="3. Chuẩn bị khác" key="2">
-                  {refreshing && (
-                    <SwipeActionComponent
-                      nameRouteUserId={nameRouteUserId}
-                      tableItemList={TableItemList.other}
-                      handleLeftAction={handleLeftAction}
-                      setIsLoading={() => onRefresh()}
-                      handleOnClick={(itemId) =>
-                        // @ts-ignore
-                        navigation.navigate("DetailShopList", {
-                          userId: Number(nameRouteUserId),
-                          typeTable: TableItemList.other,
-                          itemId: itemId,
-                        })
-                      }
-                      setItemId={(itemId, itemName) => {
-                        setItemIdCurrent(itemId);
-                        setNameItem(itemName);
-                      }}
-                    />
-                  )}
+                  <ScrollView
+                    style={{
+                      maxHeight: bodyCardHeight - 60,
+                    }}
+                  >
+                    {refreshing && (
+                      <SwipeActionComponent
+                        nameRouteUserId={nameRouteUserId}
+                        tableItemList={TableItemList.other}
+                        handleLeftAction={handleLeftAction}
+                        setIsLoading={() => onRefresh()}
+                        handleOnClick={(itemId) =>
+                          // @ts-ignore
+                          navigation.navigate("DetailShopList", {
+                            userId: Number(nameRouteUserId),
+                            typeTable: TableItemList.other,
+                            itemId: itemId,
+                          })
+                        }
+                        setItemId={(itemId, itemName) => {
+                          setItemIdCurrent(itemId);
+                          setNameItem(itemName);
+                        }}
+                      />
+                    )}
+                  </ScrollView>
                 </Accordion.Panel>
               </Accordion>
             </View>
@@ -309,7 +336,11 @@ const MainShop = ({
           transparent
           animationType="fade"
           title={
-            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>Thêm sự kiện</Text>
+            <Text
+              style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
+            >
+              Thêm sự kiện
+            </Text>
           }
           footer={[
             {
@@ -337,12 +368,16 @@ const MainShop = ({
             <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
               Danh mục cần thêm:
             </Text>
-            <Radio.Group onChange={(value) => setNameTableSelected(value?.target?.value)}>
+            <Radio.Group
+              onChange={(value) => setNameTableSelected(value?.target?.value)}
+            >
               <RadioItem value={"mom"}>Danh mục của mẹ</RadioItem>
               <RadioItem value={"baby"}>Danh mục của bé</RadioItem>
               <RadioItem value={"other"}>Danh mục khác</RadioItem>
             </Radio.Group>
-            <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>Tên sự kiện:</Text>
+            <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
+              Tên sự kiện:
+            </Text>
             <InputItem
               placeholder="Tên danh mục"
               multiline

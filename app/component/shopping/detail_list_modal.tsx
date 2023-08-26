@@ -10,23 +10,19 @@ import {
   SwipeAction,
   List,
   Toast,
+  Grid,
 } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
-  faCheckSquare,
   faCoffee,
   faTrash,
   faUser,
   faCalendar,
   faEdit,
   faAdd,
-  faCheck,
   faSquare,
   faCircleCheck,
-  faCircle,
-  faCircleStop,
-  faCircleXmark,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -35,7 +31,11 @@ import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import { useNavigation } from "@react-navigation/native";
 import CardBody from "@ant-design/react-native/lib/card/CardBody";
 
-import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import {
+  FlatList,
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 import "react-native-gesture-handler";
 import SwipeActionComponent from "../../const/swipe_action_component";
 import { useRoute } from "@react-navigation/native";
@@ -46,6 +46,7 @@ import {
 } from "../../../api/shopping/shopping_detail";
 import EmptyData from "../../const/no_data";
 import { updateGoodOfAItemsOfShoppingMain } from "../../../api/shopping/shopping_main";
+import CardHeaderComponent from "./sub-component/cardHeader";
 
 interface Props {
   isInfo?: boolean;
@@ -56,6 +57,7 @@ interface Props {
   setReload: () => void;
   setItemIdCurrent: (value) => void;
   setShowInfo: () => void;
+  setShowDetailModalToCreate: () => void;
 }
 
 const DetailListModal = ({
@@ -66,8 +68,18 @@ const DetailListModal = ({
   setReload,
   setItemIdCurrent,
   setShowInfo,
+  setShowDetailModalToCreate,
 }: Props) => {
-  library.add(faCircleCheck, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd, faSquare);
+  library.add(
+    faCircleCheck,
+    faCoffee,
+    faTrash,
+    faUser,
+    faCalendar,
+    faEdit,
+    faAdd,
+    faSquare
+  );
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const RadioItem = Radio.RadioItem;
@@ -153,26 +165,41 @@ const DetailListModal = ({
         >
           <CardHeader
             title={
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
-                  Danh mục chi tiết:
-                </Text>
-                <Button size="small" type="ghost" onPress={() => setShowDetailModal()}>
-                  <FontAwesomeIcon size={14} icon={faAdd} />
-                  <Text style={{ fontSize: 12, fontWeight: "400" }}>Thêm hàng hóa</Text>
-                </Button>
-              </View>
+              <CardHeaderComponent
+                iconName={faAdd}
+                textButton="Thêm hàng hóa"
+                nameHeader=" Danh mục chi tiết:"
+                setShowDetailModal={() => setShowDetailModalToCreate()}
+              />
             }
           ></CardHeader>
           <CardBody>
             <View style={{ width: windowWidth - 10 }}>
               <FlatList
-                data={listAllItems && listAllItems?.length > 0 ? listAllItems : []}
+                ListHeaderComponent={
+                  <List.Item
+                    extra={
+                      <Text style={{ fontSize: 14, fontWeight: "500" }}>
+                        Đã mua
+                      </Text>
+                    }
+                  >
+                    <Text style={{ fontSize: 14, fontWeight: "500" }}>
+                      Danh mục hàng hóa
+                    </Text>
+                  </List.Item>
+                }
+                data={
+                  listAllItems && listAllItems?.length > 0 ? listAllItems : []
+                }
                 renderItem={({ item }) => (
                   <SwipeAction
                     left={handleLeftAction}
                     onSwipeableOpen={() => setItemId(item.id)}
-                    containerStyle={{ backgroundColor: "red", paddingLeft: 5 }}
+                    containerStyle={{
+                      backgroundColor: "red",
+                      paddingLeft: 5,
+                    }}
                     childrenContainerStyle={{
                       backgroundColor: "#f0f1f3",
                       borderBottomColor: "#dddddd",
@@ -183,7 +210,9 @@ const DetailListModal = ({
                     <Item
                       arrow="horizontal"
                       onPress={() => {
-                        setItemIdCurrent(item.id), setShowInfo(), setShowDetailModal();
+                        setItemIdCurrent(item.id),
+                          setShowInfo(),
+                          setShowDetailModal();
                       }}
                       style={{
                         height: 40,

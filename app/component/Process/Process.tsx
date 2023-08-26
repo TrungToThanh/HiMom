@@ -19,6 +19,7 @@ import {
   Modal,
   TextareaItem,
   ActivityIndicator,
+  Tag,
 } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -45,12 +46,22 @@ import {
   insertANewEvent,
 } from "../../../api/eventProcess/event";
 import { ProcessBabyBase } from "../../const/type";
+import CardHeaderComponent from "../shopping/sub-component/cardHeader";
 
 interface Props {
   listAccountBaby?: any;
   nameRouteUserId?: number;
+  isInfoComponent?: boolean;
+  diffDay?: any;
+  isDiffFirstDay?: any;
 }
-const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
+const ProcessBaby = ({
+  listAccountBaby,
+  nameRouteUserId,
+  isInfoComponent = false,
+  diffDay,
+  isDiffFirstDay,
+}: Props) => {
   library.add(
     faCheckSquare,
     faCoffee,
@@ -65,7 +76,6 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
   const windowHeight = Dimensions.get("window").height;
   const Step = Steps.Step;
   const [isLoading, setIsLoading] = useState(false);
-
   //Get value date
   const now = dayjs().format("DD-MM-YYYYY");
 
@@ -158,20 +168,62 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
     });
   };
 
-  // if (isLoading)
-  //   return (
-  //     <View
-  //       style={{
-  //         display: "flex",
-  //         justifyContent: "center",
-  //         alignItems: "center",
-  //       }}
-  //     >
-  //       <Text>
-  //         Loading <ActivityIndicator />
-  //       </Text>
-  //     </View>
-  //   );
+  if (isInfoComponent) {
+    return (
+      <View
+        style={{
+          width: windowWidth,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginLeft: -20,
+        }}
+      >
+        <Steps size="small" direction="horizontal">
+          <Step
+            key={0}
+            title={<View></View>}
+            description={
+              <Text>
+                <Button size="small" type="ghost">
+                  <Text>{isFirstDay}</Text>
+                </Button>
+              </Text>
+            }
+            status={"finish"}
+          />
+          <Step
+            key={1111}
+            title={
+              <View>
+                <Text> </Text>
+              </View>
+            }
+            description={
+              <Text>
+                <Button size="small" type="ghost">
+                  <Text>{isDiffFirstDay} ngày</Text>
+                </Button>
+              </Text>
+            }
+            status={"wait"}
+          />
+          <Step
+            key={22222}
+            title={<View></View>}
+            description={
+              <Text>
+                <Button size="small" type="ghost">
+                  <Text>Còn {diffDay} ngày</Text>
+                </Button>
+              </Text>
+            }
+            status={"wait"}
+          />
+        </Steps>
+      </View>
+    );
+  }
 
   return (
     <View
@@ -374,19 +426,16 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
           <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
             Mô tả sự kiện:
           </Text>
-          <TextareaItem
+          <InputItem
             placeholder="Mô tả sự kiện"
-            autoHeight
-            rows={10}
+            multiline
+            onChangeText={(value) => setDesEvent(value?.trim())}
             style={{
-              marginLeft: 15,
-              paddingLeft: -10,
               borderBottomWidth: 1,
               borderColor: "#1870bc",
-              marginRight: 65,
+              marginRight: 50,
             }}
-            onChangeText={(value) => setDesEvent(value?.trim())}
-          />
+          ></InputItem>
           <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
             Ghi chú:
           </Text>

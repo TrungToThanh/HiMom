@@ -1,22 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  Dimensions,
-  StatusBar,
-  useWindowDimensions,
-} from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import {
   Button,
   Card,
   WhiteSpace,
-  Accordion,
   Radio,
   InputItem,
   Toast,
-  List,
   Modal,
   Grid,
 } from "@ant-design/react-native";
@@ -41,16 +31,17 @@ import {
   GestureHandlerRootView,
   ScrollView,
 } from "react-native-gesture-handler";
-import "react-native-gesture-handler";
+
 import {
   getAItemShoppingDetail,
   insertANewItemToShoppingDetail,
   updateAItemsOfShoppingDetail,
 } from "../../../api/shopping/shopping_detail";
 import * as ImagePicker from "expo-image-picker";
-import CardFooter from "@ant-design/react-native/lib/card/CardFooter";
-import { ScreenStackHeaderSearchBarView } from "react-native-screens";
-import { useHeaderHeight } from "@react-navigation/elements";
+
+import getDimensions from "../../hook/get_dimension";
+import CardHeaderComponent from "./sub-component/cardHeader";
+import CardFooterComponent from "./sub-component/cardFooter";
 
 interface Props {
   setShowDetailModal: () => void;
@@ -60,6 +51,7 @@ interface Props {
   nameRouteItemId?: number;
   itemIdCurrent?: number;
   setReload: () => void;
+  isCreate?: boolean;
 }
 const DetailShopModal = ({
   setShowDetailModal,
@@ -69,6 +61,7 @@ const DetailShopModal = ({
   nameRouteUserId,
   nameRouteItemId,
   setReload,
+  isCreate,
 }: Props) => {
   library.add(
     faCheckSquare,
@@ -80,19 +73,15 @@ const DetailShopModal = ({
     faAdd,
     faClose
   );
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
-  const statusBarHeight = StatusBar.currentHeight;
-  const headerHeight = useHeaderHeight();
-  const cardHeight = windowHeight - statusBarHeight - headerHeight;
-  const headerCardHeight = 30;
-  const footerCardHeight = 30;
-  const bodyCardHeight =
-    windowHeight - statusBarHeight - headerCardHeight - footerCardHeight - 100;
+  const {
+    windowWidth,
+    windowHeight,
+    cardHeight,
+    headerCardHeight,
+    bodyCardHeight,
+  } = getDimensions();
 
-  console.log(statusBarHeight, headerHeight);
-  const RadioItem = Radio.RadioItem;
-
+  const [isError, setIsError] = useState(false);
   const [isNameItem, setNameItem] = useState("");
   const [isDescriptionItem, setDescriptionItem] = useState("");
   const [isBuy, setBuyItem] = useState("");
@@ -119,61 +108,66 @@ const DetailShopModal = ({
       const listImage = listAItems?.at(0)?.picture;
       setImage(JSON?.parse(listImage));
     }
-    if (!isInfo) {
+    if (isCreate) {
       setNameItem("");
       setDescriptionItem("");
       setBuyItem("");
       setMoneyItem("0");
       setNote("");
     }
-  }, [isInfo, listAItems, itemIdCurrent]);
+  }, [isInfo, listAItems, itemIdCurrent, isCreate]);
 
   const handleSave = () => {
-    if (
-      String(isNameItem) !== "" &&
-      String(isDescriptionItem) !== "" &&
-      String(isBuy) !== "" &&
-      String(isMoney) !== ""
-    ) {
-      isInfo
-        ? updateAItemsOfShoppingDetail(
-            nameRouteTypeTable,
-            nameRouteUserId,
-            nameRouteItemId,
-            isNameItem,
-            isDescriptionItem,
-            isBuy,
-            isMoney,
-            isNote,
-            image,
-            itemIdCurrent
-          ).then((isRes) => {
-            setReload();
+    if (isError) {
+      Toast.fail("Phải nhập thông tin hàng hóa!");
+      return;
+    } else {
+      if (
+        String(isNameItem) !== "" &&
+        String(isDescriptionItem) !== "" &&
+        String(isBuy) !== "" &&
+        String(isMoney) !== ""
+      ) {
+        isInfo
+          ? updateAItemsOfShoppingDetail(
+              nameRouteTypeTable,
+              nameRouteUserId,
+              nameRouteItemId,
+              isNameItem,
+              isDescriptionItem,
+              isBuy,
+              isMoney,
+              isNote,
+              image,
+              itemIdCurrent
+            ).then((isRes) => {
+              setReload();
 
-            if (isRes) {
-              Toast.success("Cập nhập thành công!");
-            } else {
-              Toast.fail("Thất bại!");
-            }
-          })
-        : insertANewItemToShoppingDetail(
-            nameRouteTypeTable,
-            nameRouteUserId,
-            nameRouteItemId,
-            isNameItem,
-            isDescriptionItem,
-            isBuy,
-            isMoney,
-            isNote,
-            image
-          ).then((isRes) => {
-            setReload();
-            if (isRes) {
-              Toast.success("Đã tạo mới thành công!");
-            } else {
-              Toast.fail("Thất bại!");
-            }
-          });
+              if (isRes) {
+                Toast.success("Cập nhập thành công!");
+              } else {
+                Toast.fail("Thất bại!");
+              }
+            })
+          : insertANewItemToShoppingDetail(
+              nameRouteTypeTable,
+              nameRouteUserId,
+              nameRouteItemId,
+              isNameItem,
+              isDescriptionItem,
+              isBuy,
+              isMoney,
+              isNote,
+              image
+            ).then((isRes) => {
+              setReload();
+              if (isRes) {
+                Toast.success("Đã tạo mới thành công!");
+              } else {
+                Toast.fail("Thất bại!");
+              }
+            });
+      }
     }
   };
 
@@ -211,28 +205,12 @@ const DetailShopModal = ({
         >
           <CardHeader
             title={
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  height: headerCardHeight,
-                }}
-              >
-                <Text
-                  style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
-                >
-                  Danh mục chi tiết:
-                </Text>
-                <Button
-                  size="small"
-                  type="ghost"
-                  onPress={() => setShowDetailModal()}
-                >
-                  <FontAwesomeIcon size={14} icon={faClose} />
-                  <Text>Đóng</Text>
-                </Button>
-              </View>
+              <CardHeaderComponent
+                iconName={faClose}
+                textButton="Đóng"
+                nameHeader=" Danh mục chi tiết:"
+                setShowDetailModal={() => setShowDetailModal()}
+              />
             }
           ></CardHeader>
           <CardBody>
@@ -247,10 +225,22 @@ const DetailShopModal = ({
                 <InputItem
                   defaultValue={isNameItem}
                   clear
+                  error={isError}
                   maxLength={50}
                   placeholder="Tên hàng hóa"
                   style={styles.input}
-                  onChangeText={(value) => setNameItem(value)}
+                  onChangeText={(value) => {
+                    const inValid = new RegExp("^\\s+$");
+                    if (inValid.test(value)) console.log("1212 ");
+                    if (inValid.test(value) || String(value) === "") {
+                      setNameItem("");
+                      setIsError(true);
+                    } else {
+                      setIsError(false);
+                      setNameItem(value);
+                    }
+                  }}
+                  onErrorClick={() => Toast.info("Phải nhập tên hàng hóa!")}
                 ></InputItem>
                 <Text style={styles.titleText}>Mô tả hàng hóa:</Text>
                 <InputItem
@@ -341,7 +331,7 @@ const DetailShopModal = ({
                   carouselProps={{
                     style: {
                       width: "100%",
-                      height: 320,
+                      height: 300,
                     },
                   }}
                   renderItem={(item) => (
@@ -401,24 +391,11 @@ const DetailShopModal = ({
           </CardBody>
           <Card.Footer
             content={
-              <View
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  type="primary"
-                  onPress={() => handleSave()}
-                  style={{ width: 100 }}
-                >
-                  <Text
-                    style={{ fontSize: 16, fontWeight: "600", color: "white" }}
-                  >
-                    <FontAwesomeIcon size={16} icon={faAdd} color="white" /> Lưu
-                  </Text>
-                </Button>
-              </View>
+              <CardFooterComponent
+                iconName={faAdd}
+                textButton="Lưu"
+                handleSave={() => handleSave()}
+              />
             }
           />
         </Card>

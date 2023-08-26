@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Dimensions, Image, ScrollView, Text, RefreshControl } from "react-native";
-import { Badge, List, Result, SwipeAction, View } from "@ant-design/react-native";
+import { Text } from "react-native";
+import { Badge, List, SwipeAction, View } from "@ant-design/react-native";
 import { FlatList } from "react-native-gesture-handler";
 import EmptyData from "./no_data";
 import { getAllItemShoppingMain } from "../../api/shopping/shopping_main";
@@ -16,11 +16,7 @@ import {
   faCalendar,
   faEdit,
   faAdd,
-  faClose,
-  faA,
-  faArrowAltCircleRight,
   faArrowRight,
-  faChevronCircleRight,
   faChevronRight,
   faCartPlus,
   faCartShopping,
@@ -54,7 +50,6 @@ const SwipeActionComponent = ({
     faCartPlus,
     faCartShopping
   );
-  const windowWidth = Dimensions.get("window").width;
   const Item = List.Item;
 
   const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } =
@@ -95,8 +90,14 @@ const SwipeActionComponent = ({
                 <Badge
                   text={
                     <Text>
-                      <FontAwesomeIcon icon={faCartShopping} color="white" size={12} />
-                      {` ${+item.numberIsBuyGoods || 0}/${+item.numberGoods || 0}`}
+                      <FontAwesomeIcon
+                        icon={faCartShopping}
+                        color="white"
+                        size={12}
+                      />
+                      {` ${+item.numberIsBuyGoods || 0}/${
+                        +item.numberGoods || 0
+                      }`}
                     </Text>
                   }
                   size="small"
