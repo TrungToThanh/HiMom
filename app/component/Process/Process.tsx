@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, Image, StyleSheet, Dimensions, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import {
   Button,
   InputItem,
@@ -32,7 +39,11 @@ import dayjs from "dayjs";
 import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import { useNavigation } from "@react-navigation/native";
 import CardBody from "@ant-design/react-native/lib/card/CardBody";
-import { deleteAEvent, getAllEvent, insertANewEvent } from "../../../api/eventProcess/event";
+import {
+  deleteAEvent,
+  getAllEvent,
+  insertANewEvent,
+} from "../../../api/eventProcess/event";
 import { ProcessBabyBase } from "../../const/type";
 
 interface Props {
@@ -40,7 +51,16 @@ interface Props {
   nameRouteUserId?: number;
 }
 const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
-  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd, faSeedling);
+  library.add(
+    faCheckSquare,
+    faCoffee,
+    faTrash,
+    faUser,
+    faCalendar,
+    faEdit,
+    faAdd,
+    faSeedling
+  );
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const Step = Steps.Step;
@@ -52,11 +72,15 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
   const isFirstDay = useMemo(() => {
     let dateObject = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
       var dateParts = idCurrent?.birthday.split("-");
 
       // month is 0-based, that's why we need dataParts[1] - 1
-      dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
+      dateObject = dayjs(
+        new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+      )
         .subtract(280, "days")
         .format("DD-MM-YYYY");
     }
@@ -66,7 +90,9 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
   const isBirthday = useMemo(() => {
     let valueReturn = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
 
       if (idCurrent) valueReturn = String(idCurrent?.birthday);
     }
@@ -85,7 +111,9 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
 
   const listEventCook = useMemo(() => {
     const listEventCurrent = listEvent?.length > 0 ? listEvent : [];
-    const isHasFirstDay = listEventCurrent?.find((item) => Number(item.id) === -1);
+    const isHasFirstDay = listEventCurrent?.find(
+      (item) => Number(item.id) === -1
+    );
     if (!isHasFirstDay)
       listEventCurrent?.unshift({
         id: -1,
@@ -93,7 +121,9 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
         description: "Nhịp đập đầu tiên!",
         status: "finish",
       });
-    const isHasBirthDay = listEventCurrent?.find((item) => Number(item.id) === 1000);
+    const isHasBirthDay = listEventCurrent?.find(
+      (item) => Number(item.id) === 1000
+    );
     if (!isHasBirthDay)
       listEventCurrent?.push(
         {
@@ -160,14 +190,24 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
       >
         <CardHeader
           title={
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <Text style={{ color: "green", fontSize: 16, fontWeight: "bold" }}>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text
+                style={{ color: "green", fontSize: 16, fontWeight: "bold" }}
+              >
                 <FontAwesomeIcon icon={faSeedling} color="green" />
                 Quá trình phát triển:
               </Text>
-              <Button size="small" type="ghost" onPress={() => setShowEvent(true)}>
+              <Button
+                size="small"
+                type="ghost"
+                onPress={() => setShowEvent(true)}
+              >
                 <FontAwesomeIcon size={14} icon={faAdd} />
-                <Text style={{ fontSize: 12, fontWeight: "400" }}>Thêm sự kiện</Text>
+                <Text style={{ fontSize: 12, fontWeight: "400" }}>
+                  Thêm sự kiện
+                </Text>
               </Button>
             </View>
           }
@@ -194,40 +234,48 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
                                 width: 0.8 * windowWidth,
                               }}
                             >
-                              <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                              <Text
+                                style={{ fontSize: 15, fontWeight: "bold" }}
+                              >
                                 {item?.event}
                               </Text>
-                              {+item.id !== -1 && +item.id !== 1000 && +item.id !== 1001 && (
-                                <Button
-                                  type="ghost"
-                                  size="small"
-                                  onPress={() => {
-                                    Modal.alert(
-                                      "Xóa sự kiện",
-                                      "Bạn có thật sự muốn xóa sự kiện này?",
-                                      [
-                                        {
-                                          text: "Thoát",
-                                          style: "cancel",
-                                        },
-                                        {
-                                          text: "Xóa",
-                                          onPress: () =>
-                                            deleteAEvent(item.id).then((isRes) => {
-                                              if (isRes) {
-                                                Toast.success("Xóa thành công!");
-                                              } else {
-                                                Toast.fail("Xóa thất bại!");
-                                              }
-                                            }),
-                                        },
-                                      ]
-                                    );
-                                  }}
-                                >
-                                  Xóa
-                                </Button>
-                              )}
+                              {+item.id !== -1 &&
+                                +item.id !== 1000 &&
+                                +item.id !== 1001 && (
+                                  <Button
+                                    type="ghost"
+                                    size="small"
+                                    onPress={() => {
+                                      Modal.alert(
+                                        "Xóa sự kiện",
+                                        "Bạn có thật sự muốn xóa sự kiện này?",
+                                        [
+                                          {
+                                            text: "Thoát",
+                                            style: "cancel",
+                                          },
+                                          {
+                                            text: "Xóa",
+                                            onPress: () =>
+                                              deleteAEvent(item.id).then(
+                                                (isRes) => {
+                                                  if (isRes) {
+                                                    Toast.success(
+                                                      "Xóa thành công!"
+                                                    );
+                                                  } else {
+                                                    Toast.fail("Xóa thất bại!");
+                                                  }
+                                                }
+                                              ),
+                                          },
+                                        ]
+                                      );
+                                    }}
+                                  >
+                                    Xóa
+                                  </Button>
+                                )}
                             </View>
                           }
                           description={item?.description}
@@ -250,7 +298,9 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
         transparent
         animationType="fade"
         title={
-          <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>Thêm sự kiện</Text>
+          <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+            Thêm sự kiện
+          </Text>
         }
         footer={[
           {
@@ -275,13 +325,19 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
             marginTop: 10,
           }}
         >
-          <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>Tên sự kiện:</Text>
+          <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
+            Tên sự kiện:
+          </Text>
           <InputItem
             placeholder="Tên sự kiện"
             multiline
             textBreakStrategy="highQuality"
             onChangeText={(value) => setNameEvent(value?.trim())}
-            style={{ borderBottomWidth: 1, borderColor: "#1870bc", marginRight: 50 }}
+            style={{
+              borderBottomWidth: 1,
+              borderColor: "#1870bc",
+              marginRight: 50,
+            }}
           ></InputItem>
           <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
             Ngày xảy ra sự kiện:
@@ -292,7 +348,10 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
             value={dateEvent}
             style={{ borderBottomWidth: 1, borderColor: "#1870bc" }}
             extra={
-              <Button onPress={() => setIsShowDatePicker(true)} style={{ borderColor: "white" }}>
+              <Button
+                onPress={() => setIsShowDatePicker(true)}
+                style={{ borderColor: "white" }}
+              >
                 <FontAwesomeIcon icon={["fas", "calendar"]} />
               </Button>
             }
@@ -308,9 +367,13 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
             dismissText="Thoát"
             onOk={() => setIsShowDatePicker(false)}
             onDismiss={() => setIsShowDatePicker(false)}
-            onChange={(value) => setDateEvent(dayjs(value).format("DD-MM-YYYY"))}
+            onChange={(value) =>
+              setDateEvent(dayjs(value).format("DD-MM-YYYY"))
+            }
           ></DatePicker>
-          <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>Mô tả sự kiện:</Text>
+          <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
+            Mô tả sự kiện:
+          </Text>
           <TextareaItem
             placeholder="Mô tả sự kiện"
             autoHeight
@@ -324,12 +387,18 @@ const ProcessBaby = ({ listAccountBaby, nameRouteUserId }: Props) => {
             }}
             onChangeText={(value) => setDesEvent(value?.trim())}
           />
-          <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>Ghi chú:</Text>
+          <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
+            Ghi chú:
+          </Text>
           <InputItem
             placeholder="Ghi chú"
             multiline
             onChangeText={(value) => setNoteEvent(value?.trim())}
-            style={{ borderBottomWidth: 1, borderColor: "#1870bc", marginRight: 50 }}
+            style={{
+              borderBottomWidth: 1,
+              borderColor: "#1870bc",
+              marginRight: 50,
+            }}
           ></InputItem>
         </View>
       </Modal>

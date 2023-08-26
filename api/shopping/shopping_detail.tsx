@@ -13,8 +13,10 @@ export const insertANewItemToShoppingDetail = (
   isDescriptionItem,
   isBuy,
   isMoney,
-  isNote
+  isNote,
+  image
 ) => {
+  const listImage = image && image?.length > 0 ? JSON.stringify(image) : "";
   const preName =
     nameRouteTypeTable === TableItemList.mom
       ? "mom"
@@ -31,7 +33,7 @@ export const insertANewItemToShoppingDetail = (
       );
       tx.executeSql(
         `INSERT INTO ${nameTable} (nameItem, description, buy, money, note, picture) values (?, ?, ?, ?, ?, ?)`,
-        [nameItem, isDescriptionItem, isBuy, isMoney, isNote, ""],
+        [nameItem, isDescriptionItem, isBuy, isMoney, isNote, listImage],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );
@@ -39,7 +41,11 @@ export const insertANewItemToShoppingDetail = (
   });
 };
 
-export const getAllItemShoppingDetail = (nameRouteTypeTable, nameRouteUserId, nameRouteItemId) => {
+export const getAllItemShoppingDetail = (
+  nameRouteTypeTable,
+  nameRouteUserId,
+  nameRouteItemId
+) => {
   const [db, setDb] = useState(SQLite.openDatabase(nameDB));
 
   const preName =
@@ -158,8 +164,10 @@ export const updateAItemsOfShoppingDetail = (
   isBuy,
   isMoney,
   isNote,
+  image,
   id
 ) => {
+  const listImage = image && image?.length > 0 ? JSON.stringify(image) : "";
   const preName =
     nameRouteTypeTable === TableItemList.mom
       ? "mom"
@@ -174,7 +182,7 @@ export const updateAItemsOfShoppingDetail = (
     db.transaction((tx) => {
       tx.executeSql(
         `UPDATE ${nameTable} SET nameItem = ?, description = ?, buy = ?, money =?, note = ?, picture = ? WHERE id = ?`,
-        [nameItem, isDescriptionItem, isBuy, isMoney, isNote, "", id],
+        [nameItem, isDescriptionItem, isBuy, isMoney, isNote, listImage, id],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );
