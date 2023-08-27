@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Dimensions,
   ScrollView,
+  ImageBackground,
 } from "react-native";
 import {
   Button,
@@ -17,9 +18,6 @@ import {
   WingBlank,
   Steps,
   Modal,
-  TextareaItem,
-  ActivityIndicator,
-  Tag,
 } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -32,6 +30,9 @@ import {
   faEdit,
   faAdd,
   faSeedling,
+  faCheck,
+  faCircle,
+  faHandsClapping,
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -95,7 +96,7 @@ const ProcessBaby = ({
         .format("DD-MM-YYYY");
     }
     return dateObject;
-  }, [listAccountBaby]);
+  }, [listAccountBaby, isLoading]);
 
   const isBirthday = useMemo(() => {
     let valueReturn = "";
@@ -107,7 +108,7 @@ const ProcessBaby = ({
       if (idCurrent) valueReturn = String(idCurrent?.birthday);
     }
     return valueReturn;
-  }, [listAccountBaby, nameRouteUserId]);
+  }, [listAccountBaby, nameRouteUserId, isLoading]);
 
   //Modal Add Event
   const [isShowEvent, setShowEvent] = useState<boolean>(false);
@@ -152,7 +153,7 @@ const ProcessBaby = ({
 
     const newList = new Set(listEventCurrent);
     return Array.from(newList);
-  }, [listEvent]);
+  }, [listEvent, isLoading]);
 
   const handleAddEvent = () => {
     insertANewEvent(nameEvent, dateEvent, desEvent, noteEvent).then((isRes) => {
@@ -182,7 +183,11 @@ const ProcessBaby = ({
         <Steps size="small" direction="horizontal">
           <Step
             key={0}
-            title={<View></View>}
+            title={
+              <View>
+                <Text>Xuất phát:</Text>
+              </View>
+            }
             description={
               <Text>
                 <Button size="small" type="ghost">
@@ -191,46 +196,72 @@ const ProcessBaby = ({
               </Text>
             }
             status={"finish"}
+            renderIcon={() => (
+              <FontAwesomeIcon icon={faCheck} size={14} color="#1870bc" />
+            )}
           />
           <Step
             key={1111}
             title={
               <View>
-                <Text> </Text>
+                <WhiteSpace />
+                <Text>Cùng nhau:</Text>
               </View>
             }
             description={
               <Text>
                 <Button size="small" type="ghost">
-                  <Text>{isDiffFirstDay} ngày</Text>
+                  <Text style={{ color: "green", fontWeight: "600" }}>
+                    {isDiffFirstDay}
+                  </Text>
+                  <Text> ngày</Text>
                 </Button>
               </Text>
             }
             status={"wait"}
+            renderIcon={() => (
+              <FontAwesomeIcon icon={faSeedling} color="green" size={14} />
+            )}
           />
           <Step
             key={22222}
-            title={<View></View>}
+            title={
+              <View>
+                <Text>Dự kiến:</Text>
+              </View>
+            }
             description={
               <Text>
                 <Button size="small" type="ghost">
-                  <Text>Còn {diffDay} ngày</Text>
+                  <Text style={{ color: "#faad00", fontWeight: "600" }}>
+                    {diffDay}
+                  </Text>
+                  <Text> ngày nữa!</Text>
                 </Button>
               </Text>
             }
             status={"wait"}
+            icon={
+              <FontAwesomeIcon
+                icon={faHandsClapping}
+                color="#faad00"
+                size={13}
+              />
+            }
           />
         </Steps>
       </View>
     );
   }
 
+  if (isLoading) return <Text>... Loading </Text>;
   return (
     <View
       style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "#f6f6f6",
       }}
     >
       <WhiteSpace />
@@ -238,6 +269,7 @@ const ProcessBaby = ({
         style={{
           width: windowWidth - 10,
           height: windowHeight - 60,
+          backgroundColor: "#f6f6f6",
         }}
       >
         <CardHeader
@@ -311,6 +343,7 @@ const ProcessBaby = ({
                                             onPress: () =>
                                               deleteAEvent(item.id).then(
                                                 (isRes) => {
+                                                  setIsLoading(true);
                                                   if (isRes) {
                                                     Toast.success(
                                                       "Xóa thành công!"
@@ -318,6 +351,9 @@ const ProcessBaby = ({
                                                   } else {
                                                     Toast.fail("Xóa thất bại!");
                                                   }
+                                                  setTimeout(() => {
+                                                    setIsLoading(false);
+                                                  }, 200);
                                                 }
                                               ),
                                           },
@@ -330,8 +366,67 @@ const ProcessBaby = ({
                                 )}
                             </View>
                           }
-                          description={item?.description}
+                          description={
+                            <View
+                              style={{
+                                height: 50,
+                                width: windowWidth - 80,
+                                backgroundColor:
+                                  +item.id === 1000
+                                    ? "green"
+                                    : +item.id === 1001
+                                    ? "#faad00"
+                                    : "#1870bc",
+                                borderRadius: 10,
+                                flexDirection: "row",
+                              }}
+                            >
+                              <View
+                                style={{
+                                  height: 50,
+                                  marginLeft: 5,
+                                  width: windowWidth - 80,
+                                  backgroundColor: "white",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    marginLeft: 10,
+                                  }}
+                                >
+                                  {item.description}
+                                </Text>
+                              </View>
+                            </View>
+                          }
                           status={item?.status || "finish"}
+                          renderIcon={() => {
+                            if (+item.id === 1000) {
+                              return (
+                                <FontAwesomeIcon
+                                  icon={faCircle}
+                                  color="green"
+                                  size={22}
+                                />
+                              );
+                            } else if (+item.id === 1001) {
+                              return (
+                                <FontAwesomeIcon
+                                  icon={faCircle}
+                                  color="#faad00"
+                                  size={22}
+                                />
+                              );
+                            } else {
+                              return (
+                                <FontAwesomeIcon
+                                  icon={faCircle}
+                                  size={22}
+                                  color="#1870bc"
+                                />
+                              );
+                            }
+                          }}
                         />
                       );
                     })}

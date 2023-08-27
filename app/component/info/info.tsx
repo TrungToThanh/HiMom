@@ -1,11 +1,26 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Text, View, useWindowDimensions } from "react-native";
 
-import { Card, Grid, List, Result, WhiteSpace } from "@ant-design/react-native";
+import {
+  Button,
+  Card,
+  Grid,
+  List,
+  Progress,
+  Result,
+  WhiteSpace,
+} from "@ant-design/react-native";
 import CardBody from "@ant-design/react-native/lib/card/CardBody";
 import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import ProcessBaby from "../process/process";
 import dayjs from "dayjs";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faCartShopping,
+  faCreditCard,
+  faSackDollar,
+} from "@fortawesome/free-solid-svg-icons";
+import InfoShoppingCommon from "./sub-component/infoShopping";
 
 interface Props {
   listAccountBaby?: any;
@@ -81,7 +96,7 @@ const InfoCommon = ({ listAccountBaby, nameRouteUserId }: Props) => {
         }}
       >
         <CardBody>
-          <View style={{ padding: 30 }}>
+          <View style={{ paddingLeft: 30 }}>
             <View style={{ marginLeft: -20 }}>
               <Item
                 extra={
@@ -124,6 +139,20 @@ const InfoCommon = ({ listAccountBaby, nameRouteUserId }: Props) => {
           </View>
         </CardBody>
       </Card>
+      <InfoShoppingCommon
+        title={"Danh mục hàng hóa của mẹ:"}
+        numberGoods={100}
+        numberGoodBuy={80}
+        totalMoney={"800.000.000"}
+        totalMoneyBuy="19.000.000"
+      />
+      <InfoShoppingCommon
+        title={"Danh mục hàng hóa của bé:"}
+        numberGoods={200}
+        numberGoodBuy={60}
+        totalMoney={"800.000.000"}
+        totalMoneyBuy="19.000.000"
+      />
       <WhiteSpace />
     </View>
   );
