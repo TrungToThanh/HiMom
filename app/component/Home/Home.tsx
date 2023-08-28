@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faBasketShopping,
+  faCalendarCheck,
   faCheckSquare,
   faEye,
   faEyeSlash,
@@ -24,6 +25,7 @@ import ProcessBaby from "../process/process";
 import LoadingData from "../../const/loading";
 import SettingAccount from "../setting/setting";
 import InfoCommon from "../info/info";
+import ReminderComponent from "../reminder/reminder";
 
 const Home = () => {
   const route = useRoute();
@@ -37,15 +39,7 @@ const Home = () => {
   }, []);
 
   const { listAccountBaby } = getAllBabyInBabyList();
-  library.add(
-    faCheckSquare,
-    faEye,
-    faEyeSlash,
-    faUser,
-    faBasketShopping,
-    faHomeUser,
-    faSeedling
-  );
+  library.add(faCheckSquare, faEye, faEyeSlash, faUser, faBasketShopping, faHomeUser, faSeedling);
   const tabs = [
     {
       title: (
@@ -99,6 +93,20 @@ const Home = () => {
             alignSelf: "center",
           }}
         >
+          <FontAwesomeIcon icon={faCalendarCheck} color="#1870bc" />
+          <Text>Nhắc nhở</Text>
+        </View>
+      ),
+    },
+    {
+      title: (
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+          }}
+        >
           <FontAwesomeIcon icon={faGear} color="#1870bc" />
           <Text>Cài đặt</Text>
         </View>
@@ -106,24 +114,13 @@ const Home = () => {
     },
   ];
 
-  if (!listAccountBaby || listAccountBaby?.length < 1 || isLoading)
-    return <LoadingData />;
+  if (!listAccountBaby || listAccountBaby?.length < 1 || isLoading) return <LoadingData />;
 
   return (
-    <Tabs
-      tabs={tabs}
-      tabBarPosition="bottom"
-      style={{ maxHeight: height - 70 }}
-    >
-      <InfoCommon
-        listAccountBaby={listAccountBaby}
-        nameRouteUserId={nameRouteUserId}
-      />
+    <Tabs tabs={tabs} tabBarPosition="bottom" style={{ maxHeight: height - 70 }}>
+      <InfoCommon listAccountBaby={listAccountBaby} nameRouteUserId={nameRouteUserId} />
 
-      <ProcessBaby
-        nameRouteUserId={nameRouteUserId}
-        listAccountBaby={listAccountBaby}
-      />
+      <ProcessBaby nameRouteUserId={nameRouteUserId} listAccountBaby={listAccountBaby} />
 
       <MainShop
         nameRouteUserId={nameRouteUserId}
@@ -131,7 +128,7 @@ const Home = () => {
         isShowDeleteButton={true}
         setIsLoading={() => undefined}
       />
-
+      <ReminderComponent />
       <SettingAccount />
     </Tabs>
   );
