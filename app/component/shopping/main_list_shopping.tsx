@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+import { View, Text, Image, StyleSheet, Dimensions, ImageBackground } from "react-native";
 import {
   Button,
   InputItem,
@@ -23,6 +23,8 @@ import {
   faEdit,
   faAdd,
   faBasketShopping,
+  faCheckCircle,
+  faCartPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -36,16 +38,13 @@ import {
   insertANewItemToShoppingMain,
   updateNameOfAItemsOfShoppingMain,
 } from "../../../api/shopping/shopping_main";
-import {
-  FlatList,
-  GestureHandlerRootView,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import "react-native-gesture-handler";
 import SwipeActionComponent from "../../const/swipe_action_component";
 import { TableItemList } from "../../const/type";
 import CardHeaderComponent from "./sub-component/cardHeader";
 import getDimensions from "../../hook/get_dimension";
+import MainListPrepare from "./sub-component/main_list_prepare";
 
 interface Props {
   isShowDeleteButton?: boolean;
@@ -59,6 +58,7 @@ const MainShop = ({
   listAccountBaby,
   nameRouteUserId,
 }: Props) => {
+  const image = require("../../../assets/background.jpg");
   library.add(
     faCheckSquare,
     faCoffee,
@@ -69,13 +69,8 @@ const MainShop = ({
     faAdd,
     faBasketShopping
   );
-  const {
-    windowWidth,
-    windowHeight,
-    cardHeight,
-    headerCardHeight,
-    bodyCardHeight,
-  } = getDimensions();
+  const { windowWidth, windowHeight, cardHeight, headerCardHeight, bodyCardHeight } =
+    getDimensions();
   const RadioItem = Radio.RadioItem;
   const navigation = useNavigation();
 
@@ -96,19 +91,17 @@ const MainShop = ({
 
   const handleAddItem = () => {
     if (isNameTableSelected && isNameItem) {
-      insertANewItemToShoppingMain(
-        isNameTableSelected,
-        nameRouteUserId,
-        isNameItem
-      ).then((isRes) => {
-        onRefresh();
-        setNameItem("");
-        if (isRes) {
-          Toast.success("Đã tạo thành công!");
-        } else {
-          Toast.fail("Tạo thất bại!");
+      insertANewItemToShoppingMain(isNameTableSelected, nameRouteUserId, isNameItem).then(
+        (isRes) => {
+          onRefresh();
+          setNameItem("");
+          if (isRes) {
+            Toast.success("Đã tạo thành công!");
+          } else {
+            Toast.fail("Tạo thất bại!");
+          }
         }
-      });
+      );
     }
   };
   const handleLeftAction = [
@@ -186,18 +179,16 @@ const MainShop = ({
             {
               text: "Đồng ý",
               onPress: () => {
-                deleteAItemsOfShoppingMain(
-                  nameTable,
-                  isItemIdCurrent,
-                  nameRouteUserId
-                ).then((isRes) => {
-                  onRefresh();
-                  if (isRes) {
-                    Toast.success("Đã xóa thành công");
-                  } else {
-                    Toast.fail("Xóa thất bại");
+                deleteAItemsOfShoppingMain(nameTable, isItemIdCurrent, nameRouteUserId).then(
+                  (isRes) => {
+                    onRefresh();
+                    if (isRes) {
+                      Toast.success("Đã xóa thành công");
+                    } else {
+                      Toast.fail("Xóa thất bại");
+                    }
                   }
-                });
+                );
               },
             },
           ]);
@@ -210,188 +201,297 @@ const MainShop = ({
 
   return (
     <GestureHandlerRootView>
-      <View
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
+      <ImageBackground
+        source={image}
+        resizeMode="cover"
+        style={{ width: windowWidth, height: windowHeight }}
       >
-        <Card
+        <View
           style={{
-            width: windowWidth - 10,
-            height: cardHeight,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "transparent",
           }}
         >
-          <CardHeader
-            title={
-              <CardHeaderComponent
-                iconName={faAdd}
-                nameHeader="Quá trình chuẩn bị"
-                textButton="Thêm danh mục"
-                setShowDetailModal={() => setShowEvent(true)}
-              />
-            }
-          ></CardHeader>
-          <CardBody>
-            <View style={{ width: windowWidth - 10 }}>
-              <Accordion
-                activeSections={isPanelActive}
-                onChange={(value) => setPanelActive(value)}
-              >
-                <Accordion.Panel header="1. Chuẩn bị của mẹ" key="0">
-                  <ScrollView
-                    style={{
-                      maxHeight: bodyCardHeight - 60,
-                    }}
-                  >
-                    {refreshing && (
-                      <SwipeActionComponent
-                        nameRouteUserId={nameRouteUserId}
-                        tableItemList={TableItemList.mom}
-                        handleLeftAction={handleLeftAction}
-                        setIsLoading={() => onRefresh()}
-                        handleOnClick={(itemId) =>
-                          // @ts-ignore
-                          navigation.navigate("DetailShopList", {
-                            userId: Number(nameRouteUserId),
-                            typeTable: TableItemList.mom,
-                            itemId: itemId,
-                          })
-                        }
-                        setItemId={(itemId, itemName) => {
-                          setItemIdCurrent(itemId);
-                          setNameItem(itemName);
-                        }}
-                      />
-                    )}
-                  </ScrollView>
-                </Accordion.Panel>
-                <Accordion.Panel header="2. Chuẩn bị của bé" key="1">
-                  <ScrollView
-                    style={{
-                      maxHeight: bodyCardHeight - 60,
-                    }}
-                  >
-                    {refreshing && (
-                      <SwipeActionComponent
-                        nameRouteUserId={nameRouteUserId}
-                        tableItemList={TableItemList.baby}
-                        handleLeftAction={handleLeftAction}
-                        setIsLoading={() => onRefresh()}
-                        handleOnClick={(itemId) =>
-                          // @ts-ignore
-                          navigation.navigate("DetailShopList", {
-                            userId: Number(nameRouteUserId),
-                            typeTable: TableItemList.baby,
-                            itemId: itemId,
-                          })
-                        }
-                        setItemId={(itemId, itemName) => {
-                          setItemIdCurrent(itemId);
-                          setNameItem(itemName);
-                        }}
-                      />
-                    )}
-                  </ScrollView>
-                </Accordion.Panel>
-                <Accordion.Panel header="3. Chuẩn bị khác" key="2">
-                  <ScrollView
-                    style={{
-                      maxHeight: bodyCardHeight - 60,
-                    }}
-                  >
-                    {refreshing && (
-                      <SwipeActionComponent
-                        nameRouteUserId={nameRouteUserId}
-                        tableItemList={TableItemList.other}
-                        handleLeftAction={handleLeftAction}
-                        setIsLoading={() => onRefresh()}
-                        handleOnClick={(itemId) =>
-                          // @ts-ignore
-                          navigation.navigate("DetailShopList", {
-                            userId: Number(nameRouteUserId),
-                            typeTable: TableItemList.other,
-                            itemId: itemId,
-                          })
-                        }
-                        setItemId={(itemId, itemName) => {
-                          setItemIdCurrent(itemId);
-                          setNameItem(itemName);
-                        }}
-                      />
-                    )}
-                  </ScrollView>
-                </Accordion.Panel>
-              </Accordion>
-            </View>
-          </CardBody>
-        </Card>
-        <Modal
-          style={{
-            width: windowWidth - 10,
-          }}
-          popup={true}
-          visible={isShowEvent}
-          transparent
-          animationType="fade"
-          title={
-            <Text
-              style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
-            >
-              Thêm sự kiện
-            </Text>
-          }
-          footer={[
-            {
-              text: "Thoát",
-              onPress: () => setShowEvent(false),
-              style: "cancel",
-            },
-            {
-              text: "Thêm",
-              onPress: () => {
-                setShowEvent(false);
-                handleAddItem();
-              },
-            },
-          ]}
-        >
+          <Text style={{ marginTop: 20, color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+            Chuẩn bị
+          </Text>
           <View
             style={{
-              width: windowWidth,
-              display: "flex",
-              justifyContent: "flex-start",
-              marginTop: 10,
+              marginTop: 20,
+              width: windowWidth - 20,
+              alignContent: "center",
+              borderRadius: 30,
+              borderWidth: 1,
+              borderColor: "#e1e8fb",
             }}
           >
-            <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
-              Danh mục cần thêm:
-            </Text>
-            <Radio.Group
-              onChange={(value) => setNameTableSelected(value?.target?.value)}
-            >
-              <RadioItem value={"mom"}>Danh mục của mẹ</RadioItem>
-              <RadioItem value={"baby"}>Danh mục của bé</RadioItem>
-              <RadioItem value={"other"}>Danh mục khác</RadioItem>
-            </Radio.Group>
-            <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
-              Tên sự kiện:
-            </Text>
-            <InputItem
-              placeholder="Tên danh mục"
-              multiline
-              textBreakStrategy="highQuality"
-              onChangeText={(value) => setNameItem(value?.trim())}
+            <Image
+              source={require("../../../assets/masterCard.png")}
               style={{
-                borderBottomWidth: 1,
-                borderColor: "#1870bc",
-                marginRight: 50,
+                width: windowWidth - 20,
+                height: 200,
+                borderRadius: 30,
               }}
-            ></InputItem>
+              resizeMode="cover"
+            />
+            <View style={{ position: "absolute", paddingLeft: 20, paddingTop: 30 }}>
+              <View
+                style={{
+                  width: windowWidth - 60,
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignContent: "space-between",
+                  alignItems: "center",
+                  alignSelf: "center",
+                }}
+              >
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <FontAwesomeIcon icon={faCheckCircle} color="green" />
+                  <Text>MomBank</Text>
+                </View>
+
+                <Text style={{ fontSize: 30, fontWeight: "bold", fontStyle: "italic" }}> VISA</Text>
+              </View>
+              <WhiteSpace />
+              <WhiteSpace />
+              <Text
+                style={{
+                  width: windowWidth - 60,
+                  textAlign: "right",
+                  fontSize: 14,
+                  fontWeight: "600",
+                }}
+              >
+                *** *** *** 6789
+              </Text>
+              <WhiteSpace />
+              <WhiteSpace />
+              <Text style={{ fontSize: 30, fontWeight: "bold" }}>$ 120.000.000</Text>
+              <WhiteSpace />
+            </View>
           </View>
-        </Modal>
-      </View>
+          <WhiteSpace />
+          <WhiteSpace />
+          <View
+            style={{
+              width: windowWidth - 20,
+              display: "flex",
+              alignSelf: "center",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}>
+              Danh sách chuẩn bị:
+            </Text>
+          </View>
+          <WhiteSpace />
+          <MainListPrepare
+            namePrepare="Chuẩn bị của mẹ:"
+            isGoodBuy={300}
+            isGoods={400}
+            isMoneyGoods={"900.000.000"}
+            isMoneyGoodsBuy={"- 400.000.000"}
+          />
+          <WhiteSpace />
+          <MainListPrepare
+            namePrepare="Chuẩn bị cho bé:"
+            isGoodBuy={300}
+            isGoods={400}
+            isMoneyGoods={"900.000.000"}
+            isMoneyGoodsBuy={"- 400.000.000"}
+          />
+          <WhiteSpace />
+          <MainListPrepare
+            namePrepare="Chuẩn bị khác:"
+            isGoodBuy={300}
+            isGoods={400}
+            isMoneyGoods={"900.000.000"}
+            isMoneyGoodsBuy={"- 400.000.000 $"}
+          />
+          {/* <Card
+            style={{
+              width: windowWidth - 10,
+              height: cardHeight,
+              backgroundColor: "transparent",
+            }}
+          >
+            <CardHeader
+              title={
+                <CardHeaderComponent
+                  iconName={faAdd}
+                  nameHeader="Quá trình chuẩn bị"
+                  textButton="Thêm danh mục"
+                  setShowDetailModal={() => setShowEvent(true)}
+                />
+              }
+            ></CardHeader>
+            <CardBody>
+              <View style={{ width: windowWidth - 10, backgroundColor: "transparent" }}>
+                <Accordion
+                  activeSections={isPanelActive}
+                  onChange={(value) => setPanelActive(value)}
+                >
+                  <Accordion.Panel header="1. Chuẩn bị của mẹ" key="0">
+                    <ScrollView
+                      style={{
+                        maxHeight: bodyCardHeight - 60,
+                        backgroundColor: "transparent",
+                      }}
+                    >
+                      {refreshing && (
+                        <SwipeActionComponent
+                          nameRouteUserId={nameRouteUserId}
+                          tableItemList={TableItemList.mom}
+                          handleLeftAction={handleLeftAction}
+                          setIsLoading={() => onRefresh()}
+                          handleOnClick={(itemId) =>
+                            // @ts-ignore
+                            navigation.navigate("DetailShopList", {
+                              userId: Number(nameRouteUserId),
+                              typeTable: TableItemList.mom,
+                              itemId: itemId,
+                            })
+                          }
+                          setItemId={(itemId, itemName) => {
+                            setItemIdCurrent(itemId);
+                            setNameItem(itemName);
+                          }}
+                        />
+                      )}
+                    </ScrollView>
+                  </Accordion.Panel>
+                  <Accordion.Panel header="2. Chuẩn bị của bé" key="1">
+                    <ScrollView
+                      style={{
+                        maxHeight: bodyCardHeight - 60,
+                        backgroundColor: "transparent",
+                      }}
+                    >
+                      {refreshing && (
+                        <SwipeActionComponent
+                          nameRouteUserId={nameRouteUserId}
+                          tableItemList={TableItemList.baby}
+                          handleLeftAction={handleLeftAction}
+                          setIsLoading={() => onRefresh()}
+                          handleOnClick={(itemId) =>
+                            // @ts-ignore
+                            navigation.navigate("DetailShopList", {
+                              userId: Number(nameRouteUserId),
+                              typeTable: TableItemList.baby,
+                              itemId: itemId,
+                            })
+                          }
+                          setItemId={(itemId, itemName) => {
+                            setItemIdCurrent(itemId);
+                            setNameItem(itemName);
+                          }}
+                        />
+                      )}
+                    </ScrollView>
+                  </Accordion.Panel>
+                  <Accordion.Panel header="3. Chuẩn bị khác" key="2">
+                    <ScrollView
+                      style={{
+                        maxHeight: bodyCardHeight - 60,
+                      }}
+                    >
+                      {refreshing && (
+                        <SwipeActionComponent
+                          nameRouteUserId={nameRouteUserId}
+                          tableItemList={TableItemList.other}
+                          handleLeftAction={handleLeftAction}
+                          setIsLoading={() => onRefresh()}
+                          handleOnClick={(itemId) =>
+                            // @ts-ignore
+                            navigation.navigate("DetailShopList", {
+                              userId: Number(nameRouteUserId),
+                              typeTable: TableItemList.other,
+                              itemId: itemId,
+                            })
+                          }
+                          setItemId={(itemId, itemName) => {
+                            setItemIdCurrent(itemId);
+                            setNameItem(itemName);
+                          }}
+                        />
+                      )}
+                    </ScrollView>
+                  </Accordion.Panel>
+                </Accordion>
+              </View>
+            </CardBody>
+          </Card>
+          <Modal
+            style={{
+              width: windowWidth - 10,
+            }}
+            popup={true}
+            visible={isShowEvent}
+            transparent
+            animationType="fade"
+            title={
+              <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+                Thêm sự kiện
+              </Text>
+            }
+            footer={[
+              {
+                text: "Thoát",
+                onPress: () => setShowEvent(false),
+                style: "cancel",
+              },
+              {
+                text: "Thêm",
+                onPress: () => {
+                  setShowEvent(false);
+                  handleAddItem();
+                },
+              },
+            ]}
+          >
+            <View
+              style={{
+                width: windowWidth,
+                display: "flex",
+                justifyContent: "flex-start",
+                marginTop: 10,
+              }}
+            >
+              <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
+                Danh mục cần thêm:
+              </Text>
+              <Radio.Group onChange={(value) => setNameTableSelected(value?.target?.value)}>
+                <RadioItem value={"mom"}>Danh mục của mẹ</RadioItem>
+                <RadioItem value={"baby"}>Danh mục của bé</RadioItem>
+                <RadioItem value={"other"}>Danh mục khác</RadioItem>
+              </Radio.Group>
+              <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>Tên sự kiện:</Text>
+              <InputItem
+                placeholder="Tên danh mục"
+                multiline
+                textBreakStrategy="highQuality"
+                onChangeText={(value) => setNameItem(value?.trim())}
+                style={{
+                  borderBottomWidth: 1,
+                  borderColor: "#1870bc",
+                  marginRight: 50,
+                }}
+              ></InputItem>
+            </View>
+          </Modal> */}
+        </View>
+      </ImageBackground>
     </GestureHandlerRootView>
   );
 };
