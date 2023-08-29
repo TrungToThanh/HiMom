@@ -39,7 +39,15 @@ const Home = () => {
   }, []);
 
   const { listAccountBaby } = getAllBabyInBabyList();
-  library.add(faCheckSquare, faEye, faEyeSlash, faUser, faBasketShopping, faHomeUser, faSeedling);
+  library.add(
+    faCheckSquare,
+    faEye,
+    faEyeSlash,
+    faUser,
+    faBasketShopping,
+    faHomeUser,
+    faSeedling
+  );
   const tabs = [
     {
       title: (
@@ -114,13 +122,26 @@ const Home = () => {
     },
   ];
 
-  if (!listAccountBaby || listAccountBaby?.length < 1 || isLoading) return <LoadingData />;
+  if (!listAccountBaby || listAccountBaby?.length < 1 || isLoading)
+    return <LoadingData />;
 
   return (
-    <Tabs tabs={tabs} tabBarPosition="bottom" style={{ maxHeight: height - 70 }}>
-      <InfoCommon listAccountBaby={listAccountBaby} nameRouteUserId={nameRouteUserId} />
+    <Tabs
+      tabs={tabs}
+      tabBarPosition="bottom"
+      swipeable={false}
+      usePaged={false}
+      style={{ maxHeight: height - 70 }}
+    >
+      <InfoCommon
+        listAccountBaby={listAccountBaby}
+        nameRouteUserId={nameRouteUserId}
+      />
 
-      <ProcessBaby nameRouteUserId={nameRouteUserId} listAccountBaby={listAccountBaby} />
+      <ProcessBaby
+        nameRouteUserId={nameRouteUserId}
+        listAccountBaby={listAccountBaby}
+      />
 
       <MainShop
         nameRouteUserId={nameRouteUserId}
