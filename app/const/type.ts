@@ -4,6 +4,8 @@ export interface ProcessBabyBase {
   date: string,
   status: string;
   description: string;
+  image: string;
+  linkvideo: string
 }
 
 export enum TableItemList {

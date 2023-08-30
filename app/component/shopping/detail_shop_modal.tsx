@@ -27,10 +27,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import CardBody from "@ant-design/react-native/lib/card/CardBody";
 
-import {
-  GestureHandlerRootView,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 
 import {
   getAItemShoppingDetail,
@@ -63,23 +60,9 @@ const DetailShopModal = ({
   setReload,
   isCreate,
 }: Props) => {
-  library.add(
-    faCheckSquare,
-    faCoffee,
-    faTrash,
-    faUser,
-    faCalendar,
-    faEdit,
-    faAdd,
-    faClose
-  );
-  const {
-    windowWidth,
-    windowHeight,
-    cardHeight,
-    headerCardHeight,
-    bodyCardHeight,
-  } = getDimensions();
+  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd, faClose);
+  const { windowWidth, windowHeight, cardHeight, headerCardHeight, bodyCardHeight } =
+    getDimensions();
 
   const [isError, setIsError] = useState(false);
   const [isNameItem, setNameItem] = useState("");
@@ -91,12 +74,7 @@ const DetailShopModal = ({
 
   const { listAItems } =
     isInfo &&
-    getAItemShoppingDetail(
-      nameRouteTypeTable,
-      nameRouteUserId,
-      nameRouteItemId,
-      itemIdCurrent
-    );
+    getAItemShoppingDetail(nameRouteTypeTable, nameRouteUserId, nameRouteItemId, itemIdCurrent);
 
   useEffect(() => {
     if (isInfo && listAItems && listAItems?.length > 0) {
@@ -182,7 +160,6 @@ const DetailShopModal = ({
       allowsMultipleSelection: true,
     });
 
-    console.log(result.assets);
     if (!result.canceled) {
       setImage(result.assets);
     }
@@ -289,9 +266,7 @@ const DetailShopModal = ({
                   value={isMoney}
                   onBlur={() =>
                     +isMoney > 0
-                      ? setMoneyItem(
-                          Intl.NumberFormat("en-US").format(Number(isMoney))
-                        )
+                      ? setMoneyItem(Intl.NumberFormat("en-US").format(Number(isMoney)))
                       : "0"
                   }
                 ></InputItem>
@@ -312,9 +287,7 @@ const DetailShopModal = ({
                     paddingRight: 20,
                   }}
                 >
-                  <Text style={styles.titleText}>
-                    Hình ảnh đính kèm (nếu có):
-                  </Text>
+                  <Text style={styles.titleText}>Hình ảnh đính kèm (nếu có):</Text>
                   <Button
                     size="small"
                     onPress={() => handleSelectPic()}

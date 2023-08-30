@@ -4,29 +4,30 @@ import * as SQLite from "expo-sqlite";
 import dayjs from "dayjs";
 import { nameDB } from "../database";
 
-const nameTable = "tableEventProcess";
+const nameTable = "tableEventProcessLink";
 
 export const createProcessEventTable = () => {
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, event TEXT , date TEXT, description TEXT, note TEXT )`
+        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, event TEXT , date TEXT, description TEXT, note TEXT, image TEXT, linkvideo TEXT )`
       );
     });
   });
 };
 
-export const insertANewEvent = (event, date, description, note) => {
+export const insertANewEvent = (event, date, description, note, image, linkvideo) => {
+  const listImage = image && image?.length > 0 ? JSON.stringify(image) : "";
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, event TEXT , date TEXT, description TEXT, note TEXT )`
+        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, event TEXT , date TEXT, description TEXT, note TEXT, image TEXT, linkvideo TEXT )`
       );
       tx.executeSql(
-        `INSERT INTO ${nameTable} (event, date, description, note) values (?, ?, ?, ?)`,
-        [event, date, description, note],
+        `INSERT INTO ${nameTable} (event, date, description, note, image, linkvideo) values (?, ?, ?, ?, ?, ?)`,
+        [event, date, description, note, listImage, String(linkvideo)],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );
@@ -46,7 +47,7 @@ export const getAllEvent = ({ isLoading }: Props) => {
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, event TEXT , date TEXT, description TEXT, note TEXT )`
+        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, event TEXT , date TEXT, description TEXT, note TEXT, image TEXT, linkvideo TEXT )`
       );
       tx.executeSql(
         `SELECT * FROM ${nameTable}`,
