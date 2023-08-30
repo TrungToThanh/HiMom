@@ -44,16 +44,13 @@ import CalendarStrip from "react-native-calendar-strip";
 import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import { useNavigation } from "@react-navigation/native";
 import CardBody from "@ant-design/react-native/lib/card/CardBody";
-import {
-  deleteAEvent,
-  getAllEvent,
-  insertANewEvent,
-} from "../../../api/eventProcess/event";
+import { deleteAEvent, getAllEvent, insertANewEvent } from "../../../api/eventProcess/event";
 import { ProcessBabyBase } from "../../const/type";
 import CardHeaderComponent from "../shopping/sub-component/cardHeader";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import moment from "moment";
+import _ from "lodash";
 
 interface Props {
   listAccountBaby?: any;
@@ -69,16 +66,7 @@ const ProcessBaby = ({
   diffDay,
   isDiffFirstDay,
 }: Props) => {
-  library.add(
-    faCheckSquare,
-    faCoffee,
-    faTrash,
-    faUser,
-    faCalendar,
-    faEdit,
-    faAdd,
-    faSeedling
-  );
+  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd, faSeedling);
   const datesWhitelist = [
     {
       start: moment().subtract(10, "days"),
@@ -91,106 +79,131 @@ const ProcessBaby = ({
   const image = require("../../../assets/background.jpg");
 
   const Step = Steps.Step;
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
+
   //Get value date
   const now = dayjs().format("DD-MM-YYYYY");
 
   const isFirstDay = useMemo(() => {
     let dateObject = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find(
-        (item) => Number(item.id) === Number(nameRouteUserId)
-      );
+      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
       var dateParts = idCurrent?.birthday.split("-");
 
       // month is 0-based, that's why we need dataParts[1] - 1
-      dateObject = dayjs(
-        new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
-      )
+      dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
         .subtract(280, "days")
         .format("DD-MM-YYYY");
     }
     return dateObject;
-  }, [listAccountBaby, isLoading]);
+  }, [listAccountBaby]);
 
   const isBirthday = useMemo(() => {
     let valueReturn = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find(
-        (item) => Number(item.id) === Number(nameRouteUserId)
-      );
+      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
 
       if (idCurrent) valueReturn = String(idCurrent?.birthday);
     }
     return valueReturn;
-  }, [listAccountBaby, nameRouteUserId, isLoading]);
+  }, [listAccountBaby, nameRouteUserId]);
 
-  //Modal Add Event
   const [isShowEvent, setShowEvent] = useState<boolean>(false);
   const [nameEvent, setNameEvent] = useState<any>("");
   const [dateEvent, setDateEvent] = useState<any>("");
   const [desEvent, setDesEvent] = useState<any>("");
   const [noteEvent, setNoteEvent] = useState<any>("");
   const [isShowDatePicker, setIsShowDatePicker] = useState(false);
+  const [loadingAgain, setLoadingAgain] = useState(false);
+  const [itemIdCurrent, setItemIdCurrent] = useState<any>();
+  const [indexItemCurrent, setIndexItemCurrent] = useState<any>();
 
-  const { listEvent } = getAllEvent();
+  const { listEvent } = getAllEvent({ isLoading: loadingAgain });
 
   const listEventCook = useMemo(() => {
     const listEventCurrent = listEvent?.length > 0 ? listEvent : [];
-    const isHasFirstDay = listEventCurrent?.find(
-      (item) => Number(item.id) === -1
-    );
+    const isHasFirstDay = listEventCurrent?.find((item) => Number(item.id) === -1);
     if (!isHasFirstDay)
       listEventCurrent?.unshift({
         id: -1,
-        event: isFirstDay,
+        date: isFirstDay,
+        event: "Thấy gì chưa!",
         description: "Nhịp đập đầu tiên!",
         status: "finish",
       });
-    const isHasBirthDay = listEventCurrent?.find(
-      (item) => Number(item.id) === 1000
-    );
+    const isHasBirthDay = listEventCurrent?.find((item) => Number(item.id) === 1000);
     if (!isHasBirthDay)
       listEventCurrent?.push(
         {
           id: 1000,
-          event: now,
-          description: "Hôm nay",
+          date: moment().format("DD-MM-YYYY"),
+          event: "Hôm nay",
+          description: "Con đang ngủ hay đang nghịch nhỉ?",
           status: "wait",
         },
         {
           id: 1001,
-          event: isBirthday,
+          date: isBirthday,
+          event: "Quan trọng nhá!",
           description: "Oa oa",
           status: "wait",
         }
       );
 
-    const newList = new Set(listEventCurrent);
-    return Array.from(newList);
-  }, [listEvent, isLoading]);
+    const newList = Array.from(new Set(listEventCurrent));
+    const b = newList.sort(function (a: ProcessBabyBase, b: ProcessBabyBase) {
+      var dateParts: any = String(a.date).split("-");
+      const dateObjectA = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+
+      var datePartsB: any = String(b.date).split("-");
+      const dateObjectB = new Date(+datePartsB[2], datePartsB[1] - 1, +datePartsB[0]);
+
+      return dateObjectA.getTime() - dateObjectB.getTime();
+    });
+    console.log("b", b);
+    return b;
+  }, [listEvent]);
 
   const handleAddEvent = () => {
     insertANewEvent(nameEvent, dateEvent, desEvent, noteEvent).then((isRes) => {
-      setIsLoading(true);
+      setLoadingAgain(true);
+      setTimeout(() => {
+        setLoadingAgain(false);
+      }, 100);
       if (isRes) {
         Toast.success("Thêm sự kiện mới thành công!");
       } else {
         Toast.fail("Thất bại!");
       }
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 200);
     });
   };
 
-  const right = [
-    {
-      text: <FontAwesomeIcon icon={faTrash} color="white" />,
-      backgroundColor: "red",
-      color: "white",
-    },
-  ];
+  const handleDeleteEvent = (itemId) => {
+    +itemId !== -1 &&
+      +itemId !== 1000 &&
+      +itemId !== 1001 &&
+      Modal.alert("Xóa sự kiện", "Bạn có thật sự muốn xóa sự kiện này?", [
+        {
+          text: "Thoát",
+          style: "cancel",
+        },
+        {
+          text: "Xóa",
+          onPress: () =>
+            deleteAEvent(itemId).then((isRes) => {
+              setLoadingAgain(true);
+              setTimeout(() => {
+                setLoadingAgain(false);
+              }, 100);
+              if (isRes) {
+                Toast.success("Xóa thành công!");
+              } else {
+                Toast.fail("Xóa thất bại!");
+              }
+            }),
+        },
+      ]);
+  };
 
   if (isInfoComponent) {
     return (
@@ -219,9 +232,7 @@ const ProcessBaby = ({
               </Text>
             }
             status={"finish"}
-            renderIcon={() => (
-              <FontAwesomeIcon icon={faCheck} size={14} color="#1870bc" />
-            )}
+            renderIcon={() => <FontAwesomeIcon icon={faCheck} size={14} color="#1870bc" />}
           />
           <Step
             key={1111}
@@ -234,17 +245,13 @@ const ProcessBaby = ({
             description={
               <Text>
                 <Button size="small" type="ghost">
-                  <Text style={{ color: "green", fontWeight: "600" }}>
-                    {isDiffFirstDay}
-                  </Text>
+                  <Text style={{ color: "green", fontWeight: "600" }}>{isDiffFirstDay}</Text>
                   <Text> ngày</Text>
                 </Button>
               </Text>
             }
             status={"wait"}
-            renderIcon={() => (
-              <FontAwesomeIcon icon={faSeedling} color="green" size={14} />
-            )}
+            renderIcon={() => <FontAwesomeIcon icon={faSeedling} color="green" size={14} />}
           />
           <Step
             key={22222}
@@ -256,28 +263,19 @@ const ProcessBaby = ({
             description={
               <Text>
                 <Button size="small" type="ghost">
-                  <Text style={{ color: "#faad00", fontWeight: "600" }}>
-                    {diffDay}
-                  </Text>
+                  <Text style={{ color: "#faad00", fontWeight: "600" }}>{diffDay}</Text>
                   <Text> ngày nữa!</Text>
                 </Button>
               </Text>
             }
             status={"wait"}
-            icon={
-              <FontAwesomeIcon
-                icon={faHandsClapping}
-                color="#faad00"
-                size={13}
-              />
-            }
+            icon={<FontAwesomeIcon icon={faHandsClapping} color="#faad00" size={13} />}
           />
         </Steps>
       </View>
     );
   }
 
-  if (isLoading) return <Text>... Loading </Text>;
   return (
     <GestureHandlerRootView>
       <SafeAreaView>
@@ -339,9 +337,7 @@ const ProcessBaby = ({
               marginBottom: 10,
             }}
           >
-            <Text
-              style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}
-            >
+            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}>
               Tiến trình phát triển:
             </Text>
             <Button
@@ -351,9 +347,7 @@ const ProcessBaby = ({
               onPress={() => setShowEvent(true)}
             >
               <FontAwesomeIcon icon={faAdd} />
-              <Text style={{ fontSize: 13, fontWeight: "500" }}>
-                Thêm sự kiện
-              </Text>
+              <Text style={{ fontSize: 13, fontWeight: "500" }}>Thêm sự kiện</Text>
             </Button>
           </View>
           <ScrollView>
@@ -365,7 +359,7 @@ const ProcessBaby = ({
                     listEventCook?.map((item: ProcessBabyBase, index) => {
                       return (
                         <Step
-                          key={item?.id}
+                          key={index}
                           title={
                             <View
                               style={{
@@ -379,11 +373,11 @@ const ProcessBaby = ({
                             >
                               <Text
                                 style={{
-                                  fontSize: 15,
+                                  fontSize: 14,
                                   fontWeight: "bold",
                                 }}
                               >
-                                {item?.event}
+                                {item?.date}: {item?.event}
                               </Text>
                             </View>
                           }
@@ -419,42 +413,56 @@ const ProcessBaby = ({
                                 }}
                               >
                                 <SwipeAction
-                                  shouldCancelWhenOutside={true}
-                                  left={right}
-                                  buttonWidth={40}
-                                  onSwipeableLeftOpen={() => {
-                                    +item.id !== -1 &&
-                                      +item.id !== 1000 &&
-                                      +item.id !== 1001 &&
-                                      Modal.alert(
-                                        "Xóa sự kiện",
-                                        "Bạn có thật sự muốn xóa sự kiện này?",
-                                        [
-                                          {
-                                            text: "Thoát",
-                                            style: "cancel",
-                                          },
-                                          {
-                                            text: "Xóa",
-                                            onPress: () =>
-                                              deleteAEvent(item.id).then(
-                                                (isRes) => {
-                                                  setIsLoading(true);
-                                                  if (isRes) {
-                                                    Toast.success(
-                                                      "Xóa thành công!"
-                                                    );
-                                                  } else {
-                                                    Toast.fail("Xóa thất bại!");
-                                                  }
-                                                  setTimeout(() => {
-                                                    setIsLoading(false);
-                                                  }, 200);
-                                                }
-                                              ),
-                                          },
-                                        ]
+                                  key={index + 1}
+                                  buttonWidth={60}
+                                  onSwipeableWillOpen={() => {
+                                    setIndexItemCurrent(index);
+                                    setItemIdCurrent(item.id);
+                                  }}
+                                  onSwipeableOpen={() => setIndexItemCurrent(index)}
+                                  renderLeftActions={(progressAnimatedValue, dragAnimatedValue) => {
+                                    if (
+                                      indexItemCurrent === index &&
+                                      itemIdCurrent !== -1 &&
+                                      itemIdCurrent !== 1000 &&
+                                      itemIdCurrent !== 1001
+                                    ) {
+                                      return (
+                                        <View
+                                          style={{
+                                            height: 50,
+                                            width: 40,
+                                            borderWidth: 1,
+                                            borderRadius: 10,
+                                            flexDirection: "row",
+                                            display: "flex",
+                                            justifyContent: "flex-start",
+                                            alignItems: "center",
+                                            backgroundColor: "white",
+                                            borderColor:
+                                              +item.id === 1000
+                                                ? "green"
+                                                : +item.id === 1001
+                                                ? "#faad00"
+                                                : "#1870bc",
+                                          }}
+                                        >
+                                          <Button
+                                            style={{
+                                              width: 38,
+                                              borderRadius: 10,
+                                              height: 50,
+                                              paddingTop: 5,
+                                            }}
+                                            onPress={() => handleDeleteEvent(item.id)}
+                                          >
+                                            <FontAwesomeIcon icon={faTrash} color="red" />
+                                          </Button>
+                                        </View>
                                       );
+                                    } else {
+                                      return <Text style={{ color: "transparent" }}>'</Text>;
+                                    }
                                   }}
                                   containerStyle={{
                                     borderRadius: 10,
@@ -469,7 +477,9 @@ const ProcessBaby = ({
                                       borderRadius: 10,
                                     }}
                                   >
-                                    {item.description}
+                                    <Text style={{ fontSize: 13, fontWeight: "400" }}>
+                                      {item.description}
+                                    </Text>
                                   </List.Item>
                                 </SwipeAction>
                               </View>
@@ -478,29 +488,11 @@ const ProcessBaby = ({
                           status={item?.status || "finish"}
                           renderIcon={() => {
                             if (+item.id === 1000) {
-                              return (
-                                <FontAwesomeIcon
-                                  icon={faCircle}
-                                  color="green"
-                                  size={22}
-                                />
-                              );
+                              return <FontAwesomeIcon icon={faCircle} color="green" size={22} />;
                             } else if (+item.id === 1001) {
-                              return (
-                                <FontAwesomeIcon
-                                  icon={faCircle}
-                                  color="#faad00"
-                                  size={22}
-                                />
-                              );
+                              return <FontAwesomeIcon icon={faCircle} color="#faad00" size={22} />;
                             } else {
-                              return (
-                                <FontAwesomeIcon
-                                  icon={faCircle}
-                                  size={22}
-                                  color="#1870bc"
-                                />
-                              );
+                              return <FontAwesomeIcon icon={faCircle} size={22} color="#1870bc" />;
                             }
                           }}
                         />
@@ -519,9 +511,7 @@ const ProcessBaby = ({
             transparent
             animationType="fade"
             title={
-              <Text
-                style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
-              >
+              <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
                 Thêm sự kiện
               </Text>
             }
@@ -548,11 +538,7 @@ const ProcessBaby = ({
                 marginTop: 10,
               }}
             >
-              <Text
-                style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}
-              >
-                Tên sự kiện:
-              </Text>
+              <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>Tên sự kiện:</Text>
               <InputItem
                 placeholder="Tên sự kiện"
                 multiline
@@ -564,9 +550,7 @@ const ProcessBaby = ({
                   marginRight: 50,
                 }}
               ></InputItem>
-              <Text
-                style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}
-              >
+              <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
                 Ngày xảy ra sự kiện:
               </Text>
               <InputItem
@@ -594,13 +578,9 @@ const ProcessBaby = ({
                 dismissText="Thoát"
                 onOk={() => setIsShowDatePicker(false)}
                 onDismiss={() => setIsShowDatePicker(false)}
-                onChange={(value) =>
-                  setDateEvent(dayjs(value).format("DD-MM-YYYY"))
-                }
+                onChange={(value) => setDateEvent(dayjs(value).format("DD-MM-YYYY"))}
               ></DatePicker>
-              <Text
-                style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}
-              >
+              <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>
                 Mô tả sự kiện:
               </Text>
               <InputItem
@@ -613,11 +593,7 @@ const ProcessBaby = ({
                   marginRight: 50,
                 }}
               ></InputItem>
-              <Text
-                style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}
-              >
-                Ghi chú:
-              </Text>
+              <Text style={{ fontSize: 14, fontWeight: "bold", paddingTop: 10 }}>Ghi chú:</Text>
               <InputItem
                 placeholder="Ghi chú"
                 multiline

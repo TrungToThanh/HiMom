@@ -1,6 +1,7 @@
 export interface ProcessBabyBase {
   id: string;
   event: string;
+  date: string,
   status: string;
   description: string;
 }

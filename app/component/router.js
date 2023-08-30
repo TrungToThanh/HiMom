@@ -34,7 +34,7 @@ function MyStack() {
         component={DetailShopList}
         options={{
           title: "Danh mục chi tiết",
-          headerShown: true,   
+          headerShown: true,
         }}
         getId={({ params }) => {
           params.userId, params.typeTable, params.itemId;

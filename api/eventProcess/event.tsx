@@ -34,10 +34,15 @@ export const insertANewEvent = (event, date, description, note) => {
   });
 };
 
-export const getAllEvent = () => {
+interface Props {
+  isLoading: boolean;
+}
+export const getAllEvent = ({ isLoading }: Props) => {
+  console.log("isLoadingDB", isLoading);
   const [db, setDb] = useState(SQLite.openDatabase(nameDB));
   const [listEvent, setListEvent] = useState<any>();
   var items = new Array();
+
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql(
@@ -57,7 +62,8 @@ export const getAllEvent = () => {
         (txObj, error) => false
       );
     });
-  }, [db]);
+  }, [db, isLoading]);
+
   return {
     listEvent,
   };
