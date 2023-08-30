@@ -14,6 +14,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 
 import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import Account from "../account/account";
+import InfoApp from "./sub-component/info_app";
 
 interface Props {
   isShowDeleteButton?: boolean;
@@ -72,7 +73,7 @@ const SettingAccount = ({
               ...
             </Accordion.Panel>
             <Accordion.Panel header="Thông tin phần mềm" key="2">
-              ...
+              <InfoApp />
             </Accordion.Panel>
           </Accordion>
         </Card.Body>
