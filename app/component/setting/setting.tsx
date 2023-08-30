@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-import {
-  Button,
-  InputItem,
-  Card,
-  WhiteSpace,
-  DatePicker,
-  Toast,
-  List,
-  Accordion,
-} from "@ant-design/react-native";
+import { Card, WhiteSpace, Accordion } from "@ant-design/react-native";
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faCheckSquare,
   faCoffee,
@@ -22,21 +12,22 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
-import dayjs from "dayjs";
-import {
-  deleteAItemBabyFromBabyList,
-  insertValueBabyToBabyList,
-  updateValueOfABabyInBabyList,
-} from "../../../api/login/login";
 import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
-import { useNavigation } from "@react-navigation/native";
 import Account from "../account/account";
 
-interface Props {}
-const SettingAccount = ({}: Props) => {
+interface Props {
+  isShowDeleteButton?: boolean;
+  listAccountBaby?: any;
+  nameRouteUserId?: number;
+}
+const SettingAccount = ({
+  isShowDeleteButton,
+  listAccountBaby,
+  nameRouteUserId,
+}: Props) => {
   library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit);
 
-  const [activePanel, setActivePanel] = useState([0]);
+  const [activePanel, setActivePanel] = useState<any>([]);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
 
@@ -57,7 +48,9 @@ const SettingAccount = ({}: Props) => {
       >
         <CardHeader
           title={
-            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+            <Text
+              style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
+            >
               Cài đặt tài khoản:
             </Text>
           }
@@ -68,11 +61,19 @@ const SettingAccount = ({}: Props) => {
             activeSections={activePanel}
             onChange={(value) => setActivePanel(value)}
           >
-            <Accordion.Panel header="Thông tin tài khoản">
-              <Account />
+            <Accordion.Panel header="Thông tin tài khoản" key="0">
+              <Account
+                listAccountBaby={listAccountBaby}
+                isShowDeleteButton={isShowDeleteButton}
+                nameRouteUserId={nameRouteUserId}
+              />
             </Accordion.Panel>
-            <Accordion.Panel header="Cài đặt">...</Accordion.Panel>
-            <Accordion.Panel header="Thông tin phần mềm">...</Accordion.Panel>
+            <Accordion.Panel header="Cài đặt" key="1">
+              ...
+            </Accordion.Panel>
+            <Accordion.Panel header="Thông tin phần mềm" key="2">
+              ...
+            </Accordion.Panel>
           </Accordion>
         </Card.Body>
       </Card>

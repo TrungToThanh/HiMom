@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import moment from "moment";
-import * as Calendar from "expo-calendar";
-import * as Localization from "expo-localization";
-
 import { StyleSheet, useWindowDimensions, Image } from "react-native";
 import {
   Modal,
@@ -14,6 +10,7 @@ import {
   InputItem,
   DatePicker,
   Grid,
+  WhiteSpace,
 } from "@ant-design/react-native";
 
 import Input from "@ant-design/react-native/lib/input-item/Input";
@@ -28,7 +25,11 @@ interface Props {
   setShowEvent?: () => void;
   setLoadingAgain: (value) => void;
 }
-const ModalAddProcess = ({ isShowEvent = false, setShowEvent, setLoadingAgain }: Props) => {
+const ModalAddProcess = ({
+  isShowEvent = false,
+  setShowEvent,
+  setLoadingAgain,
+}: Props) => {
   const { width, height } = useWindowDimensions();
 
   const [isShowDatePicker, setIsShowDatePicker] = useState(false);
@@ -38,9 +39,18 @@ const ModalAddProcess = ({ isShowEvent = false, setShowEvent, setLoadingAgain }:
   const [linkVideo, setLinkVideo] = useState<any>("");
   const [noteEvent, setNoteEvent] = useState<any>("");
   const [image, setImage] = useState<any>(null);
+  const [isShowCurrentImage, setShowCurrentImage] = useState(false);
+  const [currentImage, setCurrentImage] = useState<any>();
 
   const handleAddEvent = () => {
-    insertANewEvent(nameEvent, dateEvent, desEvent, noteEvent, image, linkVideo).then((isRes) => {
+    insertANewEvent(
+      nameEvent,
+      dateEvent,
+      desEvent,
+      noteEvent,
+      image,
+      linkVideo
+    ).then((isRes) => {
       setLoadingAgain(true);
       setTimeout(() => {
         setLoadingAgain(false);
@@ -57,10 +67,11 @@ const ModalAddProcess = ({ isShowEvent = false, setShowEvent, setLoadingAgain }:
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
+      allowsEditing: false,
       quality: 1,
       base64: false,
-      selectionLimit: 1,
+      selectionLimit: 3,
+      allowsMultipleSelection: true,
     });
 
     if (!result.canceled) {
@@ -68,6 +79,10 @@ const ModalAddProcess = ({ isShowEvent = false, setShowEvent, setLoadingAgain }:
     }
   };
 
+  const handleShowPicture = (item) => {
+    setCurrentImage(item);
+    setShowCurrentImage(true);
+  };
   const styles = StyleSheet.create({
     input: {
       flexDirection: "row",
@@ -98,6 +113,26 @@ const ModalAddProcess = ({ isShowEvent = false, setShowEvent, setLoadingAgain }:
   return (
     <View>
       <Modal
+        visible={isShowCurrentImage}
+        popup
+        closable={false}
+        maskClosable={true}
+      >
+        <View>
+          <Image
+            // @ts-ignore
+            source={currentImage}
+            style={{
+              height: 400,
+              width: width,
+            }}
+            resizeMethod="auto"
+            resizeMode="cover"
+          />
+          <Button onPress={() => setShowCurrentImage(false)}> Thoát </Button>
+        </View>
+      </Modal>
+      <Modal
         style={{
           width: width - 10,
         }}
@@ -117,10 +152,16 @@ const ModalAddProcess = ({ isShowEvent = false, setShowEvent, setLoadingAgain }:
               textAlign: "center",
             }}
           >
-            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+            <Text
+              style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
+            >
               Thêm sự kiện:
             </Text>
-            <Button type="ghost" size="small" onPress={() => setIsShowDatePicker(true)}>
+            <Button
+              type="ghost"
+              size="small"
+              onPress={() => setIsShowDatePicker(true)}
+            >
               <Text>Chọn ngày {dateEvent}</Text>
             </Button>
           </View>
@@ -134,8 +175,14 @@ const ModalAddProcess = ({ isShowEvent = false, setShowEvent, setLoadingAgain }:
           {
             text: "Thêm",
             onPress: () => {
-              if (nameEvent?.trim() === "" || dateEvent?.trim() === "" || desEvent?.trim() === "") {
-                Toast.fail("Vui lòng kiểm tra: ngày sự kiện, mô tả sự kiện và tên sự kiện");
+              if (
+                nameEvent?.trim() === "" ||
+                dateEvent?.trim() === "" ||
+                desEvent?.trim() === ""
+              ) {
+                Toast.fail(
+                  "Vui lòng kiểm tra: ngày sự kiện, mô tả sự kiện và tên sự kiện"
+                );
               } else {
                 setShowEvent();
                 handleAddEvent();
@@ -157,7 +204,9 @@ const ModalAddProcess = ({ isShowEvent = false, setShowEvent, setLoadingAgain }:
               dismissText="Thoát"
               onOk={() => setIsShowDatePicker(false)}
               onDismiss={() => setIsShowDatePicker(false)}
-              onChange={(value) => setDateEvent(dayjs(value).format("DD-MM-YYYY"))}
+              onChange={(value) =>
+                setDateEvent(dayjs(value).format("DD-MM-YYYY"))
+              }
             ></DatePicker>
             <View style={styles.inputError}>
               <Input
@@ -198,65 +247,49 @@ const ModalAddProcess = ({ isShowEvent = false, setShowEvent, setLoadingAgain }:
                 onChangeText={(value) => setNoteEvent(value?.trim())}
               />
             </View>
-            <View style={styles.input}>
-              <Grid
-                data={image}
-                columnNum={3}
-                itemStyle={{ height: 80 }}
-                renderItem={(item) => (
-                  <Button
-                    style={{ width: 80, height: 80 }}
-                    type="ghost"
-                    onPress={() => {
-                      Modal.alert(
-                        "Trình hiển thị hình ảnh",
-                        <View
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: 350,
-                            width: width,
-                          }}
-                        >
-                          <Image
-                            // @ts-ignore
-                            source={item}
-                            style={{
-                              height: 350,
-                              width: width,
-                            }}
-                            resizeMethod="auto"
-                            resizeMode="cover"
-                          />
-                        </View>,
-                        [
-                          {
-                            text: "Xóa",
-                            style: "cancel",
-                          },
-                          {
-                            text: "Thoát",
-                          },
-                        ]
-                      );
-                    }}
-                  >
-                    <Image
-                      // @ts-ignore
-                      source={item}
-                      style={{
-                        height: 80,
-                        width: 80,
-                      }}
-                      resizeMethod="auto"
-                      resizeMode="cover"
-                    />
-                  </Button>
-                )}
-              />
-            </View>
-            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+            <WhiteSpace />
+
+            {image?.length > 0 && (
+              <View
+                style={{
+                  paddingTop: 10,
+                  borderWidth: 1,
+                  borderColor: "#1870bc",
+                  borderRadius: 10,
+                }}
+              >
+                <Grid
+                  data={image}
+                  columnNum={3}
+                  itemStyle={{ height: 80 }}
+                  renderItem={(item) => (
+                    <Button
+                      style={{ width: 80, height: 80 }}
+                      type="ghost"
+                      onPress={() => handleShowPicture(item)}
+                    >
+                      <Image
+                        // @ts-ignore
+                        source={item}
+                        style={{
+                          height: 80,
+                          width: 80,
+                        }}
+                        resizeMethod="auto"
+                        resizeMode="cover"
+                      />
+                    </Button>
+                  )}
+                />
+              </View>
+            )}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <Button
                 size="small"
                 type="ghost"

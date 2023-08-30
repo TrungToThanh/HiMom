@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, Dimensions, ScrollView, ImageBackground, Linking, Image } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  ScrollView,
+  ImageBackground,
+  Linking,
+} from "react-native";
 import {
   Button,
   WhiteSpace,
@@ -24,7 +31,6 @@ import {
   faCheck,
   faCircle,
   faHandsClapping,
-  faCalendarWeek,
   faHeart,
   faImage,
   faVideo,
@@ -32,7 +38,6 @@ import {
 import { library } from "@fortawesome/fontawesome-svg-core";
 
 import dayjs from "dayjs";
-import CalendarStrip from "react-native-calendar-strip";
 import { deleteAEvent, getAllEvent } from "../../../api/eventProcess/event";
 import { ProcessBabyBase } from "../../const/type";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -40,6 +45,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import moment from "moment";
 import _ from "lodash";
 import ModalAddProcess from "./sub-component/modal-add-process";
+import ModalShowImage from "./sub-component/modal-show-image";
 
 interface Props {
   listAccountBaby?: any;
@@ -55,14 +61,22 @@ const ProcessBaby = ({
   diffDay,
   isDiffFirstDay,
 }: Props) => {
-  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd, faSeedling);
+  library.add(
+    faCheckSquare,
+    faCoffee,
+    faTrash,
+    faUser,
+    faCalendar,
+    faEdit,
+    faAdd,
+    faSeedling
+  );
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const image = require("../../../assets/background.jpg");
 
   const Step = Steps.Step;
-  // const [isLoading, setIsLoading] = useState(false);
 
   //Get value date
   const now = dayjs().format("DD-MM-YYYYY");
@@ -70,11 +84,15 @@ const ProcessBaby = ({
   const isFirstDay = useMemo(() => {
     let dateObject = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
       var dateParts = idCurrent?.birthday.split("-");
 
       // month is 0-based, that's why we need dataParts[1] - 1
-      dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
+      dateObject = dayjs(
+        new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+      )
         .subtract(280, "days")
         .format("DD-MM-YYYY");
     }
@@ -84,7 +102,9 @@ const ProcessBaby = ({
   const isBirthday = useMemo(() => {
     let valueReturn = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
 
       if (idCurrent) valueReturn = String(idCurrent?.birthday);
     }
@@ -94,11 +114,15 @@ const ProcessBaby = ({
   const isDiffFirstDay1 = useMemo(() => {
     let dateObject;
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
       var dateParts = idCurrent?.birthday.split("-");
 
       dateObject = dayjs(new Date()).diff(
-        dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])).subtract(280, "days"),
+        dayjs(
+          new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+        ).subtract(280, "days"),
         "days"
       );
     }
@@ -108,7 +132,9 @@ const ProcessBaby = ({
   const diffDay1 = useMemo(() => {
     let day = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
       var dateParts = idCurrent && idCurrent?.birthday.split("-");
       day = `${dateParts[2]}-${dateParts[1]}-${+dateParts[0]}`;
     }
@@ -120,11 +146,16 @@ const ProcessBaby = ({
   const [itemIdCurrent, setItemIdCurrent] = useState<any>();
   const [indexItemCurrent, setIndexItemCurrent] = useState<any>();
 
+  const [listImageCurrent, setListImage] = useState<any>();
+  const [isShowCurrentImage, setShowCurrentImage] = useState(false);
+
   const { listEvent } = getAllEvent({ isLoading: loadingAgain });
 
   const listEventCook = useMemo(() => {
     const listEventCurrent = listEvent?.length > 0 ? listEvent : [];
-    const isHasFirstDay = listEventCurrent?.find((item) => Number(item.id) === -1);
+    const isHasFirstDay = listEventCurrent?.find(
+      (item) => Number(item.id) === -1
+    );
     if (!isHasFirstDay)
       listEventCurrent?.unshift({
         id: -1,
@@ -135,7 +166,9 @@ const ProcessBaby = ({
         image: "",
         linkvideo: "",
       });
-    const isHasBirthDay = listEventCurrent?.find((item) => Number(item.id) === 1000);
+    const isHasBirthDay = listEventCurrent?.find(
+      (item) => Number(item.id) === 1000
+    );
     if (!isHasBirthDay)
       listEventCurrent?.push(
         {
@@ -161,14 +194,21 @@ const ProcessBaby = ({
     const newList = Array.from(new Set(listEventCurrent));
     const b = newList.sort(function (a: ProcessBabyBase, b: ProcessBabyBase) {
       var dateParts: any = String(a.date).split("-");
-      const dateObjectA = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+      const dateObjectA = new Date(
+        +dateParts[2],
+        dateParts[1] - 1,
+        +dateParts[0]
+      );
 
       var datePartsB: any = String(b.date).split("-");
-      const dateObjectB = new Date(+datePartsB[2], datePartsB[1] - 1, +datePartsB[0]);
+      const dateObjectB = new Date(
+        +datePartsB[2],
+        datePartsB[1] - 1,
+        +datePartsB[0]
+      );
 
       return dateObjectA.getTime() - dateObjectB.getTime();
     });
-    console.log("b", b);
     return b;
   }, [listEvent]);
 
@@ -199,6 +239,14 @@ const ProcessBaby = ({
       ]);
   };
 
+  const listImage = useMemo(() => {
+    const a = listImageCurrent?.map((item) => {
+      return { uri: item.uri };
+    });
+    console.log("listImageCurrent", a);
+    return a;
+  }, [listImageCurrent]);
+
   if (isInfoComponent) {
     return (
       <View
@@ -226,7 +274,9 @@ const ProcessBaby = ({
               </Text>
             }
             status={"finish"}
-            renderIcon={() => <FontAwesomeIcon icon={faCheck} size={14} color="#1870bc" />}
+            renderIcon={() => (
+              <FontAwesomeIcon icon={faCheck} size={14} color="#1870bc" />
+            )}
           />
           <Step
             key={1111}
@@ -239,13 +289,17 @@ const ProcessBaby = ({
             description={
               <Text>
                 <Button size="small" type="ghost">
-                  <Text style={{ color: "green", fontWeight: "600" }}>{isDiffFirstDay}</Text>
+                  <Text style={{ color: "green", fontWeight: "600" }}>
+                    {isDiffFirstDay}
+                  </Text>
                   <Text> ngày</Text>
                 </Button>
               </Text>
             }
             status={"wait"}
-            renderIcon={() => <FontAwesomeIcon icon={faSeedling} color="green" size={14} />}
+            renderIcon={() => (
+              <FontAwesomeIcon icon={faSeedling} color="green" size={14} />
+            )}
           />
           <Step
             key={22222}
@@ -257,13 +311,21 @@ const ProcessBaby = ({
             description={
               <Text>
                 <Button size="small" type="ghost">
-                  <Text style={{ color: "#faad00", fontWeight: "600" }}>{diffDay}</Text>
+                  <Text style={{ color: "#faad00", fontWeight: "600" }}>
+                    {diffDay}
+                  </Text>
                   <Text> ngày nữa!</Text>
                 </Button>
               </Text>
             }
             status={"wait"}
-            icon={<FontAwesomeIcon icon={faHandsClapping} color="#faad00" size={13} />}
+            icon={
+              <FontAwesomeIcon
+                icon={faHandsClapping}
+                color="#faad00"
+                size={13}
+              />
+            }
           />
         </Steps>
       </View>
@@ -278,6 +340,11 @@ const ProcessBaby = ({
           resizeMode="cover"
           style={{ width: windowWidth, height: windowHeight }}
         >
+          <ModalShowImage
+            listImage={listImage}
+            isShowCurrentImage={isShowCurrentImage}
+            setShowCurrentImage={() => setShowCurrentImage(false)}
+          />
           <ModalAddProcess
             isShowEvent={isShowEvent}
             setShowEvent={() => setShowEvent(false)}
@@ -290,7 +357,14 @@ const ProcessBaby = ({
               backgroundColor: "transparent",
             }}
           >
-            <Text style={{ marginTop: 20, color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+            <Text
+              style={{
+                marginTop: 20,
+                color: "#1870bc",
+                fontSize: 16,
+                fontWeight: "bold",
+              }}
+            >
               Chuẩn bị
             </Text>
           </View>
@@ -332,7 +406,8 @@ const ProcessBaby = ({
                   color: "#1870bc",
                 }}
               >
-                {+isDiffFirstDay1 > 0 ? Math.round(isDiffFirstDay1 / 7) : 0}/40 Tuần
+                {+isDiffFirstDay1 > 0 ? Math.round(isDiffFirstDay1 / 7) : 0}/40
+                Tuần
               </Text>
             </View>
             <View
@@ -346,11 +421,25 @@ const ProcessBaby = ({
                 display: "flex",
               }}
             >
-              <Text style={{ fontSize: 14, fontWeight: "bold", marginTop: 10, marginLeft: 10 }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "bold",
+                  marginTop: 10,
+                  marginLeft: 10,
+                }}
+              >
                 {isDiffFirstDay1}
               </Text>
               <FontAwesomeIcon icon={faHeart} color="red" />
-              <Text style={{ fontSize: 14, fontWeight: "bold", marginTop: 10, marginLeft: 5 }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "bold",
+                  marginTop: 10,
+                  marginLeft: 5,
+                }}
+              >
                 {+diffDay1 > 0 ? diffDay1 : 0}
               </Text>
             </View>
@@ -367,7 +456,9 @@ const ProcessBaby = ({
               marginTop: 20,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}>
+            <Text
+              style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}
+            >
               Tiến trình phát triển:
             </Text>
             <Button
@@ -377,7 +468,9 @@ const ProcessBaby = ({
               onPress={() => setShowEvent(true)}
             >
               <FontAwesomeIcon icon={faAdd} />
-              <Text style={{ fontSize: 13, fontWeight: "500" }}>Thêm sự kiện</Text>
+              <Text style={{ fontSize: 13, fontWeight: "500" }}>
+                Thêm sự kiện
+              </Text>
             </Button>
           </View>
           <ScrollView>
@@ -449,8 +542,10 @@ const ProcessBaby = ({
                                     setIndexItemCurrent(index);
                                     setItemIdCurrent(item.id);
                                   }}
-                                  onSwipeableOpen={() => setIndexItemCurrent(index)}
-                                  renderLeftActions={(progressAnimatedValue, dragAnimatedValue) => {
+                                  onSwipeableOpen={() =>
+                                    setIndexItemCurrent(index)
+                                  }
+                                  renderLeftActions={() => {
                                     if (
                                       indexItemCurrent === index &&
                                       itemIdCurrent !== -1 &&
@@ -484,14 +579,23 @@ const ProcessBaby = ({
                                               height: 50,
                                               paddingTop: 5,
                                             }}
-                                            onPress={() => handleDeleteEvent(item.id)}
+                                            onPress={() =>
+                                              handleDeleteEvent(item.id)
+                                            }
                                           >
-                                            <FontAwesomeIcon icon={faTrash} color="red" />
+                                            <FontAwesomeIcon
+                                              icon={faTrash}
+                                              color="red"
+                                            />
                                           </Button>
                                         </View>
                                       );
                                     } else {
-                                      return <Text style={{ color: "transparent" }}>'</Text>;
+                                      return (
+                                        <Text style={{ color: "transparent" }}>
+                                          '
+                                        </Text>
+                                      );
                                     }
                                   }}
                                   containerStyle={{
@@ -508,8 +612,10 @@ const ProcessBaby = ({
                                     }}
                                     extra={
                                       <View>
-                                        {(String(item.linkvideo)?.trim() !== "" ||
-                                          String(item.image)?.trim() !== "") && (
+                                        {(String(item.linkvideo)?.trim() !==
+                                          "" ||
+                                          String(item.image)?.trim() !==
+                                            "") && (
                                           <View
                                             style={{
                                               width: 50,
@@ -517,44 +623,40 @@ const ProcessBaby = ({
                                               display: "flex",
                                             }}
                                           >
-                                            {String(item.image)?.trim() !== "" && (
+                                            {String(item.image)?.trim() !==
+                                              "" && (
                                               <Button
                                                 size="small"
                                                 style={{ width: 20 }}
                                                 onPress={() => {
-                                                  Modal.alert(
-                                                    "Hình ảnh",
-                                                    <View>
-                                                      <Image
-                                                        // @ts-ignore
-                                                        source={JSON?.parse(item.image)}
-                                                        style={{
-                                                          height: 350,
-                                                          width: 350,
-                                                        }}
-                                                        resizeMethod="auto"
-                                                        resizeMode="cover"
-                                                      />
-                                                    </View>,
-                                                    [
-                                                      {
-                                                        text: "Thoát",
-                                                        style: "cancel",
-                                                      },
-                                                    ]
+                                                  setListImage(
+                                                    JSON.parse(item.image)
                                                   );
+                                                  setShowCurrentImage(true);
                                                 }}
                                               >
-                                                <FontAwesomeIcon icon={faImage} />
+                                                <FontAwesomeIcon
+                                                  icon={faImage}
+                                                />
                                               </Button>
                                             )}
-                                            {String(item.linkvideo)?.trim() !== "" && (
+                                            {String(item.linkvideo)?.trim() !==
+                                              "" && (
                                               <Button
                                                 size="small"
-                                                style={{ width: 20, marginLeft: 10 }}
-                                                onPress={() => Linking.openURL(item.linkvideo)}
+                                                style={{
+                                                  width: 20,
+                                                  marginLeft: 10,
+                                                }}
+                                                onPress={() =>
+                                                  Linking.openURL(
+                                                    item.linkvideo
+                                                  )
+                                                }
                                               >
-                                                <FontAwesomeIcon icon={faVideo} />
+                                                <FontAwesomeIcon
+                                                  icon={faVideo}
+                                                />
                                               </Button>
                                             )}
                                           </View>
@@ -562,7 +664,12 @@ const ProcessBaby = ({
                                       </View>
                                     }
                                   >
-                                    <Text style={{ fontSize: 13, fontWeight: "400" }}>
+                                    <Text
+                                      style={{
+                                        fontSize: 13,
+                                        fontWeight: "400",
+                                      }}
+                                    >
                                       {item.description}
                                     </Text>
                                   </List.Item>
@@ -573,11 +680,29 @@ const ProcessBaby = ({
                           status={item?.status || "finish"}
                           renderIcon={() => {
                             if (+item.id === 1000) {
-                              return <FontAwesomeIcon icon={faCircle} color="green" size={22} />;
+                              return (
+                                <FontAwesomeIcon
+                                  icon={faCircle}
+                                  color="green"
+                                  size={22}
+                                />
+                              );
                             } else if (+item.id === 1001) {
-                              return <FontAwesomeIcon icon={faCircle} color="#faad00" size={22} />;
+                              return (
+                                <FontAwesomeIcon
+                                  icon={faCircle}
+                                  color="#faad00"
+                                  size={22}
+                                />
+                              );
                             } else {
-                              return <FontAwesomeIcon icon={faCircle} size={22} color="#1870bc" />;
+                              return (
+                                <FontAwesomeIcon
+                                  icon={faCircle}
+                                  size={22}
+                                  color="#1870bc"
+                                />
+                              );
                             }
                           }}
                         />
