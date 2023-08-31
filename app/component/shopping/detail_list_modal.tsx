@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+import { View, Text, Image, StyleSheet, Dimensions, ImageBackground } from "react-native";
 import {
   Button,
   Card,
@@ -24,6 +24,7 @@ import {
   faSquare,
   faCircleCheck,
   faSpinner,
+  faArrowCircleLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -31,11 +32,7 @@ import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import { useNavigation } from "@react-navigation/native";
 import CardBody from "@ant-design/react-native/lib/card/CardBody";
 
-import {
-  FlatList,
-  GestureHandlerRootView,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import "react-native-gesture-handler";
 import SwipeActionComponent from "../../const/swipe_action_component";
 import { useRoute } from "@react-navigation/native";
@@ -70,16 +67,9 @@ const DetailListModal = ({
   setShowInfo,
   setShowDetailModalToCreate,
 }: Props) => {
-  library.add(
-    faCircleCheck,
-    faCoffee,
-    faTrash,
-    faUser,
-    faCalendar,
-    faEdit,
-    faAdd,
-    faSquare
-  );
+  const image = require("../../../assets/background.jpg");
+  const navigation = useNavigation();
+  library.add(faCircleCheck, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd, faSquare);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const RadioItem = Radio.RadioItem;
@@ -149,102 +139,145 @@ const DetailListModal = ({
   ];
   return (
     <GestureHandlerRootView>
-      <View
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
+      <ImageBackground
+        source={image}
+        resizeMode="cover"
+        style={{ width: windowWidth, height: windowHeight }}
       >
-        <WhiteSpace />
-        <Card
+        <View
           style={{
-            width: windowWidth - 10,
-            height: windowHeight - 60,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "transparent",
           }}
         >
-          <CardHeader
-            title={
-              <CardHeaderComponent
-                iconName={faAdd}
-                textButton="Thêm hàng hóa"
-                nameHeader=" Danh mục chi tiết:"
-                setShowDetailModal={() => setShowDetailModalToCreate()}
-              />
-            }
-          ></CardHeader>
-          <CardBody>
-            <View style={{ width: windowWidth - 10 }}>
-              <FlatList
-                ListHeaderComponent={
-                  <List.Item
+          <View
+            style={{
+              width: windowWidth - 20,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              alignContent: "center",
+              alignSelf: "center",
+              backgroundColor: "transparent",
+              marginTop: 20,
+              marginLeft: 4,
+            }}
+          >
+            <View onTouchStart={() => navigation.goBack()}>
+              <FontAwesomeIcon icon={faArrowCircleLeft} color={"green"} />
+            </View>
+            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+              Danh mục chi tiết
+            </Text>
+            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}></Text>
+          </View>
+          <WhiteSpace size="lg" />
+          <View
+            style={{
+              width: windowWidth - 10,
+              borderWidth: 2,
+              borderColor: "#e5eaee",
+              borderRadius: 10,
+              height: windowHeight - 100,
+            }}
+          >
+            <View
+              style={{
+                width: windowWidth - 20,
+                marginTop: 10,
+                display: "flex",
+                alignSelf: "center",
+                justifyContent: "space-between",
+                flexDirection: "row",
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc", width: 80 }}>
+                Chi tiết:
+              </Text>
+              <Button
+                type="ghost"
+                size="small"
+                style={{ width: 110, backgroundColor: "transparent" }}
+                onPress={() => setShowDetailModalToCreate()}
+              >
+                <FontAwesomeIcon icon={faAdd} />
+                <Text style={{ fontSize: 12, fontWeight: "400" }}>Thêm danh mục</Text>
+              </Button>
+            </View>
+            <FlatList
+              ListHeaderComponent={
+                <List.Item
+                  extra={
+                    <Text
+                      style={{ fontSize: 14, fontWeight: "500", backgroundColor: "transparent" }}
+                    >
+                      Đã mua
+                    </Text>
+                  }
+                  style={{ backgroundColor: "transparent" }}
+                >
+                  <Text style={{ fontSize: 14, fontWeight: "500", backgroundColor: "transparent" }}>
+                    Danh mục hàng hóa
+                  </Text>
+                </List.Item>
+              }
+              style={{ backgroundColor: "transparent" }}
+              ListFooterComponentStyle={{ backgroundColor: "transparent" }}
+              contentContainerStyle={{ backgroundColor: "transparent" }}
+              data={listAllItems && listAllItems?.length > 0 ? listAllItems : []}
+              renderItem={({ item }) => (
+                <SwipeAction
+                  left={handleLeftAction}
+                  onSwipeableOpen={() => setItemId(item.id)}
+                  containerStyle={{
+                    backgroundColor: "transparent",
+                    paddingLeft: 5,
+                  }}
+                  childrenContainerStyle={{
+                    backgroundColor: "transparent",
+                    borderBottomColor: "#dddddd",
+                    borderBottomWidth: 1,
+                    paddingRight: 0,
+                  }}
+                >
+                  <Item
+                    arrow="horizontal"
+                    onPress={() => {
+                      setItemIdCurrent(item.id), setShowInfo(), setShowDetailModal();
+                    }}
+                    style={{
+                      height: 40,
+                      display: "flex",
+                      backgroundColor: "#transparent",
+                    }}
                     extra={
-                      <Text style={{ fontSize: 14, fontWeight: "500" }}>
-                        Đã mua
-                      </Text>
+                      <FontAwesomeIcon
+                        icon={+item.buy === 1 ? faCircleCheck : faSpinner}
+                        color={+item.buy === 1 ? "green" : "#f0f1f3"}
+                      />
                     }
                   >
-                    <Text style={{ fontSize: 14, fontWeight: "500" }}>
-                      Danh mục hàng hóa
-                    </Text>
-                  </List.Item>
-                }
-                data={
-                  listAllItems && listAllItems?.length > 0 ? listAllItems : []
-                }
-                renderItem={({ item }) => (
-                  <SwipeAction
-                    left={handleLeftAction}
-                    onSwipeableOpen={() => setItemId(item.id)}
-                    containerStyle={{
-                      backgroundColor: "red",
-                      paddingLeft: 5,
-                    }}
-                    childrenContainerStyle={{
-                      backgroundColor: "#f0f1f3",
-                      borderBottomColor: "#dddddd",
-                      borderBottomWidth: 1,
-                      paddingRight: 0,
-                    }}
-                  >
-                    <Item
-                      arrow="horizontal"
-                      onPress={() => {
-                        setItemIdCurrent(item.id),
-                          setShowInfo(),
-                          setShowDetailModal();
-                      }}
+                    <Text
                       style={{
-                        height: 40,
+                        fontSize: 14,
+                        fontWeight: "500",
                         display: "flex",
-                        backgroundColor: "#f0f1f3",
                       }}
-                      extra={
-                        <FontAwesomeIcon
-                          icon={+item.buy === 1 ? faCircleCheck : faSpinner}
-                          color={+item.buy === 1 ? "green" : "#f0f1f3"}
-                        />
-                      }
                     >
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "500",
-                          display: "flex",
-                        }}
-                      >
-                        {item.nameItem}
-                      </Text>
-                    </Item>
-                  </SwipeAction>
-                )}
-                keyExtractor={(item) => item.id}
-                ListEmptyComponent={<EmptyData />}
-              />
-            </View>
-          </CardBody>
-        </Card>
-      </View>
+                      {item.nameItem}
+                    </Text>
+                  </Item>
+                </SwipeAction>
+              )}
+              keyExtractor={(item) => item.id}
+              ListEmptyComponent={<EmptyData />}
+            />
+          </View>
+        </View>
+      </ImageBackground>
     </GestureHandlerRootView>
   );
 };

@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { WhiteSpace } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import getDimensions from "../../../hook/get_dimension";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   namePrepare: string;
@@ -12,6 +13,7 @@ interface Props {
   isGoods: string | number;
   isMoneyGoods: string | number;
   isMoneyGoodsBuy: string | number;
+  nameRouteUserId: any;
 }
 const MainListPrepare = ({
   namePrepare,
@@ -19,12 +21,28 @@ const MainListPrepare = ({
   isGoods,
   isMoneyGoods,
   isMoneyGoodsBuy,
+  nameRouteUserId,
 }: Props) => {
   const { windowWidth, windowHeight, cardHeight, headerCardHeight, bodyCardHeight } =
     getDimensions();
+  const navigation = useNavigation();
+
+  const activePanel = useMemo(() => {
+    const a = namePrepare === "Chuẩn bị của mẹ:" ? 0 : namePrepare === "Chuẩn bị cho bé:" ? 1 : 2;
+    return a;
+  }, [namePrepare]);
 
   return (
-    <View style={{ width: windowWidth - 20 }}>
+    <View
+      style={{ width: windowWidth - 20 }}
+      onTouchStart={() =>
+        // @ts-ignore
+        navigation.navigate("MainShop", {
+          userId: Number(nameRouteUserId),
+          itemActive: activePanel,
+        })
+      }
+    >
       <View
         style={{
           display: "flex",

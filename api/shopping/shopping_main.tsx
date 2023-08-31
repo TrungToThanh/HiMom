@@ -18,6 +18,7 @@ export const createShoppingMainTable = (preName, nameRouteUserId) => {
 };
 
 export const insertANewItemToShoppingMain = (preName, nameRouteUserId, nameItem) => {
+  console.log("preName, nameRouteUserId, nameItem", preName, nameRouteUserId, nameItem);
   const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {

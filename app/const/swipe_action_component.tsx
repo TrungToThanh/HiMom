@@ -64,17 +64,19 @@ const SwipeActionComponent = ({
           ? listAllItemsBaby
           : listAllItemsOther
       }
+      style={{ marginRight: -20, backgroundColor: "transparent" }}
+      contentContainerStyle={{ backgroundColor: "transparent" }}
+      ListHeaderComponentStyle={{ backgroundColor: "transparent" }}
       initialNumToRender={8}
       renderItem={({ item, index }) => (
         <SwipeAction
           left={handleLeftAction}
           onSwipeableOpen={() => setItemId(item.id, item.nameItem)}
-          containerStyle={{ backgroundColor: "red", paddingLeft: 5 }}
+          containerStyle={{ backgroundColor: "transparent" }}
           childrenContainerStyle={{
-            backgroundColor: "#f0f1f3",
+            backgroundColor: "transparent",
             borderBottomColor: "#dddddd",
             borderBottomWidth: 1,
-            paddingRight: 0,
           }}
         >
           <Item
@@ -83,34 +85,20 @@ const SwipeActionComponent = ({
             style={{
               height: 40,
               display: "flex",
-              backgroundColor: "#f0f1f3",
+              backgroundColor: "transparent",
             }}
             extra={
-              <View style={{ marginRight: 10 }}>
+              <View style={{ marginRight: 10, backgroundColor: "transparent" }}>
                 <Badge
                   text={
                     <Text>
-                      <FontAwesomeIcon
-                        icon={faCartShopping}
-                        color="white"
-                        size={12}
-                      />
-                      {` ${+item.numberIsBuyGoods || 0}/${
-                        +item.numberGoods || 0
-                      }`}
+                      <FontAwesomeIcon icon={faCartShopping} color="white" size={12} />
+                      {` ${+item.numberIsBuyGoods || 0}/${+item.numberGoods || 0}`}
                     </Text>
                   }
                   size="small"
                   overflowCount={99}
-                >
-                  <View
-                    style={{
-                      width: 150,
-                      height: 20,
-                      marginBottom: -20,
-                    }}
-                  ></View>
-                </Badge>
+                ></Badge>
               </View>
             }
           >
