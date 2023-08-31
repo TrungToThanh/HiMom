@@ -68,8 +68,12 @@ const DetailShopList = () => {
           {showComponent && (
             <DetailListModal
               setShowDetailModal={() => setShowDetailModal(true)}
-              setShowDetailModalToCreate={() => setShowDetailModalToCreate(true)}
-              setShowInfo={() => setShowInfo(true)}
+              setShowDetailModalToCreate={() => {
+                setShowDetailModalToCreate(true), setShowInfo(false);
+              }}
+              setShowInfo={() => {
+                setShowDetailModalToCreate(false), setShowInfo(true);
+              }}
               setReload={() => {
                 setShowInfo(false);
                 setReload(false);

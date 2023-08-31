@@ -58,7 +58,7 @@ const DetailShopModal = ({
   nameRouteUserId,
   nameRouteItemId,
   setReload,
-  isCreate,
+  isCreate = false,
 }: Props) => {
   library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd, faClose);
   const { windowWidth, windowHeight, cardHeight, headerCardHeight, bodyCardHeight } =
@@ -107,45 +107,48 @@ const DetailShopModal = ({
         String(isBuy) !== "" &&
         String(isMoney) !== ""
       ) {
-        isInfo
-          ? updateAItemsOfShoppingDetail(
-              nameRouteTypeTable,
-              nameRouteUserId,
-              nameRouteItemId,
-              isNameItem,
-              isDescriptionItem,
-              isBuy,
-              isMoney,
-              isNote,
-              image,
-              itemIdCurrent
-            ).then((isRes) => {
-              setReload();
-
-              if (isRes) {
-                Toast.success("Cập nhập thành công!");
-              } else {
-                Toast.fail("Thất bại!");
-              }
-            })
-          : insertANewItemToShoppingDetail(
-              nameRouteTypeTable,
-              nameRouteUserId,
-              nameRouteItemId,
-              isNameItem,
-              isDescriptionItem,
-              isBuy,
-              isMoney,
-              isNote,
-              image
-            ).then((isRes) => {
-              setReload();
-              if (isRes) {
-                Toast.success("Đã tạo mới thành công!");
-              } else {
-                Toast.fail("Thất bại!");
-              }
-            });
+        if (isCreate) {
+          insertANewItemToShoppingDetail(
+            nameRouteTypeTable,
+            nameRouteUserId,
+            nameRouteItemId,
+            isNameItem,
+            isDescriptionItem,
+            isBuy,
+            isMoney,
+            isNote,
+            image
+          ).then((isRes) => {
+            setReload();
+            if (isRes) {
+              Toast.success("Đã tạo mới thành công!");
+            } else {
+              Toast.fail("Thất bại!");
+            }
+            setShowDetailModal();
+          });
+        } else {
+          updateAItemsOfShoppingDetail(
+            nameRouteTypeTable,
+            nameRouteUserId,
+            nameRouteItemId,
+            isNameItem,
+            isDescriptionItem,
+            isBuy,
+            isMoney,
+            isNote,
+            image,
+            itemIdCurrent
+          ).then((isRes) => {
+            setReload();
+            setShowDetailModal();
+            if (isRes) {
+              Toast.success("Cập nhập thành công!");
+            } else {
+              Toast.fail("Thất bại!");
+            }
+          });
+        }
       }
     }
   };

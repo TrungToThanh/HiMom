@@ -1,50 +1,27 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions, ImageBackground } from "react-native";
-import {
-  Button,
-  Card,
-  WhiteSpace,
-  Accordion,
-  Radio,
-  Modal,
-  SwipeAction,
-  List,
-  Toast,
-  Grid,
-  Tag,
-} from "@ant-design/react-native";
+import { Button, WhiteSpace, Modal, SwipeAction, List, Toast } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
-  faCoffee,
   faTrash,
-  faUser,
-  faCalendar,
-  faEdit,
   faAdd,
-  faSquare,
   faCircleCheck,
   faSpinner,
   faArrowCircleLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { library } from "@fortawesome/fontawesome-svg-core";
 
-import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import { useNavigation } from "@react-navigation/native";
-import CardBody from "@ant-design/react-native/lib/card/CardBody";
 
 import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import "react-native-gesture-handler";
-import SwipeActionComponent from "../../const/swipe_action_component";
-import { useRoute } from "@react-navigation/native";
-import DetailShopModal from "./detail_shop_modal";
+
 import {
   deleteAItemsOfShoppingDetail,
   getAllItemShoppingDetail,
 } from "../../../api/shopping/shopping_detail";
 import EmptyData from "../../const/no_data";
 import { updateGoodOfAItemsOfShoppingMain } from "../../../api/shopping/shopping_main";
-import CardHeaderComponent from "./sub-component/cardHeader";
 import { TableItemList } from "../../const/type";
 
 interface Props {
@@ -73,10 +50,8 @@ const DetailListModal = ({
 }: Props) => {
   const image = require("../../../assets/background.jpg");
   const navigation = useNavigation();
-  library.add(faCircleCheck, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd, faSquare);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const RadioItem = Radio.RadioItem;
   const Item = List.Item;
 
   const [itemIdCurrent, setItemId] = useState();
@@ -87,7 +62,6 @@ const DetailListModal = ({
     nameRouteItemId
   );
 
-  console.log("nameMainItemId", nameMainItemId);
   useEffect(() => {
     console.log("listAllItems", listAllItems);
     if (listAllItems && listAllItems?.length > 0) {
