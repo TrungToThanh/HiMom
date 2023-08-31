@@ -84,7 +84,6 @@ const DetailShopModal = ({
       setMoneyItem(listAItems?.at(0)?.money);
       setNote(listAItems?.at(0)?.note);
       const listImage = listAItems?.at(0)?.picture;
-      console.log("listImage", listImage);
       listImage && setImage(JSON?.parse(listImage));
     }
     if (isCreate) {
@@ -212,7 +211,6 @@ const DetailShopModal = ({
                   style={styles.input}
                   onChangeText={(value) => {
                     const inValid = new RegExp("^\\s+$");
-                    if (inValid.test(value)) console.log("1212 ");
                     if (inValid.test(value) || String(value) === "") {
                       setNameItem("");
                       setIsError(true);

@@ -40,7 +40,6 @@ const Home = () => {
   }, []);
 
   const { listAccountBaby } = getAllBabyInBabyList();
-  library.add(faCheckSquare, faEye, faEyeSlash, faUser, faBasketShopping, faHomeUser, faSeedling);
   const tabs = [
     {
       title: (

@@ -12,7 +12,6 @@ const InfoApp = () => {
 
   date.then((item) => setDateInstall(item));
 
-  console.log(isDateInstall);
   return (
     <View>
       <Text>Tên phần mềm: {Application.applicationName} </Text>

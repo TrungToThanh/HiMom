@@ -69,7 +69,6 @@ const ReminderComponent = () => {
           }
         })
         .then(() => {
-          console.log("todoList", listEvent);
           setTodoList(listEvent);
           setIsLoading(false);
         });

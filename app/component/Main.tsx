@@ -1,11 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-import {
-  Radio,
-  Button,
-  WhiteSpace,
-  ActivityIndicator,
-} from "@ant-design/react-native";
+import { Radio, Button, WhiteSpace, ActivityIndicator, Result } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
@@ -17,6 +12,7 @@ import Login from "./login/login";
 import Account from "./account/account";
 
 export default function Main() {
+  const image = require("../../assets/pics/born.png");
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const [isShowLogin, setIsShowLogin] = useState(true);
@@ -28,10 +24,7 @@ export default function Main() {
         "antoutline",
         require("@ant-design/icons-react-native/fonts/antoutline.ttf")
       );
-      await Font.loadAsync(
-        "antfill",
-        require("@ant-design/icons-react-native/fonts/antfill.ttf")
-      );
+      await Font.loadAsync("antfill", require("@ant-design/icons-react-native/fonts/antfill.ttf"));
       setIsLoading(false);
     };
     loading();
@@ -65,31 +58,22 @@ export default function Main() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          backgroundColor: "white",
         }}
       >
-        <View
-          style={{
-            height: windowHeight / 5,
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Image
-            style={styles.tinyLogo}
-            source={{
-              uri: "https://reactnative.dev/img/tiny_logo.png",
-            }}
-          />
-        </View>
-
-        <WhiteSpace />
-
+        <Result
+          imgUrl={image}
+          title="Hi Mom!"
+          message={"Chúng ta là một gia đình"}
+          style={{ width: windowWidth, marginTop: 100 }}
+        />
         <View
           style={{
             flexDirection: "row",
             width: windowWidth,
             display: "flex",
             justifyContent: "space-around",
+            backgroundColor: "white",
           }}
         >
           <Button
@@ -103,9 +87,7 @@ export default function Main() {
             }}
             disabled={isDisableButtonLogin}
           >
-            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>
-              Đăng nhập
-            </Text>
+            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng nhập</Text>
           </Button>
           <Button
             onPress={() => setIsShowLogin(false)}
@@ -117,25 +99,35 @@ export default function Main() {
               borderBottomWidth: isShowLogin ? 0 : 1,
             }}
           >
-            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>
-              Đăng ký
-            </Text>
+            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng ký</Text>
           </Button>
         </View>
+        <WhiteSpace size="xl" />
         <View>
           {isShowLogin ? (
             <Login listAccountBaby={listAccountBaby} />
           ) : (
-            <Account
-              setIsLoading={() => {
-                setIsLoading(true);
-                setTimeout(() => {
-                  setIsLoading(false);
-                }, 300);
-              }}
-            />
+            <View>
+              <Account
+                setIsLoading={() => {
+                  setIsLoading(true);
+                  setTimeout(() => {
+                    setIsLoading(false);
+                  }, 300);
+                }}
+              />
+            </View>
           )}
         </View>
+        <WhiteSpace size="xl" />
+        <WhiteSpace size="xl" />
+        <WhiteSpace size="xl" />
+        <WhiteSpace size="xl" />
+        <WhiteSpace size="xl" />
+        <WhiteSpace size="xl" />
+        <WhiteSpace size="xl" />
+        <WhiteSpace size="xl" />
+        <WhiteSpace size="xl" />
       </View>
     </GestureHandlerRootView>
   );

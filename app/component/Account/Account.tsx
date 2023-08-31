@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-import {
-  Button,
-  InputItem,
-  Card,
-  WhiteSpace,
-  DatePicker,
-  Toast,
-} from "@ant-design/react-native";
+import { Button, InputItem, Card, WhiteSpace, DatePicker, Toast } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
@@ -41,8 +34,6 @@ const Account = ({
   listAccountBaby,
   nameRouteUserId,
 }: Props) => {
-  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit);
-
   const [isNameBaby, setIsNameBaby] = useState("");
   const [isPassword, setIsPassword] = useState("");
   const navigation = useNavigation();
@@ -72,13 +63,14 @@ const Account = ({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "white",
       }}
     >
       <WhiteSpace />
       <Card
         style={{
           width: windowWidth - 10,
-          height: windowHeight - 60,
+          backgroundColor: "white",
         }}
       >
         <Card.Body>
@@ -95,10 +87,7 @@ const Account = ({
             placeholder="Ngày sinh dự kiến"
             style={{ marginLeft: 20, borderBottomWidth: 1 }}
             extra={
-              <Button
-                onPress={() => setIsShowDatePicker(true)}
-                style={{ borderColor: "white" }}
-              >
+              <Button onPress={() => setIsShowDatePicker(true)} style={{ borderColor: "white" }}>
                 <FontAwesomeIcon icon={["fas", "calendar"]} />
               </Button>
             }
@@ -126,9 +115,7 @@ const Account = ({
               dismissText="Thoát"
               onOk={() => setIsShowDatePicker(false)}
               onDismiss={() => setIsShowDatePicker(false)}
-              onChange={(value) =>
-                setValueDatePicker(dayjs(value).format("DD-MM-YYYY"))
-              }
+              onChange={(value) => setValueDatePicker(dayjs(value).format("DD-MM-YYYY"))}
             ></DatePicker>
           )}
           <WhiteSpace />
@@ -157,13 +144,8 @@ const Account = ({
                   })
                 }
               >
-                <FontAwesomeIcon
-                  icon={["fas", "trash"]}
-                  style={{ color: "white" }}
-                />
-                <Text
-                  style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}
-                >
+                <FontAwesomeIcon icon={["fas", "trash"]} style={{ color: "white" }} />
+                <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
                   Xóa tài khoản
                 </Text>
               </Button>
@@ -189,31 +171,24 @@ const Account = ({
                     }
                   });
                 } else {
-                  insertValueBabyToBabyList(
-                    isNameBaby,
-                    valueDatePicker,
-                    isPassword
-                  ).then((isRes) => {
-                    if (isRes) {
-                      Toast.success("Đã tạo mới thành công!");
-                      setIsLoading();
-                      // @ts-ignore
-                      navigation.navigate("Main");
-                      navigation.reset;
-                    } else {
-                      Toast.fail("Thất bại!");
+                  insertValueBabyToBabyList(isNameBaby, valueDatePicker, isPassword).then(
+                    (isRes) => {
+                      if (isRes) {
+                        Toast.success("Đã tạo mới thành công!");
+                        setIsLoading();
+                        // @ts-ignore
+                        navigation.navigate("Main");
+                        navigation.reset;
+                      } else {
+                        Toast.fail("Thất bại!");
+                      }
                     }
-                  });
+                  );
                 }
               }}
             >
-              <FontAwesomeIcon
-                icon={["fas", "edit"]}
-                style={{ color: "white" }}
-              />
-              <Text
-                style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}
-              >
+              <FontAwesomeIcon icon={["fas", "edit"]} style={{ color: "white" }} />
+              <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
                 {isShowDeleteButton ? "Lưu thông tin" : "Tạo tài khoản"}
               </Text>
             </Button>

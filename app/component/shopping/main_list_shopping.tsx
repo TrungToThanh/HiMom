@@ -70,6 +70,7 @@ const MainShop = ({}: Props) => {
     isReload
   );
 
+  console.log("listAllItemsMom", listAllItemsMom);
   const handleLeftAction = [
     {
       text: <FontAwesomeIcon icon={faEdit} color="white" />,
@@ -103,7 +104,6 @@ const MainShop = ({}: Props) => {
                       : +isPanelActive === TableItemList.baby
                       ? "baby"
                       : "other";
-
                   updateNameOfAItemsOfShoppingMain(
                     nameTable,
                     isItemIdCurrent,

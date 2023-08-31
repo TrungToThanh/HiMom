@@ -1,6 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-import { Radio, Button, InputItem, Card, WhiteSpace, Toast } from "@ant-design/react-native";
+import {
+  Radio,
+  Button,
+  InputItem,
+  Card,
+  WhiteSpace,
+  Toast,
+  Result,
+} from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -11,6 +19,8 @@ interface Props {
   listAccountBaby: any;
 }
 const Login = ({ listAccountBaby }: Props) => {
+  const image = require("../../../assets/pics/born.png");
+
   const [userId, setUserId] = useState(0);
   const [passwordInput, setPasswordInput] = useState("");
   const navigation = useNavigation();
@@ -42,12 +52,14 @@ const Login = ({ listAccountBaby }: Props) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "white",
       }}
     >
       <WhiteSpace />
       <Card
         style={{
           width: windowWidth - 15,
+          backgroundColor: "white",
         }}
       >
         <Card.Body>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions, ImageBackground } from "react-native";
 import { WhiteSpace } from "@ant-design/react-native";
 
@@ -9,6 +9,7 @@ import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gestu
 import "react-native-gesture-handler";
 import getDimensions from "../../hook/get_dimension";
 import MainListPrepare from "./sub-component/main_list_prepare";
+import { getAllItemShoppingMain } from "../../../api/shopping/shopping_main";
 
 interface Props {
   listAccountBaby?: any;
@@ -18,6 +19,79 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
   const image = require("../../../assets/background.jpg");
 
   const { windowWidth, windowHeight } = getDimensions();
+  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } = getAllItemShoppingMain(
+    nameRouteUserId,
+    false
+  );
+
+  const mom = useMemo(() => {
+    let countGoods = 0;
+    let countGoodsBuy = 0;
+    let moneyGoods = 0;
+    let moneyGoodsBuy = 0;
+
+    listAllItemsMom?.map((item) => {
+      countGoods = countGoods + Number(item.numberGoods);
+      countGoodsBuy = countGoodsBuy + Number(item.numberIsBuyGoods);
+      moneyGoods = moneyGoods + Number(item.moneyGoods);
+      moneyGoodsBuy = moneyGoodsBuy + Number(item.moneyBuyGoods);
+    });
+    return {
+      countGoods: countGoods,
+      countGoodsBuy: countGoodsBuy,
+      moneyGoods: Intl.NumberFormat("en-US").format(Number(moneyGoods)),
+      moneyGoodsBuy: Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy)),
+      moneyTotal: moneyGoods,
+    };
+  }, [listAllItemsMom]);
+
+  const baby = useMemo(() => {
+    let countGoods = 0;
+    let countGoodsBuy = 0;
+    let moneyGoods = 0;
+    let moneyGoodsBuy = 0;
+
+    listAllItemsBaby?.map((item) => {
+      countGoods = countGoods + Number(item.numberGoods);
+      countGoodsBuy = countGoodsBuy + Number(item.numberIsBuyGoods);
+      moneyGoods = moneyGoods + Number(item.moneyGoods);
+      moneyGoodsBuy = moneyGoodsBuy + Number(item.moneyBuyGoods);
+    });
+    return {
+      countGoods: countGoods,
+      countGoodsBuy: countGoodsBuy,
+      moneyGoods: Intl.NumberFormat("en-US").format(Number(moneyGoods)),
+      moneyGoodsBuy: Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy)),
+      moneyTotal: moneyGoods,
+    };
+  }, [listAllItemsBaby]);
+
+  const other = useMemo(() => {
+    let countGoods = 0;
+    let countGoodsBuy = 0;
+    let moneyGoods = 0;
+    let moneyGoodsBuy = 0;
+
+    listAllItemsOther?.map((item) => {
+      countGoods = countGoods + Number(item.numberGoods);
+      countGoodsBuy = countGoodsBuy + Number(item.numberIsBuyGoods);
+      moneyGoods = moneyGoods + Number(item.moneyGoods);
+      moneyGoodsBuy = moneyGoodsBuy + Number(item.moneyBuyGoods);
+    });
+    return {
+      countGoods: countGoods,
+      countGoodsBuy: countGoodsBuy,
+      moneyGoods: Intl.NumberFormat("en-US").format(Number(moneyGoods)),
+      moneyGoodsBuy: Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy)),
+      moneyTotal: moneyGoods,
+    };
+  }, [listAllItemsOther]);
+
+  const totalMoneyPrepare = useMemo(() => {
+    return `$ ${Intl.NumberFormat("en-US").format(
+      Number(mom.moneyTotal + baby.moneyTotal + other.moneyTotal)
+    )}`;
+  }, [mom, baby, other]);
 
   return (
     <GestureHandlerRootView>
@@ -95,7 +169,7 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
               </Text>
               <WhiteSpace />
               <WhiteSpace />
-              <Text style={{ fontSize: 30, fontWeight: "bold" }}>$ 120.000.000</Text>
+              <Text style={{ fontSize: 30, fontWeight: "bold" }}>{totalMoneyPrepare}</Text>
               <WhiteSpace />
             </View>
           </View>
@@ -118,28 +192,28 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
           <WhiteSpace />
           <MainListPrepare
             namePrepare="Chuẩn bị của mẹ:"
-            isGoodBuy={300}
-            isGoods={400}
-            isMoneyGoods={"900.000.000"}
-            isMoneyGoodsBuy={"- 400.000.000"}
+            isGoodBuy={mom.countGoodsBuy || 0}
+            isGoods={mom.countGoods || 0}
+            isMoneyGoods={mom.moneyGoods || 0}
+            isMoneyGoodsBuy={mom.moneyGoodsBuy || 0}
             nameRouteUserId={nameRouteUserId}
           />
           <WhiteSpace />
           <MainListPrepare
             namePrepare="Chuẩn bị cho bé:"
-            isGoodBuy={300}
-            isGoods={400}
-            isMoneyGoods={"900.000.000"}
-            isMoneyGoodsBuy={"- 400.000.000"}
+            isGoodBuy={baby.countGoodsBuy || 0}
+            isGoods={baby.countGoods || 0}
+            isMoneyGoods={baby.moneyGoods || 0}
+            isMoneyGoodsBuy={baby.moneyGoodsBuy || 0}
             nameRouteUserId={nameRouteUserId}
           />
           <WhiteSpace />
           <MainListPrepare
             namePrepare="Chuẩn bị khác:"
-            isGoodBuy={300}
-            isGoods={400}
-            isMoneyGoods={"900.000.000"}
-            isMoneyGoodsBuy={"- 400.000.000 $"}
+            isGoodBuy={other.countGoodsBuy || 0}
+            isGoods={other.countGoods || 0}
+            isMoneyGoods={other.moneyGoods || 0}
+            isMoneyGoodsBuy={other.moneyGoodsBuy || 0}
             nameRouteUserId={nameRouteUserId}
           />
         </View>

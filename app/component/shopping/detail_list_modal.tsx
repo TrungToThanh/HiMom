@@ -9,6 +9,8 @@ import {
   faCircleCheck,
   faSpinner,
   faArrowCircleLeft,
+  faMoneyBill,
+  faCartPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigation } from "@react-navigation/native";
@@ -56,6 +58,11 @@ const DetailListModal = ({
 
   const [itemIdCurrent, setItemId] = useState();
 
+  const [moneyBuy, setMoneyBuy] = useState("");
+  const [moneyTotal, setMoneyTotal] = useState("");
+  const [numberOfGoods, setNumberOfGoods] = useState("");
+  const [numberOfGoodsBuy, setNumberOfGoodsBuy] = useState("");
+
   const { listAllItems } = getAllItemShoppingDetail(
     nameRouteTypeTable,
     nameRouteUserId,
@@ -63,22 +70,35 @@ const DetailListModal = ({
   );
 
   useEffect(() => {
-    console.log("listAllItems", listAllItems);
     if (listAllItems && listAllItems?.length > 0) {
       const numberOfGoods = listAllItems?.length;
 
       let countTotalGoodIsBuy = 0;
-      listAllItems?.map((item) =>
-        Number(item?.buy) === 1 ? countTotalGoodIsBuy++ : countTotalGoodIsBuy
-      );
+      let countMoneyAllItems = 0;
+      let countMoneyAllItemsBuy = 0;
+      listAllItems?.map((item) => {
+        if (Number(item?.buy) === 1) {
+          countTotalGoodIsBuy++,
+            (countMoneyAllItemsBuy =
+              countMoneyAllItemsBuy + Number(String(item.money)?.replaceAll(",", "")));
+        }
+        countMoneyAllItems = countMoneyAllItems + Number(String(item.money)?.replaceAll(",", ""));
+      });
 
       if (numberOfGoods && countTotalGoodIsBuy) {
+        setMoneyTotal(String(countMoneyAllItems));
+        setMoneyBuy(String(countMoneyAllItemsBuy));
+        setNumberOfGoods(String(numberOfGoods));
+        setNumberOfGoodsBuy(String(countTotalGoodIsBuy));
+
         updateGoodOfAItemsOfShoppingMain(
           nameRouteTypeTable,
           nameRouteItemId,
           nameRouteUserId,
           numberOfGoods,
-          countTotalGoodIsBuy
+          countTotalGoodIsBuy,
+          String(countMoneyAllItems),
+          String(countMoneyAllItemsBuy)
         );
       }
     }
@@ -159,7 +179,7 @@ const DetailListModal = ({
               width: windowWidth - 20,
               display: "flex",
               flexDirection: "row",
-              height: 50,
+              height: 30,
               backgroundColor: "transparent",
             }}
           >
@@ -195,6 +215,80 @@ const DetailListModal = ({
             >
               {nameMainItemId}
             </Text>
+          </View>
+          <View
+            style={{
+              width: windowWidth - 20,
+              display: "flex",
+              flexDirection: "row",
+              height: 20,
+              backgroundColor: "transparent",
+              justifyContent: "flex-end",
+              marginBottom: 20,
+            }}
+          >
+            <Text
+              style={{
+                paddingRight: 10,
+                backgroundColor: "transparent",
+                fontSize: 16,
+                fontWeight: "500",
+                color: "green",
+              }}
+            >
+              {Intl.NumberFormat("en-US").format(Number(moneyBuy))}
+            </Text>
+            <Text>|</Text>
+            <Text
+              style={{
+                paddingLeft: 10,
+                paddingRight: 10,
+                backgroundColor: "transparent",
+                fontSize: 16,
+                fontWeight: "800",
+                color: "#1870bc",
+              }}
+            >
+              {Intl.NumberFormat("en-US").format(Number(moneyTotal))}
+            </Text>
+            <FontAwesomeIcon icon={faMoneyBill} color="gray" size={22} />
+          </View>
+          <View
+            style={{
+              width: windowWidth - 20,
+              display: "flex",
+              flexDirection: "row",
+              height: 20,
+              backgroundColor: "transparent",
+              justifyContent: "flex-end",
+              marginBottom: 20,
+            }}
+          >
+            <Text
+              style={{
+                paddingRight: 10,
+                backgroundColor: "transparent",
+                fontSize: 16,
+                fontWeight: "500",
+                color: "green",
+              }}
+            >
+              {Number(numberOfGoodsBuy)}
+            </Text>
+            <Text>|</Text>
+            <Text
+              style={{
+                paddingLeft: 10,
+                paddingRight: 10,
+                backgroundColor: "transparent",
+                fontSize: 16,
+                fontWeight: "800",
+                color: "#1870bc",
+              }}
+            >
+              {Number(numberOfGoods)}
+            </Text>
+            <FontAwesomeIcon icon={faCartPlus} color="gray" size={22} />
           </View>
           <View
             style={{

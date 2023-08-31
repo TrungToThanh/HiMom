@@ -18,7 +18,7 @@ function MyStack() {
         component={Main}
         options={{
           title: "Màn hình đăng nhập",
-          headerShown: true,
+          headerShown: false,
         }}
       />
       <Stack.Screen

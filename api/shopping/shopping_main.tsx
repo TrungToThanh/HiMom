@@ -6,29 +6,28 @@ import { nameDB } from "../database";
 import { TableItemList } from "../../app/const/type";
 
 export const createShoppingMainTable = (preName, nameRouteUserId) => {
-  const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
+  const nameTable = `${preName}TableShoppingMainUserId${nameRouteUserId}`;
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, nameItem TEXT , numberGoods TEXT, numberIsBuyGoods TEXT, note TEXT, type TEXT, money TEXT )`
+        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, nameItem TEXT , numberGoods TEXT, numberIsBuyGoods TEXT, note TEXT, type TEXT, moneyGoods TEXT, moneyBuyGoods TEXT )`
       );
     });
   });
 };
 
 export const insertANewItemToShoppingMain = (preName, nameRouteUserId, nameItem) => {
-  console.log("preName, nameRouteUserId, nameItem", preName, nameRouteUserId, nameItem);
-  const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
+  const nameTable = `${preName}TableShoppingMainUserId${nameRouteUserId}`;
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, nameItem TEXT , numberGoods TEXT, numberIsBuyGoods TEXT, note TEXT, type TEXT, money TEXT )`
+        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, nameItem TEXT , numberGoods TEXT, numberIsBuyGoods TEXT, note TEXT, type TEXT, moneyGoods TEXT, moneyBuyGoods TEXT )`
       );
       tx.executeSql(
-        `INSERT INTO ${nameTable} (nameItem, numberGoods, numberIsBuyGoods, note, type, money) values (?, ?, ?, ?, ?, ?)`,
-        [nameItem, "", "", "", preName, ""],
+        `INSERT INTO ${nameTable} (nameItem, numberGoods, numberIsBuyGoods, note, type, moneyGoods, moneyBuyGoods) values (?, ?, ?, ?, ?, ?, ?)`,
+        [nameItem, "", "", "", preName, "", ""],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );
@@ -40,9 +39,9 @@ export const getAllItemShoppingMain = (nameRouteUserId, isReload) => {
   const [db, setDb] = useState(SQLite.openDatabase(nameDB));
 
   const nameTable = [
-    `momtableShoppingMainUserId${nameRouteUserId}`,
-    `babytableShoppingMainUserId${nameRouteUserId}`,
-    `othertableShoppingMainUserId${nameRouteUserId}`,
+    `momTableShoppingMainUserId${nameRouteUserId}`,
+    `babyTableShoppingMainUserId${nameRouteUserId}`,
+    `otherTableShoppingMainUserId${nameRouteUserId}`,
   ];
 
   const [listAllItemsMom, setListAllItemsMom] = useState<any>();
@@ -54,7 +53,7 @@ export const getAllItemShoppingMain = (nameRouteUserId, isReload) => {
       nameTable.map((table, indexTable) => {
         var items = new Array();
         tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS ${table} (id INTEGER PRIMARY KEY AUTOINCREMENT, nameItem TEXT , numberGoods TEXT, numberIsBuyGoods TEXT, note TEXT, type TEXT, money TEXT )`
+          `CREATE TABLE IF NOT EXISTS ${table} (id INTEGER PRIMARY KEY AUTOINCREMENT, nameItem TEXT , numberGoods TEXT, numberIsBuyGoods TEXT, note TEXT, type TEXT, moneyGoods TEXT, moneyBuyGoods TEXT )`
         );
         tx.executeSql(
           `SELECT * FROM ${table}`,
@@ -84,7 +83,7 @@ export const getAllItemShoppingMain = (nameRouteUserId, isReload) => {
 };
 
 export const deleteAItemsOfShoppingMain = (preName, id, nameRouteUserId) => {
-  const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
+  const nameTable = `${preName}TableShoppingMainUserId${nameRouteUserId}`;
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
@@ -99,7 +98,7 @@ export const deleteAItemsOfShoppingMain = (preName, id, nameRouteUserId) => {
 };
 
 export const updateNameOfAItemsOfShoppingMain = (preName, id, nameRouteUserId, nameItem) => {
-  const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
+  const nameTable = `${preName}TableShoppingMainUserId${nameRouteUserId}`;
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
@@ -118,7 +117,9 @@ export const updateGoodOfAItemsOfShoppingMain = (
   id,
   nameRouteUserId,
   numberGoods,
-  numberIsBuyGoods
+  numberIsBuyGoods,
+  moneyGoods,
+  moneyBuyGoods
 ) => {
   const preName =
     nameRouteTypeTable === TableItemList.mom
@@ -127,13 +128,13 @@ export const updateGoodOfAItemsOfShoppingMain = (
       ? "baby"
       : "other";
 
-  const nameTable = `${preName}tableShoppingMainUserId${nameRouteUserId}`;
+  const nameTable = `${preName}TableShoppingMainUserId${nameRouteUserId}`;
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
-        `UPDATE ${nameTable} SET numberGoods = ?, numberIsBuyGoods = ?  WHERE id = ?`,
-        [numberGoods, numberIsBuyGoods, Number(id)],
+        `UPDATE ${nameTable} SET numberGoods = ?, numberIsBuyGoods = ?, moneyGoods = ?, moneyBuyGoods = ?  WHERE id = ?`,
+        [numberGoods, numberIsBuyGoods, moneyGoods, moneyBuyGoods, Number(id)],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );

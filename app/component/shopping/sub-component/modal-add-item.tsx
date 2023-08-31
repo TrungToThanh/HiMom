@@ -26,8 +26,6 @@ const AddNewItemToMainList = ({
   const [isError, setError] = useState(false);
 
   const handleAddItem = () => {
-    console.log(isPanelActive, isNameItem);
-
     const preName =
       isPanelActive === TableItemList.mom
         ? "mom"

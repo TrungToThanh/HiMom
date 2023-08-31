@@ -101,7 +101,6 @@ const ModalAddEvent = ({
           }
         })
         .then(() => {
-          console.log(timePicker, moment(timePicker).toDate());
           const event = {
             title: `HiMom: ${valueNote}`,
             notes: `${calendarId.toString()}: ${valueNoteAdd}`,

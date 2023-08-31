@@ -23,7 +23,7 @@ export const insertANewItemToShoppingDetail = (
       : nameRouteTypeTable === TableItemList.baby
       ? "baby"
       : "other";
-  const nameTable = `${preName}tableShoppingDetailUserId${nameRouteUserId}itemId${nameRouteItemId}`;
+  const nameTable = `${preName}TableShoppingDetailUserId${nameRouteUserId}itemId${nameRouteItemId}`;
 
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
@@ -41,11 +41,7 @@ export const insertANewItemToShoppingDetail = (
   });
 };
 
-export const getAllItemShoppingDetail = (
-  nameRouteTypeTable,
-  nameRouteUserId,
-  nameRouteItemId
-) => {
+export const getAllItemShoppingDetail = (nameRouteTypeTable, nameRouteUserId, nameRouteItemId) => {
   const [db, setDb] = useState(SQLite.openDatabase(nameDB));
 
   const preName =
@@ -54,7 +50,7 @@ export const getAllItemShoppingDetail = (
       : nameRouteTypeTable === TableItemList.baby
       ? "baby"
       : "other";
-  const nameTable = `${preName}tableShoppingDetailUserId${nameRouteUserId}itemId${nameRouteItemId}`;
+  const nameTable = `${preName}TableShoppingDetailUserId${nameRouteUserId}itemId${nameRouteItemId}`;
 
   const [listAllItems, setListAllItems] = useState<any>();
 
@@ -98,7 +94,7 @@ export const deleteAItemsOfShoppingDetail = (
       : nameRouteTypeTable === TableItemList.baby
       ? "baby"
       : "other";
-  const nameTable = `${preName}tableShoppingDetailUserId${nameRouteUserId}itemId${nameRouteItemId}`;
+  const nameTable = `${preName}TableShoppingDetailUserId${nameRouteUserId}itemId${nameRouteItemId}`;
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
@@ -126,7 +122,7 @@ export const getAItemShoppingDetail = (
       : nameRouteTypeTable === TableItemList.baby
       ? "baby"
       : "other";
-  const nameTable = `${preName}tableShoppingDetailUserId${nameRouteUserId}itemId${nameRouteItemId}`;
+  const nameTable = `${preName}TableShoppingDetailUserId${nameRouteUserId}itemId${nameRouteItemId}`;
 
   const [listAItems, setListAllItems] = useState<any>();
 
@@ -174,7 +170,7 @@ export const updateAItemsOfShoppingDetail = (
       : nameRouteTypeTable === TableItemList.baby
       ? "baby"
       : "other";
-  const nameTable = `${preName}tableShoppingDetailUserId${nameRouteUserId}itemId${nameRouteItemId}`;
+  const nameTable = `${preName}TableShoppingDetailUserId${nameRouteUserId}itemId${nameRouteItemId}`;
 
   const db = SQLite.openDatabase(nameDB);
 
