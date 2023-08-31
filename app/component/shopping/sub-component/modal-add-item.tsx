@@ -10,6 +10,7 @@ interface Props {
   nameRouteUserId;
   isShowEvent?: boolean;
   setShowEvent: () => void;
+  onRefresh: () => void;
 }
 
 const AddNewItemToMainList = ({
@@ -17,6 +18,7 @@ const AddNewItemToMainList = ({
   nameRouteUserId,
   isShowEvent = false,
   setShowEvent,
+  onRefresh,
 }: Props) => {
   const { width, height } = useWindowDimensions();
 
@@ -25,11 +27,20 @@ const AddNewItemToMainList = ({
 
   const handleAddItem = () => {
     console.log(isPanelActive, isNameItem);
-    if (+isPanelActive >= 0 && isNameItem) {
-      insertANewItemToShoppingMain(isPanelActive, nameRouteUserId, isNameItem).then((isRes) => {
+
+    const preName =
+      isPanelActive === TableItemList.mom
+        ? "mom"
+        : isPanelActive === TableItemList.baby
+        ? "baby"
+        : "other";
+
+    if (isNameItem) {
+      insertANewItemToShoppingMain(preName, nameRouteUserId, isNameItem).then((isRes) => {
         if (isRes) {
           setNameItem("");
           setShowEvent();
+          onRefresh();
           Toast.success("Đã tạo thành công!");
         } else {
           setNameItem("");

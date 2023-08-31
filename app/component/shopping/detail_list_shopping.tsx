@@ -30,6 +30,13 @@ const DetailShopList = () => {
     }
   }, []);
 
+  const nameMainItemId = useMemo(() => {
+    if (route) {
+      /* @ts-ignore */
+      return route?.params?.nameItemId;
+    }
+  }, []);
+
   const [isShowDetailModal, setShowDetailModal] = useState<boolean>(false);
   const [isInfo, setShowInfo] = useState(false);
   const [isCreate, setShowDetailModalToCreate] = useState(false);
@@ -61,9 +68,7 @@ const DetailShopList = () => {
           {showComponent && (
             <DetailListModal
               setShowDetailModal={() => setShowDetailModal(true)}
-              setShowDetailModalToCreate={() =>
-                setShowDetailModalToCreate(true)
-              }
+              setShowDetailModalToCreate={() => setShowDetailModalToCreate(true)}
               setShowInfo={() => setShowInfo(true)}
               setReload={() => {
                 setShowInfo(false);
@@ -75,6 +80,7 @@ const DetailShopList = () => {
               nameRouteTypeTable={nameRouteTypeTable}
               nameRouteUserId={nameRouteUserId}
               nameRouteItemId={nameRouteItemId}
+              nameMainItemId={nameMainItemId}
               setItemIdCurrent={(itemId) => setItemIdCurrent(itemId)}
             />
           )}

@@ -84,7 +84,8 @@ const DetailShopModal = ({
       setMoneyItem(listAItems?.at(0)?.money);
       setNote(listAItems?.at(0)?.note);
       const listImage = listAItems?.at(0)?.picture;
-      setImage(JSON?.parse(listImage));
+      console.log("listImage", listImage);
+      listImage && setImage(JSON?.parse(listImage));
     }
     if (isCreate) {
       setNameItem("");

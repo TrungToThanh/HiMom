@@ -11,6 +11,7 @@ import {
   List,
   Toast,
   Grid,
+  Tag,
 } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -44,12 +45,14 @@ import {
 import EmptyData from "../../const/no_data";
 import { updateGoodOfAItemsOfShoppingMain } from "../../../api/shopping/shopping_main";
 import CardHeaderComponent from "./sub-component/cardHeader";
+import { TableItemList } from "../../const/type";
 
 interface Props {
   isInfo?: boolean;
   nameRouteTypeTable?: number;
   nameRouteUserId?: number;
   nameRouteItemId?: number;
+  nameMainItemId: string;
   setShowDetailModal: () => void;
   setReload: () => void;
   setItemIdCurrent: (value) => void;
@@ -61,6 +64,7 @@ const DetailListModal = ({
   nameRouteTypeTable,
   nameRouteUserId,
   nameRouteItemId,
+  nameMainItemId,
   setShowDetailModal,
   setReload,
   setItemIdCurrent,
@@ -83,6 +87,7 @@ const DetailListModal = ({
     nameRouteItemId
   );
 
+  console.log("nameMainItemId", nameMainItemId);
   useEffect(() => {
     console.log("listAllItems", listAllItems);
     if (listAllItems && listAllItems?.length > 0) {
@@ -175,6 +180,48 @@ const DetailListModal = ({
             <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}></Text>
           </View>
           <WhiteSpace size="lg" />
+          <View
+            style={{
+              width: windowWidth - 20,
+              display: "flex",
+              flexDirection: "row",
+              height: 50,
+              backgroundColor: "transparent",
+            }}
+          >
+            <Text
+              style={{
+                width: 60,
+                borderRightWidth: 1,
+                borderColor: "#1870bc",
+                height: 30,
+                textAlign: "center",
+                textAlignVertical: "center",
+                color: "#e1783f",
+                fontWeight: "500",
+              }}
+            >
+              {+nameRouteTypeTable === TableItemList.mom
+                ? "Mẹ"
+                : +nameRouteTypeTable === TableItemList.baby
+                ? "Bé"
+                : "Khác"}
+            </Text>
+            <Text
+              style={{
+                paddingLeft: 10,
+                backgroundColor: "transparent",
+                fontSize: 16,
+                fontWeight: "500",
+                color: "#1870bc",
+                textAlign: "center",
+                textAlignVertical: "center",
+                height: 30,
+              }}
+            >
+              {nameMainItemId}
+            </Text>
+          </View>
           <View
             style={{
               width: windowWidth - 10,

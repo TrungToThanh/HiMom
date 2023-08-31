@@ -3,57 +3,29 @@ import { Text } from "react-native";
 import { Badge, List, SwipeAction, View } from "@ant-design/react-native";
 import { FlatList } from "react-native-gesture-handler";
 import EmptyData from "./no_data";
-import { getAllItemShoppingMain } from "../../api/shopping/shopping_main";
 import { TableItemList } from "./type";
 
-import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  faCheckSquare,
-  faCoffee,
-  faTrash,
-  faUser,
-  faCalendar,
-  faEdit,
-  faAdd,
-  faArrowRight,
-  faChevronRight,
-  faCartPlus,
-  faCartShopping,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 interface Props {
   tableItemList: TableItemList;
   handleLeftAction?: any;
-  handleOnClick: (itemId) => void;
-  setIsLoading: () => void;
-  nameRouteUserId: number | string;
+  handleOnClick: (itemId, itemName) => void;
   setItemId: (itemId, itemName) => void;
+  listAllItemsMom: any;
+  listAllItemsBaby: any;
+  listAllItemsOther: any;
 }
 const SwipeActionComponent = ({
   tableItemList,
   handleLeftAction,
   handleOnClick,
-  setIsLoading,
-  nameRouteUserId,
   setItemId,
+  listAllItemsMom,
+  listAllItemsBaby,
+  listAllItemsOther,
 }: Props) => {
-  library.add(
-    faCheckSquare,
-    faCoffee,
-    faTrash,
-    faUser,
-    faCalendar,
-    faEdit,
-    faAdd,
-    faChevronRight,
-    faArrowRight,
-    faCartPlus,
-    faCartShopping
-  );
   const Item = List.Item;
-
-  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } =
-    getAllItemShoppingMain(nameRouteUserId);
 
   return (
     <FlatList
@@ -64,12 +36,14 @@ const SwipeActionComponent = ({
           ? listAllItemsBaby
           : listAllItemsOther
       }
-      style={{ marginRight: -20, backgroundColor: "transparent" }}
-      contentContainerStyle={{ backgroundColor: "transparent" }}
+      scrollEnabled
+      style={{ backgroundColor: "transparent" }}
+      contentContainerStyle={{ backgroundColor: "transparent", paddingBottom: 60 }}
       ListHeaderComponentStyle={{ backgroundColor: "transparent" }}
       initialNumToRender={8}
       renderItem={({ item, index }) => (
         <SwipeAction
+          key={index}
           left={handleLeftAction}
           onSwipeableOpen={() => setItemId(item.id, item.nameItem)}
           containerStyle={{ backgroundColor: "transparent" }}
@@ -77,11 +51,12 @@ const SwipeActionComponent = ({
             backgroundColor: "transparent",
             borderBottomColor: "#dddddd",
             borderBottomWidth: 1,
+            marginRight: -22,
           }}
         >
           <Item
             arrow="horizontal"
-            onPress={() => handleOnClick(item.id)}
+            onPress={() => handleOnClick(item.id, item.nameItem)}
             style={{
               height: 40,
               display: "flex",

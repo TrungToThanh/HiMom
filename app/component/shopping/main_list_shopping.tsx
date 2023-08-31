@@ -40,14 +40,14 @@ const MainShop = ({}: Props) => {
   const [isShowEvent, setShowEvent] = useState<boolean>(false);
   const [isPanelActive, setPanelActive] = useState<TableItemList>();
   const [isItemIdCurrent, setItemIdCurrent] = useState<number>();
+  const [isReload, setReload] = useState(false);
 
   const [isNameItem, setNameItem] = useState("");
-  const [refreshing, setRefreshing] = useState(true);
 
   const onRefresh = useCallback(() => {
-    setRefreshing(false);
+    setReload(false);
     setTimeout(() => {
-      setRefreshing(true);
+      setReload(true);
     }, 500);
   }, []);
 
@@ -65,11 +65,16 @@ const MainShop = ({}: Props) => {
     }
   }, []);
 
+  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } = getAllItemShoppingMain(
+    nameRouteUserId,
+    isReload
+  );
+
   const handleLeftAction = [
     {
       text: <FontAwesomeIcon icon={faEdit} color="white" />,
       onPress: () => {
-        if (isItemIdCurrent && isPanelActive) {
+        if (isItemIdCurrent) {
           let newName = isNameItem || "";
           Modal.alert(
             "Tên danh mục",
@@ -105,8 +110,8 @@ const MainShop = ({}: Props) => {
                     nameRouteUserId,
                     newName
                   ).then((isRes) => {
-                    onRefresh();
                     setNameItem("");
+                    onRefresh();
                     if (isRes) {
                       Toast.success("Đã đổi tên thành công");
                     } else {
@@ -125,7 +130,7 @@ const MainShop = ({}: Props) => {
     {
       text: <FontAwesomeIcon icon={faTrash} color="white" />,
       onPress: () => {
-        if (isItemIdCurrent && isPanelActive) {
+        if (isItemIdCurrent) {
           const nameTable =
             +isPanelActive === TableItemList.mom
               ? "mom"
@@ -172,6 +177,7 @@ const MainShop = ({}: Props) => {
           isShowEvent={isShowEvent}
           nameRouteUserId={nameRouteUserId}
           setShowEvent={() => setShowEvent(false)}
+          onRefresh={() => onRefresh()}
         />
         <View
           style={{
@@ -246,32 +252,33 @@ const MainShop = ({}: Props) => {
               </Button>
             </View>
             <View
-              style={{ marginTop: 10, width: windowWidth - 20, backgroundColor: "transparent" }}
+              style={{
+                marginTop: 10,
+                height: windowHeight - 160,
+                width: windowWidth - 20,
+                backgroundColor: "transparent",
+              }}
             >
-              <ScrollView
-                style={{
-                  backgroundColor: "transparent",
+              <SwipeActionComponent
+                tableItemList={isPanelActive}
+                handleLeftAction={handleLeftAction}
+                handleOnClick={(itemId, itemName) =>
+                  // @ts-ignore
+                  navigation.navigate("DetailShopList", {
+                    userId: Number(nameRouteUserId),
+                    typeTable: isPanelActive,
+                    itemId: itemId,
+                    nameItemId: itemName,
+                  })
+                }
+                setItemId={(itemId, itemName) => {
+                  setItemIdCurrent(itemId);
+                  setNameItem(itemName);
                 }}
-              >
-                <SwipeActionComponent
-                  nameRouteUserId={nameRouteUserId}
-                  tableItemList={isPanelActive}
-                  handleLeftAction={handleLeftAction}
-                  setIsLoading={() => onRefresh()}
-                  handleOnClick={(itemId) =>
-                    // @ts-ignore
-                    navigation.navigate("DetailShopList", {
-                      userId: Number(nameRouteUserId),
-                      typeTable: isPanelActive,
-                      itemId: itemId,
-                    })
-                  }
-                  setItemId={(itemId, itemName) => {
-                    setItemIdCurrent(itemId);
-                    setNameItem(itemName);
-                  }}
-                />
-              </ScrollView>
+                listAllItemsMom={listAllItemsMom}
+                listAllItemsBaby={listAllItemsBaby}
+                listAllItemsOther={listAllItemsOther}
+              />
             </View>
           </View>
         </View>

@@ -36,7 +36,7 @@ export const insertANewItemToShoppingMain = (preName, nameRouteUserId, nameItem)
   });
 };
 
-export const getAllItemShoppingMain = (nameRouteUserId) => {
+export const getAllItemShoppingMain = (nameRouteUserId, isReload) => {
   const [db, setDb] = useState(SQLite.openDatabase(nameDB));
 
   const nameTable = [
@@ -75,7 +75,7 @@ export const getAllItemShoppingMain = (nameRouteUserId) => {
         );
       });
     });
-  }, [db]);
+  }, [db, isReload]);
   return {
     listAllItemsMom,
     listAllItemsBaby,

@@ -49,7 +49,7 @@ function MyStack() {
           headerShown: false,
         }}
         getId={({ params }) => {
-          params.userId, params.typeTable, params.itemId;
+          params.userId, params.typeTable, params.itemId, params.nameItemId;
         }}
       />
     </Stack.Navigator>
