@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { View } from "react-native";
+import { useRoute } from "@react-navigation/native";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useRoute } from "@react-navigation/native";
 import DetailShopModal from "./detail_shop_modal";
 import DetailListModal from "./detail_list_modal";
 

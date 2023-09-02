@@ -41,7 +41,12 @@ export const insertANewItemToShoppingDetail = (
   });
 };
 
-export const getAllItemShoppingDetail = (nameRouteTypeTable, nameRouteUserId, nameRouteItemId) => {
+export const getAllItemShoppingDetail = (
+  nameRouteTypeTable,
+  nameRouteUserId,
+  nameRouteItemId,
+  isLoading
+) => {
   const [db, setDb] = useState(SQLite.openDatabase(nameDB));
 
   const preName =
@@ -76,7 +81,7 @@ export const getAllItemShoppingDetail = (nameRouteTypeTable, nameRouteUserId, na
         (txObj, error) => false
       );
     });
-  }, [db]);
+  }, [db, isLoading]);
   return {
     listAllItems,
   };

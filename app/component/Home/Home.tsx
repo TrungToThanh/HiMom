@@ -93,7 +93,7 @@ const Home = () => {
             alignSelf: "center",
           }}
         >
-          <FontAwesomeIcon icon={faCalendarCheck} color="#1870bc" />
+          <FontAwesomeIcon icon={faCalendarCheck} color="#d11d8e" />
           <Text>Nhắc nhở</Text>
         </View>
       ),
@@ -156,23 +156,3 @@ const Home = () => {
 };
 
 export default Home;
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 50,
-  },
-  tinyLogo: {
-    width: 50,
-    height: 50,
-  },
-  logo: {
-    width: 66,
-    height: 58,
-  },
-  tabsStyle: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 400,
-  },
-});

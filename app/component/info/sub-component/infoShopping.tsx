@@ -4,7 +4,11 @@ import { Text, View, useWindowDimensions } from "react-native";
 import { Button, Card, Progress, WhiteSpace } from "@ant-design/react-native";
 import CardBody from "@ant-design/react-native/lib/card/CardBody";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faCartShopping, faCreditCard, faSackDollar } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCartShopping,
+  faCreditCard,
+  faSackDollar,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   title: string;
@@ -28,19 +32,26 @@ const InfoShoppingCommon = ({
       }}
     >
       <CardBody>
-        <View style={{ paddingLeft: 30, paddingTop: 30, paddingBottom: 30 }}>
+        <View style={{ paddingLeft: 30, paddingTop: 10, paddingBottom: 10 }}>
           <View
             style={{
               display: "flex",
               flexDirection: "row",
             }}
           >
-            <Button style={{ width: 80, height: 80, marginTop: 5 }} type="ghost">
+            <Button
+              style={{ width: 80, height: 80, marginTop: 5 }}
+              type="ghost"
+            >
               <View>
                 <Text>
                   {numberGoodBuy}/{numberGoods}
                 </Text>
-                <FontAwesomeIcon icon={faCartShopping} color="#ff8700" size={45} />
+                <FontAwesomeIcon
+                  icon={faCartShopping}
+                  color="#ff8700"
+                  size={45}
+                />
               </View>
             </Button>
             <View style={{ marginLeft: 20, width: width - 150 }}>
@@ -63,7 +74,9 @@ const InfoShoppingCommon = ({
                 <Text style={{ fontSize: 15, fontWeight: "500" }}>
                   <FontAwesomeIcon icon={faSackDollar} /> Dự kiến:
                 </Text>
-                <Text style={{ fontSize: 15, fontWeight: "500" }}>{totalMoney}</Text>
+                <Text style={{ fontSize: 15, fontWeight: "500" }}>
+                  {totalMoney}
+                </Text>
               </View>
               <View
                 style={{
@@ -75,10 +88,16 @@ const InfoShoppingCommon = ({
                 <Text style={{ fontSize: 15, fontWeight: "500" }}>
                   <FontAwesomeIcon icon={faCreditCard} /> Chi tiêu:
                 </Text>
-                <Text style={{ fontSize: 15, fontWeight: "500" }}>{totalMoneyBuy}</Text>
+                <Text style={{ fontSize: 15, fontWeight: "500" }}>
+                  {totalMoneyBuy}
+                </Text>
               </View>
               <WhiteSpace />
-              <Progress percent={Math.round((Number(numberGoodBuy) * 100) / Number(numberGoods))} />
+              <Progress
+                percent={Math.round(
+                  (Number(numberGoodBuy) * 100) / Number(numberGoods)
+                )}
+              />
             </View>
           </View>
         </View>

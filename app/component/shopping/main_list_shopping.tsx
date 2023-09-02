@@ -1,5 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { View, Text, Image, StyleSheet, Dimensions, ImageBackground } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Dimensions,
+  ImageBackground,
+} from "react-native";
 import {
   Button,
   InputItem,
@@ -10,7 +17,12 @@ import {
 } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faTrash, faEdit, faAdd, faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faEdit,
+  faAdd,
+  faArrowCircleLeft,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -19,7 +31,11 @@ import {
   insertANewItemToShoppingMain,
   updateNameOfAItemsOfShoppingMain,
 } from "../../../api/shopping/shopping_main";
-import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import {
+  FlatList,
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 import "react-native-gesture-handler";
 import SwipeActionComponent from "../../const/swipe_action_component";
 import { TableItemList } from "../../const/type";
@@ -27,20 +43,27 @@ import MainListPrepare from "./sub-component/main_list_prepare";
 import getDimensions from "../../hook/get_dimension";
 import AddNewItemToMainList from "./sub-component/modal-add-item";
 import { useRoute } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface Props {}
 const MainShop = ({}: Props) => {
   const route = useRoute();
 
   const image = require("../../../assets/background.jpg");
-  const { windowWidth, windowHeight, cardHeight, headerCardHeight, bodyCardHeight } =
-    getDimensions();
+  const {
+    windowWidth,
+    windowHeight,
+    cardHeight,
+    headerCardHeight,
+    bodyCardHeight,
+  } = getDimensions();
   const navigation = useNavigation();
 
   const [isShowEvent, setShowEvent] = useState<boolean>(false);
   const [isPanelActive, setPanelActive] = useState<TableItemList>();
   const [isItemIdCurrent, setItemIdCurrent] = useState<number>();
   const [isReload, setReload] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isNameItem, setNameItem] = useState("");
 
@@ -65,12 +88,18 @@ const MainShop = ({}: Props) => {
     }
   }, []);
 
-  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } = getAllItemShoppingMain(
-    nameRouteUserId,
-    isReload
+  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } =
+    getAllItemShoppingMain(nameRouteUserId, isLoading);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 300);
+    }, [isReload])
   );
 
-  console.log("listAllItemsMom", listAllItemsMom);
   const handleLeftAction = [
     {
       text: <FontAwesomeIcon icon={faEdit} color="white" />,
@@ -145,16 +174,18 @@ const MainShop = ({}: Props) => {
             {
               text: "Đồng ý",
               onPress: () => {
-                deleteAItemsOfShoppingMain(nameTable, isItemIdCurrent, nameRouteUserId).then(
-                  (isRes) => {
-                    onRefresh();
-                    if (isRes) {
-                      Toast.success("Đã xóa thành công");
-                    } else {
-                      Toast.fail("Xóa thất bại");
-                    }
+                deleteAItemsOfShoppingMain(
+                  nameTable,
+                  isItemIdCurrent,
+                  nameRouteUserId
+                ).then((isRes) => {
+                  onRefresh();
+                  if (isRes) {
+                    Toast.success("Đã xóa thành công");
+                  } else {
+                    Toast.fail("Xóa thất bại");
                   }
-                );
+                });
               },
             },
           ]);
@@ -204,10 +235,14 @@ const MainShop = ({}: Props) => {
             <View onTouchStart={() => navigation.goBack()}>
               <FontAwesomeIcon icon={faArrowCircleLeft} color={"green"} />
             </View>
-            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+            <Text
+              style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
+            >
               Danh mục chính
             </Text>
-            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}></Text>
+            <Text
+              style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
+            ></Text>
           </View>
           <WhiteSpace size="lg" />
           <SegmentedControl
@@ -238,7 +273,14 @@ const MainShop = ({}: Props) => {
                 backgroundColor: "transparent",
               }}
             >
-              <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc", width: 80 }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: "#1870bc",
+                  width: 80,
+                }}
+              >
                 Chi tiết:
               </Text>
               <Button
@@ -248,7 +290,9 @@ const MainShop = ({}: Props) => {
                 onPress={() => setShowEvent(true)}
               >
                 <FontAwesomeIcon icon={faAdd} />
-                <Text style={{ fontSize: 12, fontWeight: "400" }}>Thêm danh mục</Text>
+                <Text style={{ fontSize: 12, fontWeight: "400" }}>
+                  Thêm danh mục
+                </Text>
               </Button>
             </View>
             <View

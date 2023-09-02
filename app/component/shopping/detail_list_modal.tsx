@@ -1,6 +1,20 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, Image, StyleSheet, Dimensions, ImageBackground } from "react-native";
-import { Button, WhiteSpace, Modal, SwipeAction, List, Toast } from "@ant-design/react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Dimensions,
+  ImageBackground,
+} from "react-native";
+import {
+  Button,
+  WhiteSpace,
+  Modal,
+  SwipeAction,
+  List,
+  Toast,
+} from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
@@ -14,8 +28,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 
-import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import {
+  FlatList,
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 import "react-native-gesture-handler";
 
 import {
@@ -56,7 +75,9 @@ const DetailListModal = ({
   const windowHeight = Dimensions.get("window").height;
   const Item = List.Item;
 
+  const [isLoading, setIsLoading] = useState(false);
   const [itemIdCurrent, setItemId] = useState();
+  const [isShowTitleName, setShowTitleName] = useState(false);
 
   const [moneyBuy, setMoneyBuy] = useState("");
   const [moneyTotal, setMoneyTotal] = useState("");
@@ -66,7 +87,8 @@ const DetailListModal = ({
   const { listAllItems } = getAllItemShoppingDetail(
     nameRouteTypeTable,
     nameRouteUserId,
-    nameRouteItemId
+    nameRouteItemId,
+    isLoading
   );
 
   useEffect(() => {
@@ -80,9 +102,11 @@ const DetailListModal = ({
         if (Number(item?.buy) === 1) {
           countTotalGoodIsBuy++,
             (countMoneyAllItemsBuy =
-              countMoneyAllItemsBuy + Number(String(item.money)?.replaceAll(",", "")));
+              countMoneyAllItemsBuy +
+              Number(String(item.money)?.replaceAll(",", "")));
         }
-        countMoneyAllItems = countMoneyAllItems + Number(String(item.money)?.replaceAll(",", ""));
+        countMoneyAllItems =
+          countMoneyAllItems + Number(String(item.money)?.replaceAll(",", ""));
       });
 
       if (numberOfGoods && countTotalGoodIsBuy) {
@@ -103,6 +127,15 @@ const DetailListModal = ({
       }
     }
   }, [listAllItems]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 300);
+    }, [])
+  );
 
   const handleLeftAction = [
     {
@@ -168,10 +201,14 @@ const DetailListModal = ({
             <View onTouchStart={() => navigation.goBack()}>
               <FontAwesomeIcon icon={faArrowCircleLeft} color={"green"} />
             </View>
-            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+            <Text
+              style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
+            >
               Danh mục chi tiết
             </Text>
-            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}></Text>
+            <Text
+              style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
+            ></Text>
           </View>
           <WhiteSpace size="lg" />
           <View
@@ -309,7 +346,14 @@ const DetailListModal = ({
                 flexDirection: "row",
               }}
             >
-              <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc", width: 80 }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: "#1870bc",
+                  width: 80,
+                }}
+              >
                 Chi tiết:
               </Text>
               <Button
@@ -319,7 +363,9 @@ const DetailListModal = ({
                 onPress={() => setShowDetailModalToCreate()}
               >
                 <FontAwesomeIcon icon={faAdd} />
-                <Text style={{ fontSize: 12, fontWeight: "400" }}>Thêm danh mục</Text>
+                <Text style={{ fontSize: 12, fontWeight: "400" }}>
+                  Thêm danh mục
+                </Text>
               </Button>
             </View>
             <FlatList
@@ -327,23 +373,37 @@ const DetailListModal = ({
                 <List.Item
                   extra={
                     <Text
-                      style={{ fontSize: 14, fontWeight: "500", backgroundColor: "transparent" }}
+                      style={{
+                        fontSize: 14,
+                        fontWeight: "500",
+                        backgroundColor: "transparent",
+                      }}
+                      onPress={() => setShowTitleName(!isShowTitleName)}
                     >
-                      Đã mua
+                      {isShowTitleName ? "Số tiền" : "Đã Mua"}
                     </Text>
                   }
                   style={{ backgroundColor: "transparent" }}
                 >
-                  <Text style={{ fontSize: 14, fontWeight: "500", backgroundColor: "transparent" }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "500",
+                      backgroundColor: "transparent",
+                    }}
+                  >
                     Danh mục hàng hóa
                   </Text>
                 </List.Item>
               }
               style={{ backgroundColor: "transparent" }}
+              scrollEnabled
               ListFooterComponentStyle={{ backgroundColor: "transparent" }}
               contentContainerStyle={{ backgroundColor: "transparent" }}
-              data={listAllItems && listAllItems?.length > 0 ? listAllItems : []}
-              renderItem={({ item }) => (
+              data={
+                listAllItems && listAllItems?.length > 0 ? listAllItems : []
+              }
+              renderItem={({ item, index }) => (
                 <SwipeAction
                   left={handleLeftAction}
                   onSwipeableOpen={() => setItemId(item.id)}
@@ -361,7 +421,9 @@ const DetailListModal = ({
                   <Item
                     arrow="horizontal"
                     onPress={() => {
-                      setItemIdCurrent(item.id), setShowInfo(), setShowDetailModal();
+                      setItemIdCurrent(item.id),
+                        setShowInfo(),
+                        setShowDetailModal();
                     }}
                     style={{
                       height: 40,
@@ -369,10 +431,14 @@ const DetailListModal = ({
                       backgroundColor: "#transparent",
                     }}
                     extra={
-                      <FontAwesomeIcon
-                        icon={+item.buy === 1 ? faCircleCheck : faSpinner}
-                        color={+item.buy === 1 ? "green" : "#f0f1f3"}
-                      />
+                      isShowTitleName ? (
+                        <Text>{item.money}</Text>
+                      ) : (
+                        <FontAwesomeIcon
+                          icon={+item.buy === 1 ? faCircleCheck : faSpinner}
+                          color={+item.buy === 1 ? "green" : "#f0f1f3"}
+                        />
+                      )
                     }
                   >
                     <Text
@@ -382,7 +448,7 @@ const DetailListModal = ({
                         display: "flex",
                       }}
                     >
-                      {item.nameItem}
+                      {index + 1}.{item.nameItem}
                     </Text>
                   </Item>
                 </SwipeAction>

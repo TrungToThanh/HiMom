@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 
 import InfoShoppingCommon from "./sub-component/infoShopping";
 import { getAllItemShoppingMain } from "../../../api/shopping/shopping_main";
+import InfoEvent from "./sub-component/infoEvent";
 
 interface Props {
   listAccountBaby?: any;
@@ -181,7 +182,7 @@ const InfoCommon = ({ listAccountBaby, nameRouteUserId }: Props) => {
         }}
       >
         <CardBody>
-          <View style={{ paddingLeft: 30, paddingBottom: 20 }}>
+          <View style={{ paddingLeft: 30, paddingBottom: 10 }}>
             <View style={{ marginLeft: -20 }}>
               <Item
                 extra={
@@ -233,6 +234,7 @@ const InfoCommon = ({ listAccountBaby, nameRouteUserId }: Props) => {
         totalMoneyBuy={totalMoneyBuy}
       />
       <WhiteSpace />
+      <InfoEvent />
     </View>
   );
 };

@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, Dimensions, ScrollView, ImageBackground, Linking } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  ScrollView,
+  ImageBackground,
+  Linking,
+} from "react-native";
 import {
   Button,
   WhiteSpace,
@@ -54,7 +61,16 @@ const ProcessBaby = ({
   diffDay,
   isDiffFirstDay,
 }: Props) => {
-  library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit, faAdd, faSeedling);
+  library.add(
+    faCheckSquare,
+    faCoffee,
+    faTrash,
+    faUser,
+    faCalendar,
+    faEdit,
+    faAdd,
+    faSeedling
+  );
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -68,11 +84,15 @@ const ProcessBaby = ({
   const isFirstDay = useMemo(() => {
     let dateObject = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
       var dateParts = idCurrent?.birthday.split("-");
 
       // month is 0-based, that's why we need dataParts[1] - 1
-      dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
+      dateObject = dayjs(
+        new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+      )
         .subtract(280, "days")
         .format("DD-MM-YYYY");
     }
@@ -82,21 +102,61 @@ const ProcessBaby = ({
   const isBirthday = useMemo(() => {
     let valueReturn = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
 
       if (idCurrent) valueReturn = String(idCurrent?.birthday);
     }
     return valueReturn;
   }, [listAccountBaby, nameRouteUserId]);
 
+  const isMonthOld = useMemo(() => {
+    let dateObject;
+    if (listAccountBaby) {
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
+      var dateParts = idCurrent?.birthday.split("-");
+
+      dateObject = dayjs(
+        new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+      )
+        .add(28, "days")
+        .format("DD-MM-YYYY");
+    }
+    return dateObject;
+  }, [listAccountBaby]);
+
+  const isOneYear = useMemo(() => {
+    let dateObject;
+    if (listAccountBaby) {
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
+      var dateParts = idCurrent?.birthday.split("-");
+
+      dateObject = dayjs(
+        new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+      )
+        .add(365, "days")
+        .format("DD-MM-YYYY");
+    }
+    return dateObject;
+  }, [listAccountBaby]);
+
   const isDiffFirstDay1 = useMemo(() => {
     let dateObject;
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
       var dateParts = idCurrent?.birthday.split("-");
 
       dateObject = dayjs(new Date()).diff(
-        dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])).subtract(280, "days"),
+        dayjs(
+          new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+        ).subtract(280, "days"),
         "days"
       );
     }
@@ -106,7 +166,9 @@ const ProcessBaby = ({
   const diffDay1 = useMemo(() => {
     let day = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
       var dateParts = idCurrent && idCurrent?.birthday.split("-");
       day = `${dateParts[2]}-${dateParts[1]}-${+dateParts[0]}`;
     }
@@ -125,7 +187,9 @@ const ProcessBaby = ({
 
   const listEventCook = useMemo(() => {
     const listEventCurrent = listEvent?.length > 0 ? listEvent : [];
-    const isHasFirstDay = listEventCurrent?.find((item) => Number(item.id) === -1);
+    const isHasFirstDay = listEventCurrent?.find(
+      (item) => Number(item.id) === -1
+    );
     if (!isHasFirstDay)
       listEventCurrent?.unshift({
         id: -1,
@@ -136,11 +200,13 @@ const ProcessBaby = ({
         image: "",
         linkvideo: "",
       });
-    const isHasBirthDay = listEventCurrent?.find((item) => Number(item.id) === 1000);
+    const isHasBirthDay = listEventCurrent?.find(
+      (item) => Number(item.id) === -2
+    );
     if (!isHasBirthDay)
       listEventCurrent?.push(
         {
-          id: 1000,
+          id: -2,
           date: moment().format("DD-MM-YYYY"),
           event: "Hôm nay",
           description: "Con đang ngủ hay đang nghịch nhỉ?",
@@ -149,10 +215,28 @@ const ProcessBaby = ({
           linkvideo: "",
         },
         {
-          id: 1001,
+          id: -3,
           date: isBirthday,
           event: "Quan trọng nhá!",
           description: "Oa oa",
+          status: "wait",
+          image: "",
+          linkvideo: "",
+        },
+        {
+          id: -4,
+          date: isMonthOld,
+          event: "Thôi nôi con nè",
+          description: "Ấy zà, nên chọn quà gì đây nhỉ",
+          status: "wait",
+          image: "",
+          linkvideo: "",
+        },
+        {
+          id: -5,
+          date: isOneYear,
+          event: "Một tuổi rồi nè!",
+          description: "Sinh nhật này to lắm đấy!",
           status: "wait",
           image: "",
           linkvideo: "",
@@ -162,10 +246,18 @@ const ProcessBaby = ({
     const newList = Array.from(new Set(listEventCurrent));
     const b = newList.sort(function (a: ProcessBabyBase, b: ProcessBabyBase) {
       var dateParts: any = String(a.date).split("-");
-      const dateObjectA = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+      const dateObjectA = new Date(
+        +dateParts[2],
+        dateParts[1] - 1,
+        +dateParts[0]
+      );
 
       var datePartsB: any = String(b.date).split("-");
-      const dateObjectB = new Date(+datePartsB[2], datePartsB[1] - 1, +datePartsB[0]);
+      const dateObjectB = new Date(
+        +datePartsB[2],
+        datePartsB[1] - 1,
+        +datePartsB[0]
+      );
 
       return dateObjectA.getTime() - dateObjectB.getTime();
     });
@@ -174,8 +266,8 @@ const ProcessBaby = ({
 
   const handleDeleteEvent = (itemId) => {
     +itemId !== -1 &&
-      +itemId !== 1000 &&
-      +itemId !== 1001 &&
+      +itemId !== -2 &&
+      +itemId !== -3 &&
       Modal.alert("Xóa sự kiện", "Bạn có thật sự muốn xóa sự kiện này?", [
         {
           text: "Thoát",
@@ -233,7 +325,9 @@ const ProcessBaby = ({
               </Text>
             }
             status={"finish"}
-            renderIcon={() => <FontAwesomeIcon icon={faCheck} size={14} color="#1870bc" />}
+            renderIcon={() => (
+              <FontAwesomeIcon icon={faCheck} size={14} color="#1870bc" />
+            )}
           />
           <Step
             key={1111}
@@ -246,13 +340,17 @@ const ProcessBaby = ({
             description={
               <Text>
                 <Button size="small" type="ghost">
-                  <Text style={{ color: "green", fontWeight: "600" }}>{isDiffFirstDay}</Text>
+                  <Text style={{ color: "green", fontWeight: "600" }}>
+                    {isDiffFirstDay}
+                  </Text>
                   <Text> ngày</Text>
                 </Button>
               </Text>
             }
             status={"wait"}
-            renderIcon={() => <FontAwesomeIcon icon={faSeedling} color="green" size={14} />}
+            renderIcon={() => (
+              <FontAwesomeIcon icon={faSeedling} color="green" size={14} />
+            )}
           />
           <Step
             key={22222}
@@ -264,13 +362,21 @@ const ProcessBaby = ({
             description={
               <Text>
                 <Button size="small" type="ghost">
-                  <Text style={{ color: "#faad00", fontWeight: "600" }}>{diffDay}</Text>
+                  <Text style={{ color: "#faad00", fontWeight: "600" }}>
+                    {diffDay}
+                  </Text>
                   <Text> ngày nữa!</Text>
                 </Button>
               </Text>
             }
             status={"wait"}
-            icon={<FontAwesomeIcon icon={faHandsClapping} color="#faad00" size={13} />}
+            icon={
+              <FontAwesomeIcon
+                icon={faHandsClapping}
+                color="#faad00"
+                size={13}
+              />
+            }
           />
         </Steps>
       </View>
@@ -344,14 +450,16 @@ const ProcessBaby = ({
               </View>
               <Text
                 style={{
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: "bold",
-                  marginTop: 6,
-                  marginRight: 20,
+                  marginTop: 8,
+                  marginRight: 10,
                   color: "#1870bc",
                 }}
               >
-                {+isDiffFirstDay1 > 0 ? Math.round(isDiffFirstDay1 / 7) : 0}/40 Tuần
+                {+isDiffFirstDay1 > 0 ? Math.floor(isDiffFirstDay1 / 7) : 0}/40
+                Tuần - {isDiffFirstDay1 - Math.floor(isDiffFirstDay1 / 7) * 7}{" "}
+                Ngày
               </Text>
             </View>
             <View
@@ -400,7 +508,9 @@ const ProcessBaby = ({
               marginTop: 20,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}>
+            <Text
+              style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}
+            >
               Tiến trình phát triển:
             </Text>
             <Button
@@ -410,7 +520,9 @@ const ProcessBaby = ({
               onPress={() => setShowEvent(true)}
             >
               <FontAwesomeIcon icon={faAdd} />
-              <Text style={{ fontSize: 13, fontWeight: "500" }}>Thêm sự kiện</Text>
+              <Text style={{ fontSize: 13, fontWeight: "500" }}>
+                Thêm sự kiện
+              </Text>
             </Button>
           </View>
           <ScrollView>
@@ -450,9 +562,9 @@ const ProcessBaby = ({
                                 height: 50,
                                 width: windowWidth - 90,
                                 backgroundColor:
-                                  +item.id === 1000
+                                  +item.id === -2
                                     ? "green"
-                                    : +item.id === 1001
+                                    : +item.id === -3
                                     ? "#faad00"
                                     : "#1870bc",
                                 borderRadius: 10,
@@ -466,9 +578,9 @@ const ProcessBaby = ({
                                   width: windowWidth - 60,
                                   backgroundColor: "white",
                                   borderColor:
-                                    +item.id === 1000
+                                    +item.id === -2
                                       ? "green"
-                                      : +item.id === 1001
+                                      : +item.id === -3
                                       ? "#faad00"
                                       : "#1870bc",
                                   borderWidth: 1,
@@ -482,13 +594,15 @@ const ProcessBaby = ({
                                     setIndexItemCurrent(index);
                                     setItemIdCurrent(item.id);
                                   }}
-                                  onSwipeableOpen={() => setIndexItemCurrent(index)}
+                                  onSwipeableOpen={() =>
+                                    setIndexItemCurrent(index)
+                                  }
                                   renderLeftActions={() => {
                                     if (
                                       indexItemCurrent === index &&
                                       itemIdCurrent !== -1 &&
-                                      itemIdCurrent !== 1000 &&
-                                      itemIdCurrent !== 1001
+                                      itemIdCurrent !== -2 &&
+                                      itemIdCurrent !== -3
                                     ) {
                                       return (
                                         <View
@@ -503,9 +617,9 @@ const ProcessBaby = ({
                                             alignItems: "center",
                                             backgroundColor: "white",
                                             borderColor:
-                                              +item.id === 1000
+                                              +item.id === -2
                                                 ? "green"
-                                                : +item.id === 1001
+                                                : +item.id === -3
                                                 ? "#faad00"
                                                 : "#1870bc",
                                           }}
@@ -517,14 +631,23 @@ const ProcessBaby = ({
                                               height: 50,
                                               paddingTop: 5,
                                             }}
-                                            onPress={() => handleDeleteEvent(item.id)}
+                                            onPress={() =>
+                                              handleDeleteEvent(item.id)
+                                            }
                                           >
-                                            <FontAwesomeIcon icon={faTrash} color="red" />
+                                            <FontAwesomeIcon
+                                              icon={faTrash}
+                                              color="red"
+                                            />
                                           </Button>
                                         </View>
                                       );
                                     } else {
-                                      return <Text style={{ color: "transparent" }}>'</Text>;
+                                      return (
+                                        <Text style={{ color: "transparent" }}>
+                                          '
+                                        </Text>
+                                      );
                                     }
                                   }}
                                   containerStyle={{
@@ -541,8 +664,10 @@ const ProcessBaby = ({
                                     }}
                                     extra={
                                       <View>
-                                        {(String(item.linkvideo)?.trim() !== "" ||
-                                          String(item.image)?.trim() !== "") && (
+                                        {(String(item.linkvideo)?.trim() !==
+                                          "" ||
+                                          String(item.image)?.trim() !==
+                                            "") && (
                                           <View
                                             style={{
                                               width: 50,
@@ -550,28 +675,40 @@ const ProcessBaby = ({
                                               display: "flex",
                                             }}
                                           >
-                                            {String(item.image)?.trim() !== "" && (
+                                            {String(item.image)?.trim() !==
+                                              "" && (
                                               <Button
                                                 size="small"
                                                 style={{ width: 20 }}
                                                 onPress={() => {
-                                                  setListImage(JSON.parse(item.image));
+                                                  setListImage(
+                                                    JSON.parse(item.image)
+                                                  );
                                                   setShowCurrentImage(true);
                                                 }}
                                               >
-                                                <FontAwesomeIcon icon={faImage} />
+                                                <FontAwesomeIcon
+                                                  icon={faImage}
+                                                />
                                               </Button>
                                             )}
-                                            {String(item.linkvideo)?.trim() !== "" && (
+                                            {String(item.linkvideo)?.trim() !==
+                                              "" && (
                                               <Button
                                                 size="small"
                                                 style={{
                                                   width: 20,
                                                   marginLeft: 10,
                                                 }}
-                                                onPress={() => Linking.openURL(item.linkvideo)}
+                                                onPress={() =>
+                                                  Linking.openURL(
+                                                    item.linkvideo
+                                                  )
+                                                }
                                               >
-                                                <FontAwesomeIcon icon={faVideo} />
+                                                <FontAwesomeIcon
+                                                  icon={faVideo}
+                                                />
                                               </Button>
                                             )}
                                           </View>
@@ -594,12 +731,30 @@ const ProcessBaby = ({
                           }
                           status={item?.status || "finish"}
                           renderIcon={() => {
-                            if (+item.id === 1000) {
-                              return <FontAwesomeIcon icon={faCircle} color="green" size={22} />;
-                            } else if (+item.id === 1001) {
-                              return <FontAwesomeIcon icon={faCircle} color="#faad00" size={22} />;
+                            if (+item.id === -2) {
+                              return (
+                                <FontAwesomeIcon
+                                  icon={faCircle}
+                                  color="green"
+                                  size={22}
+                                />
+                              );
+                            } else if (+item.id === -3) {
+                              return (
+                                <FontAwesomeIcon
+                                  icon={faCircle}
+                                  color="#faad00"
+                                  size={22}
+                                />
+                              );
                             } else {
-                              return <FontAwesomeIcon icon={faCircle} size={22} color="#1870bc" />;
+                              return (
+                                <FontAwesomeIcon
+                                  icon={faCircle}
+                                  size={22}
+                                  color="#1870bc"
+                                />
+                              );
                             }
                           }}
                         />

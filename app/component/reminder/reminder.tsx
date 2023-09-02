@@ -15,7 +15,10 @@ import {
 import * as Calendar from "expo-calendar";
 import CalendarStrip from "react-native-calendar-strip";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  ScrollView,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
 
 import { ImageBackground, useWindowDimensions } from "react-native";
 
@@ -36,7 +39,9 @@ const ReminderComponent = () => {
   const { width, height } = useWindowDimensions();
 
   const [currentDate, setCurrentDate] = useState<any>(
-    `${moment().format("YYYY")}-${moment().format("MM")}-${moment().format("DD")}`
+    `${moment().format("YYYY")}-${moment().format("MM")}-${moment().format(
+      "DD"
+    )}`
   );
 
   const [status, requestPermission] = Calendar.useCalendarPermissions();
@@ -83,7 +88,11 @@ const ReminderComponent = () => {
   return (
     <GestureHandlerRootView>
       <SafeAreaView>
-        <ImageBackground source={image} resizeMode="cover" style={{ width: width, height: height }}>
+        <ImageBackground
+          source={image}
+          resizeMode="cover"
+          style={{ width: width, height: height }}
+        >
           <ModalAddEvent
             currentDate={currentDate}
             isShowEvent={isShowEvent}
@@ -125,9 +134,9 @@ const ReminderComponent = () => {
             datesWhitelist={datesWhitelist}
             selectedDate={currentDate}
             onDateSelected={(date) => {
-              const selectedDate = `${moment(date).format("YYYY")}-${moment(date).format(
-                "MM"
-              )}-${moment(date).format("DD")}`;
+              const selectedDate = `${moment(date).format("YYYY")}-${moment(
+                date
+              ).format("MM")}-${moment(date).format("DD")}`;
               setCurrentDate(selectedDate);
 
               getAllEvent(selectedDate);
@@ -145,9 +154,9 @@ const ReminderComponent = () => {
               },
             }}
           />
-          <Text style={{ paddingLeft: 10, fontWeight: "bold" }}>{`Hôm nay: ${moment().format(
-            "DD/MM/YYYY hh:mm"
-          )}`}</Text>
+          <Text
+            style={{ paddingLeft: 10, fontWeight: "bold" }}
+          >{`Hôm nay: ${moment().format("DD/MM/YYYY hh:mm")}`}</Text>
           <WhiteSpace />
           <View
             style={{
@@ -159,7 +168,9 @@ const ReminderComponent = () => {
               marginBottom: 10,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}>
+            <Text
+              style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}
+            >
               Danh sách sự kiện:
             </Text>
             <Button
@@ -170,7 +181,9 @@ const ReminderComponent = () => {
               disabled={isDisableButtonEvent}
             >
               <FontAwesomeIcon icon={faAdd} />
-              <Text style={{ fontSize: 13, fontWeight: "500" }}>Thêm sự kiện</Text>
+              <Text style={{ fontSize: 13, fontWeight: "500" }}>
+                Thêm sự kiện
+              </Text>
             </Button>
           </View>
           {isLoading ? (
@@ -183,18 +196,27 @@ const ReminderComponent = () => {
               }}
             >
               {isLoading && (
-                <ActivityIndicator size="small" color="#1870bc" text="Tải dữ liệu..." />
+                <ActivityIndicator
+                  size="small"
+                  color="#1870bc"
+                  text="Tải dữ liệu..."
+                />
               )}
             </View>
           ) : (
             <View>
               {todoList?.length > 0 && !isLoading ? (
                 <View
-                  style={{ width: width, height: height - 280, backgroundColor: "transparent" }}
+                  style={{
+                    width: width,
+                    height: height - 280,
+                    backgroundColor: "transparent",
+                  }}
                 >
                   <ScrollView style={{ backgroundColor: "transparent" }}>
-                    {todoList?.map((item) => (
+                    {todoList?.map((item, index) => (
                       <View
+                        key={index}
                         style={{
                           width: width - 10,
                           height: 40,
@@ -228,7 +250,12 @@ const ReminderComponent = () => {
                             {String(moment(item?.startDate).format("hh"))}:
                             {moment(item?.startDate).format("mm")}
                           </Text>
-                          <Text style={{ borderRightWidth: 1, borderColor: "#1870bc" }}></Text>
+                          <Text
+                            style={{
+                              borderRightWidth: 1,
+                              borderColor: "#1870bc",
+                            }}
+                          ></Text>
                           <Text
                             style={{
                               color: "black",
@@ -244,7 +271,10 @@ const ReminderComponent = () => {
                           onPress={() => Calendar.openEventInCalendar(item.id)}
                           style={{ margin: 10 }}
                         >
-                          <FontAwesomeIcon icon={faArrowCircleRight} color="#1870bc" />
+                          <FontAwesomeIcon
+                            icon={faArrowCircleRight}
+                            color="#1870bc"
+                          />
                         </Text>
                       </View>
                     ))}

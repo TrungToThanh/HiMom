@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+
 import {
   View,
   Text,
@@ -29,9 +31,11 @@ interface Props {
 const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
   const image = require("../../../assets/background.jpg");
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const { windowWidth, windowHeight } = getDimensions();
   const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } =
-    getAllItemShoppingMain(nameRouteUserId, false);
+    getAllItemShoppingMain(nameRouteUserId, isLoading);
 
   const mom = useMemo(() => {
     let countGoods = 0;
@@ -122,6 +126,15 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
         )}`
       : "$ 0";
   }, [mom, baby, other]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(true);
+      }, 300);
+    }, [])
+  );
 
   return (
     <GestureHandlerRootView>
