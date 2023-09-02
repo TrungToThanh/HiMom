@@ -4,7 +4,7 @@ import * as SQLite from "expo-sqlite";
 import dayjs from "dayjs";
 import { nameDB } from "../database";
 
-const nameTable = "tableAccountBaby";
+const nameTable = "tableAccountBaby1";
 
 export const createABabyTable = () => {
   const db = SQLite.openDatabase(nameDB);
@@ -26,7 +26,7 @@ export const insertValueBabyToBabyList = (nameBaby, birthday, password) => {
       );
       tx.executeSql(
         `INSERT INTO ${nameTable} (nameBaby, birthday, password) values (?, ?, ?)`,
-        [nameBaby, birthday, password],
+        [String(nameBaby), String(birthday), String(password)],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );
@@ -67,9 +67,7 @@ export const deleteAItemBabyFromBabyList = (id) => {
       tx.executeSql(
         `DELETE FROM ${nameTable} WHERE id = ?`,
         [Number(id)],
-        (txObj, resultSet) => {
-          getAllBabyInBabyList(true), resolve(true);
-        },
+        (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );
     });

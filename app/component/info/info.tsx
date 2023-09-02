@@ -22,7 +22,9 @@ const InfoCommon = ({ listAccountBaby, nameRouteUserId }: Props) => {
   const nameBaby = useMemo(() => {
     let InfoById;
     if (listAccountBaby) {
-      InfoById = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      InfoById = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
     }
     return InfoById;
   }, []);
@@ -30,11 +32,15 @@ const InfoCommon = ({ listAccountBaby, nameRouteUserId }: Props) => {
   const isDiffFirstDay = useMemo(() => {
     let dateObject;
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
       var dateParts = idCurrent?.birthday.split("-");
 
       dateObject = dayjs(new Date()).diff(
-        dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])).subtract(280, "days"),
+        dayjs(
+          new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+        ).subtract(280, "days"),
         "days"
       );
     }
@@ -44,17 +50,17 @@ const InfoCommon = ({ listAccountBaby, nameRouteUserId }: Props) => {
   const diffDay = useMemo(() => {
     let day = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      let idCurrent = listAccountBaby?.find(
+        (item) => Number(item.id) === Number(nameRouteUserId)
+      );
       var dateParts = idCurrent && idCurrent?.birthday.split("-");
       day = `${dateParts[2]}-${dateParts[1]}-${+dateParts[0]}`;
     }
     return String(dayjs(day).diff(new Date(), "days"));
   }, [listAccountBaby, nameRouteUserId]);
 
-  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } = getAllItemShoppingMain(
-    nameRouteUserId,
-    false
-  );
+  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } =
+    getAllItemShoppingMain(nameRouteUserId, false);
 
   const mom = useMemo(() => {
     let countGoods = 0;
@@ -113,34 +119,42 @@ const InfoCommon = ({ listAccountBaby, nameRouteUserId }: Props) => {
     return {
       countGoods: countGoods,
       countGoodsBuy: countGoodsBuy,
-      moneyGoods: Number(moneyGoods),
-      moneyGoodsBuy: Number(moneyGoodsBuy),
+      moneyGoods: Number(moneyGoods) > 0 ? Number(moneyGoods) : 0,
+      moneyGoodsBuy: Number(moneyGoodsBuy) > 0 ? Number(moneyGoodsBuy) : 0,
       moneyTotal: moneyGoods,
     };
   }, [listAllItemsOther]);
 
   const totalMoneyPrepare = useMemo(() => {
-    return `$ ${Intl.NumberFormat("en-US").format(
-      Number(mom.moneyTotal + baby.moneyTotal + other.moneyTotal)
-    )}`;
+    const total = Number(mom.moneyTotal + baby.moneyTotal + other.moneyTotal);
+    return total > 0
+      ? `$ ${Intl.NumberFormat("en-US").format(
+          Number(mom.moneyTotal + baby.moneyTotal + other.moneyTotal)
+        )}`
+      : 0;
   }, [mom, baby, other]);
 
   const totalMoneyBuy = useMemo(() => {
-    return `$ ${Intl.NumberFormat("en-US").format(
-      Number(mom.moneyGoodsBuy + baby.moneyGoodsBuy + other.moneyGoodsBuy)
-    )}`;
+    const total = Number(
+      mom.moneyGoodsBuy + baby.moneyGoodsBuy + other.moneyGoodsBuy
+    );
+    return total > 0
+      ? `$ ${Intl.NumberFormat("en-US").format(
+          Number(mom.moneyGoodsBuy + baby.moneyGoodsBuy + other.moneyGoodsBuy)
+        )}`
+      : 0;
   }, [mom, baby, other]);
 
   const totalGoods = useMemo(() => {
-    return `${Intl.NumberFormat("en-US").format(
+    return Intl.NumberFormat("en-US").format(
       Number(mom.countGoods + baby.countGoods + other.countGoods)
-    )}`;
+    );
   }, [mom, baby, other]);
 
   const totalGoodsBuy = useMemo(() => {
-    return `  ${Intl.NumberFormat("en-US").format(
+    return Intl.NumberFormat("en-US").format(
       Number(mom.countGoodsBuy + baby.countGoodsBuy + other.countGoodsBuy)
-    )}`;
+    );
   }, [mom, baby, other]);
 
   const image = require("./born.png");

@@ -1,11 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { View, Text, Image, StyleSheet, Dimensions, ImageBackground } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Dimensions,
+  ImageBackground,
+} from "react-native";
 import { WhiteSpace } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
-import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import {
+  FlatList,
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 import "react-native-gesture-handler";
 import getDimensions from "../../hook/get_dimension";
 import MainListPrepare from "./sub-component/main_list_prepare";
@@ -19,10 +30,8 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
   const image = require("../../../assets/background.jpg");
 
   const { windowWidth, windowHeight } = getDimensions();
-  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } = getAllItemShoppingMain(
-    nameRouteUserId,
-    false
-  );
+  const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } =
+    getAllItemShoppingMain(nameRouteUserId, false);
 
   const mom = useMemo(() => {
     let countGoods = 0;
@@ -39,8 +48,14 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
     return {
       countGoods: countGoods,
       countGoodsBuy: countGoodsBuy,
-      moneyGoods: Intl.NumberFormat("en-US").format(Number(moneyGoods)),
-      moneyGoodsBuy: Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy)),
+      moneyGoods:
+        Number(moneyGoods) > 0
+          ? Intl.NumberFormat("en-US").format(Number(moneyGoods))
+          : 0,
+      moneyGoodsBuy:
+        Number(moneyGoodsBuy) > 0
+          ? Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy))
+          : 0,
       moneyTotal: moneyGoods,
     };
   }, [listAllItemsMom]);
@@ -60,8 +75,14 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
     return {
       countGoods: countGoods,
       countGoodsBuy: countGoodsBuy,
-      moneyGoods: Intl.NumberFormat("en-US").format(Number(moneyGoods)),
-      moneyGoodsBuy: Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy)),
+      moneyGoods:
+        Number(moneyGoods) > 0
+          ? Intl.NumberFormat("en-US").format(Number(moneyGoods))
+          : 0,
+      moneyGoodsBuy:
+        Number(moneyGoodsBuy) > 0
+          ? Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy))
+          : 0,
       moneyTotal: moneyGoods,
     };
   }, [listAllItemsBaby]);
@@ -81,16 +102,25 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
     return {
       countGoods: countGoods,
       countGoodsBuy: countGoodsBuy,
-      moneyGoods: Intl.NumberFormat("en-US").format(Number(moneyGoods)),
-      moneyGoodsBuy: Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy)),
+      moneyGoods:
+        Number(moneyGoods) > 0
+          ? Intl.NumberFormat("en-US").format(Number(moneyGoods))
+          : 0,
+      moneyGoodsBuy:
+        Number(moneyGoodsBuy) > 0
+          ? Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy))
+          : 0,
       moneyTotal: moneyGoods,
     };
   }, [listAllItemsOther]);
 
   const totalMoneyPrepare = useMemo(() => {
-    return `$ ${Intl.NumberFormat("en-US").format(
-      Number(mom.moneyTotal + baby.moneyTotal + other.moneyTotal)
-    )}`;
+    const total = Number(mom.moneyTotal + baby.moneyTotal + other.moneyTotal);
+    return +total > 0
+      ? `$ ${Intl.NumberFormat("en-US").format(
+          Number(mom.moneyTotal + baby.moneyTotal + other.moneyTotal)
+        )}`
+      : "$ 0";
   }, [mom, baby, other]);
 
   return (
@@ -108,7 +138,14 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
             backgroundColor: "transparent",
           }}
         >
-          <Text style={{ marginTop: 20, color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
+          <Text
+            style={{
+              marginTop: 20,
+              color: "#1870bc",
+              fontSize: 16,
+              fontWeight: "bold",
+            }}
+          >
             Chuẩn bị
           </Text>
           <View
@@ -130,7 +167,9 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
               }}
               resizeMode="cover"
             />
-            <View style={{ position: "absolute", paddingLeft: 20, paddingTop: 30 }}>
+            <View
+              style={{ position: "absolute", paddingLeft: 20, paddingTop: 30 }}
+            >
               <View
                 style={{
                   width: windowWidth - 60,
@@ -153,7 +192,15 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
                   <Text>MomBank</Text>
                 </View>
 
-                <Text style={{ fontSize: 30, fontWeight: "bold", fontStyle: "italic" }}> VISA</Text>
+                <Text
+                  style={{
+                    fontSize: 30,
+                    fontWeight: "bold",
+                    fontStyle: "italic",
+                  }}
+                >
+                  VISA
+                </Text>
               </View>
               <WhiteSpace />
               <WhiteSpace />
@@ -169,7 +216,9 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
               </Text>
               <WhiteSpace />
               <WhiteSpace />
-              <Text style={{ fontSize: 30, fontWeight: "bold" }}>{totalMoneyPrepare}</Text>
+              <Text style={{ fontSize: 30, fontWeight: "bold" }}>
+                {totalMoneyPrepare}
+              </Text>
               <WhiteSpace />
             </View>
           </View>
@@ -185,7 +234,9 @@ const HomeListShopping = ({ listAccountBaby, nameRouteUserId }: Props) => {
               marginBottom: 10,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}>
+            <Text
+              style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}
+            >
               Danh sách chuẩn bị:
             </Text>
           </View>

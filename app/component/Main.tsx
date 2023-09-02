@@ -43,20 +43,20 @@ export default function Main() {
     return !listAccountBaby ? true : false;
   }, [listAccountBaby]);
 
-  if (isLoading)
-    return (
-      <View
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>
-          Loading <ActivityIndicator />
-        </Text>
-      </View>
-    );
+  // if (isLoading )
+  //   return (
+  //     <View
+  //       style={{
+  //         display: "flex",
+  //         justifyContent: "center",
+  //         alignItems: "center",
+  //       }}
+  //     >
+  //       <Text>
+  //         Loading <ActivityIndicator />
+  //       </Text>
+  //     </View>
+  //   );
 
   return (
     <GestureHandlerRootView>

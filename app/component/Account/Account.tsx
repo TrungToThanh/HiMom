@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, DevSettings } from "react-native";
 import {
   Button,
   WhiteSpace,
@@ -144,9 +144,10 @@ const Account = ({
                 (isRes) => {
                   if (isRes) {
                     setIsLoading();
-                    Toast.success("Đã xóa thành công!");
-                    // @ts-ignore
-                    navigation.navigate("Main");
+                    Toast.success(
+                      "Đã xóa thành công! \n\r Vui lòng đăng nhập lại."
+                    );
+                    DevSettings.reload();
                   } else {
                     Toast.fail("Thất bại!");
                   }
@@ -189,7 +190,6 @@ const Account = ({
             } else {
               setValueDatePickerError(false);
             }
-
             const stop =
               String(isNameBaby?.trim()) === "" ||
               String(isPassword?.trim()) === "" ||
@@ -206,9 +206,11 @@ const Account = ({
               ).then((isRes) => {
                 if (isRes) {
                   setIsLoading();
-                  Toast.success("Đã lưu thành công!");
-                  // @ts-ignore
-                  navigation.navigate("Main");
+                  Toast.info(
+                    "Đã lưu thay đổi thành công. \n\r Vui lòng đăng nhập lại!",
+                    3
+                  );
+                  DevSettings.reload();
                 } else {
                   Toast.fail("Thất bại!");
                 }
