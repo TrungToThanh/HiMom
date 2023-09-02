@@ -20,11 +20,13 @@ interface Props {
   isShowDeleteButton?: boolean;
   listAccountBaby?: any;
   nameRouteUserId?: number;
+  setIsLoading: () => void;
 }
 const SettingAccount = ({
   isShowDeleteButton,
   listAccountBaby,
   nameRouteUserId,
+  setIsLoading,
 }: Props) => {
   library.add(faCheckSquare, faCoffee, faTrash, faUser, faCalendar, faEdit);
 
@@ -67,6 +69,7 @@ const SettingAccount = ({
                 listAccountBaby={listAccountBaby}
                 isShowDeleteButton={isShowDeleteButton}
                 nameRouteUserId={nameRouteUserId}
+                setIsLoading={setIsLoading}
               />
             </Accordion.Panel>
             <Accordion.Panel header="Cài đặt" key="1">

@@ -17,7 +17,7 @@ const InfoApp = () => {
       <Text>Tên phần mềm: {Application.applicationName} </Text>
       <Text>Phiên bản: {Application.nativeBuildVersion} </Text>
       <Text>
-        Ngày cài đặt: {moment(String(isDateInstall)).format("DD/MM/YYYY hh:mm")}{" "}
+        Ngày cài đặt: {moment(String(isDateInstall)).format("DD/MM/YYYY hh:mm")}
       </Text>
       <WingBlank />
       <Text>Tên nhà sản xuất: {Device.manufacturer}</Text>

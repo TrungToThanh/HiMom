@@ -39,7 +39,7 @@ const Home = () => {
     }
   }, []);
 
-  const { listAccountBaby } = getAllBabyInBabyList();
+  const { listAccountBaby } = getAllBabyInBabyList(isLoading);
   const tabs = [
     {
       title: (
@@ -114,7 +114,8 @@ const Home = () => {
     },
   ];
 
-  if (!listAccountBaby || listAccountBaby?.length < 1 || isLoading) return <LoadingData />;
+  if (!listAccountBaby || listAccountBaby?.length < 1 || isLoading)
+    return <LoadingData />;
 
   return (
     <Tabs
@@ -124,16 +125,31 @@ const Home = () => {
       usePaged={false}
       style={{ maxHeight: height - 70 }}
     >
-      <InfoCommon listAccountBaby={listAccountBaby} nameRouteUserId={nameRouteUserId} />
+      <InfoCommon
+        listAccountBaby={listAccountBaby}
+        nameRouteUserId={nameRouteUserId}
+      />
 
-      <ProcessBaby nameRouteUserId={nameRouteUserId} listAccountBaby={listAccountBaby} />
+      <ProcessBaby
+        nameRouteUserId={nameRouteUserId}
+        listAccountBaby={listAccountBaby}
+      />
 
-      <HomeListShopping nameRouteUserId={nameRouteUserId} listAccountBaby={listAccountBaby} />
+      <HomeListShopping
+        nameRouteUserId={nameRouteUserId}
+        listAccountBaby={listAccountBaby}
+      />
       <ReminderComponent />
       <SettingAccount
         nameRouteUserId={nameRouteUserId}
         listAccountBaby={listAccountBaby}
         isShowDeleteButton={true}
+        setIsLoading={() => {
+          setIsLoading(true);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 300);
+        }}
       />
     </Tabs>
   );
