@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import _ from "lodash";
-import moment from "moment";
 
 import {
   ActivityIndicator,
@@ -33,24 +32,23 @@ const ReminderComponent = () => {
   const image = require("../../../assets/background.jpg");
   const [todoList, setTodoList] = useState([]);
   const [isShowEvent, setShowEvent] = useState(false);
-  const [isDisableButtonEvent, setDisableButtonEvent] = useState(false);
+  const [isDisableButtonEvent, setDisableButtonEvent] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   const { width, height } = useWindowDimensions();
 
-  const [currentDate, setCurrentDate] = useState<any>(
-    `${moment().format("YYYY")}-${moment().format("MM")}-${moment().format(
-      "DD"
-    )}`
-  );
+  const [currentDate, setCurrentDate] = useState<any>();
+  // `${moment().format("YYYY")}-${moment().format("MM")}-${moment().format(
+  //   "DD"
+  // )}`
 
   const [status, requestPermission] = Calendar.useCalendarPermissions();
   Calendar.getCalendarPermissionsAsync();
 
   const datesWhitelist = [
     {
-      start: moment().subtract(10, "days"),
-      end: moment().add(365, "days"), // total 4 days enabled
+      // start: moment().subtract(10, "days"),
+      // end: moment().add(365, "days"),
     },
   ];
 
@@ -58,25 +56,25 @@ const ReminderComponent = () => {
     async (selectedDate) => {
       setIsLoading(true);
       let listEvent: any;
-      await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT)
-        .then(async (item) => {
-          if (item && item.length > 0) {
-            const calendarIdExisted = item?.find(
-              (childItem) => childItem?.source?.name === nameCalenderSource
-            );
-            let calendarId = calendarIdExisted?.id;
-            listEvent = await Calendar.getEventsAsync(
-              [calendarId],
-              moment(selectedDate).startOf("day").toDate(),
-              moment(selectedDate).endOf("day").toDate()
-            );
-            setTodoList(listEvent);
-          }
-        })
-        .then(() => {
-          setTodoList(listEvent);
-          setIsLoading(false);
-        });
+      // await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT)
+      //   .then(async (item) => {
+      //     if (item && item.length > 0) {
+      //       const calendarIdExisted = item?.find(
+      //         (childItem) => childItem?.source?.name === nameCalenderSource
+      //       );
+      //       let calendarId = calendarIdExisted?.id;
+      //       listEvent = await Calendar.getEventsAsync(
+      //         [calendarId],
+      //         moment(selectedDate).startOf("day").toDate(),
+      //         moment(selectedDate).endOf("day").toDate()
+      //       );
+      //       setTodoList(listEvent);
+      //     }
+      //   })
+      //   .then(() => {
+      //     setTodoList(listEvent);
+      //     setIsLoading(false);
+      //   });
     },
     [currentDate, todoList]
   );
@@ -93,13 +91,13 @@ const ReminderComponent = () => {
           resizeMode="cover"
           style={{ width: width, height: height }}
         >
-          <ModalAddEvent
+          {/* <ModalAddEvent
             currentDate={currentDate}
             isShowEvent={isShowEvent}
             setShowEvent={() => setShowEvent(false)}
             nameCalenderSource={nameCalenderSource}
-          />
-          <CalendarStrip
+          /> */}
+          {/* <CalendarStrip
             headerText="Nhắc nhở"
             calendarAnimation={{ type: "sequence", duration: 30 }}
             style={{
@@ -131,21 +129,21 @@ const ReminderComponent = () => {
             disabledDateNameStyle={{ color: "grey" }}
             disabledDateNumberStyle={{ color: "grey", paddingTop: 10 }}
             iconContainer={{ flex: 0.1 }}
-            datesWhitelist={datesWhitelist}
-            selectedDate={currentDate}
-            onDateSelected={(date) => {
-              const selectedDate = `${moment(date).format("YYYY")}-${moment(
-                date
-              ).format("MM")}-${moment(date).format("DD")}`;
-              setCurrentDate(selectedDate);
-
-              getAllEvent(selectedDate);
-              if (moment(date) >= moment().subtract(1, "d")) {
-                setDisableButtonEvent(false);
-              } else {
-                setDisableButtonEvent(true);
-              }
-            }}
+            selectedDate={new Date()}
+            // datesWhitelist={datesWhitelist}
+            // selectedDate={currentDate}
+            // onDateSelected={(date) => {
+            //   // const selectedDate = `${moment(date).format("YYYY")}-${moment(
+            //   //   date
+            //   // ).format("MM")}-${moment(date).format("DD")}`;
+            //   // setCurrentDate(selectedDate);
+            //   // getAllEvent(selectedDate);
+            //   // if (moment(date) >= moment().subtract(1, "d")) {
+            //   //   setDisableButtonEvent(false);
+            //   // } else {
+            //   //   setDisableButtonEvent(true);
+            //   // }
+            // }}
             locale={{
               name: "vi",
               config: {
@@ -153,11 +151,11 @@ const ReminderComponent = () => {
                 weekdaysMin: "CN_T2_T3_T4_T5_T6_T7".split("_"),
               },
             }}
-          />
-          <Text
+          /> */}
+          {/* <Text
             style={{ paddingLeft: 10, fontWeight: "bold" }}
-          >{`Hôm nay: ${moment().format("DD/MM/YYYY hh:mm")}`}</Text>
-          <WhiteSpace />
+          >{`Hôm nay: ${new Date()}`}</Text> */}
+          {/* <WhiteSpace />
           <View
             style={{
               width: width - 20,
@@ -185,7 +183,7 @@ const ReminderComponent = () => {
                 Thêm sự kiện
               </Text>
             </Button>
-          </View>
+          </View> */}
           {isLoading ? (
             <View
               style={{
@@ -247,8 +245,8 @@ const ReminderComponent = () => {
                               marginRight: 10,
                             }}
                           >
-                            {String(moment(item?.startDate).format("hh"))}:
-                            {moment(item?.startDate).format("mm")}
+                            {/* {String(moment(item?.startDate).format("hh"))}:
+                            {moment(item?.startDate).format("mm")} */}
                           </Text>
                           <Text
                             style={{
@@ -264,11 +262,13 @@ const ReminderComponent = () => {
                               fontWeight: "600",
                             }}
                           >
-                            {String(item?.title).replaceAll("HiMom:", "")}
+                            {String(item?.title)?.replaceAll("HiMom:", "")}
                           </Text>
                         </View>
                         <Text
-                          onPress={() => Calendar.openEventInCalendar(item.id)}
+                          onPress={() =>
+                            Calendar?.openEventInCalendar(item?.id)
+                          }
                           style={{ margin: 10 }}
                         >
                           <FontAwesomeIcon

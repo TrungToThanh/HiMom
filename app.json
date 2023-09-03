@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "blank",
+    "name": "HiMom",
     "slug": "blank",
     "version": "1.0.0",
     "platforms": ["ios", "android", "web"],
@@ -11,6 +11,9 @@
     },
     "android": {
       "package": "com.trthanr.blank"
+    },
+    "splash": {
+      "image": "./assets/pics/born.png"
     },
     "plugins": [
       "expo-router",

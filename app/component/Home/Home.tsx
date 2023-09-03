@@ -139,7 +139,10 @@ const Home = () => {
         nameRouteUserId={nameRouteUserId}
         listAccountBaby={listAccountBaby}
       />
-      <ReminderComponent />
+      {/* <ReminderComponent /> */}
+      <View>
+        <Text>1</Text>
+      </View>
       <SettingAccount
         nameRouteUserId={nameRouteUserId}
         listAccountBaby={listAccountBaby}
