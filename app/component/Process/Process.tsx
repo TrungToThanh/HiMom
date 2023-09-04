@@ -289,8 +289,10 @@ const ProcessBaby = ({
                 listEventCook?.length > 0 &&
                 listEventCook?.map((item: ProcessBabyBase, indexItem) => {
                   const sourceImageItem =
+                    // @ts-ignore
                     listEventCook?.at(indexItem)?.image?.length > 0
-                      ? JSON?.parse(listEventCook?.at(indexItem)?.image)
+                      ? // @ts-ignore
+                        JSON?.parse(listEventCook?.at(indexItem)?.image)
                       : "";
                   return (
                     <View key={indexItem}>
