@@ -1,83 +1,47 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  View,
-  Text,
-  Dimensions,
-  ScrollView,
-  ImageBackground,
-  Linking,
-  Image,
-} from "react-native";
-import {
-  Button,
-  WhiteSpace,
-  Toast,
-  WingBlank,
-  Steps,
-  Modal,
-  SwipeAction,
-  List,
-} from "@ant-design/react-native";
+import { View, Text, Dimensions, ScrollView, ImageBackground } from "react-native";
+import { Image } from "expo-image";
+import { Button, WhiteSpace, Toast, Modal } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
-  faCheckSquare,
-  faCoffee,
-  faTrash,
   faUser,
   faCalendar,
-  faEdit,
   faAdd,
-  faSeedling,
-  faCheck,
-  faCircle,
-  faHandsClapping,
   faHeart,
+  faVideoCamera,
   faImage,
-  faVideo,
 } from "@fortawesome/free-solid-svg-icons";
-import { library } from "@fortawesome/fontawesome-svg-core";
-
+import ImageView from "react-native-image-viewing";
 import dayjs from "dayjs";
-import { deleteAEvent, getAllEvent } from "../../../api/eventProcess/event";
+import { deleteAEvent, getAllEvent, insertANewEvent } from "../../../api/eventProcess/event";
 import { ProcessBabyBase } from "../../const/type";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import moment from "moment";
 import _ from "lodash";
 import ModalAddProcess from "./sub-component/modal-add-process";
-import ModalShowImage from "./sub-component/modal-show-image";
+import ProcessLine from "./sub-component/process-line";
+import { Video, ResizeMode } from "expo-av";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface Props {
   listAccountBaby?: any;
+  listEvent: any;
   nameRouteUserId?: number;
-  isInfoComponent?: boolean;
-  diffDay?: any;
-  isDiffFirstDay?: any;
+  setLoadingAgain: (value) => void;
 }
 const ProcessBaby = ({
   listAccountBaby,
+  listEvent,
   nameRouteUserId,
-  isInfoComponent = false,
-  diffDay,
-  isDiffFirstDay,
-}: Props) => {
-  library.add(
-    faCheckSquare,
-    faCoffee,
-    faTrash,
-    faUser,
-    faCalendar,
-    faEdit,
-    faAdd,
-    faSeedling
-  );
 
+  setLoadingAgain,
+}: Props) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const image = require("../../../assets/background.jpg");
-
-  const Step = Steps.Step;
+  const video = React.useRef(null);
 
   //Get value date
   const now = dayjs().format("DD-MM-YYYYY");
@@ -85,91 +49,35 @@ const ProcessBaby = ({
   const isFirstDay = useMemo(() => {
     let dateObject = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find(
-        (item) => Number(item.id) === Number(nameRouteUserId)
-      );
+      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
       var dateParts = idCurrent?.birthday.split("-");
 
       // month is 0-based, that's why we need dataParts[1] - 1
-      dateObject = dayjs(
-        new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
-      )
+      dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
         .subtract(280, "days")
         .format("DD-MM-YYYY");
     }
     return dateObject;
   }, [listAccountBaby]);
 
-  const isBirthday = useMemo(() => {
-    let valueReturn = "";
-    if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find(
-        (item) => Number(item.id) === Number(nameRouteUserId)
-      );
-
-      if (idCurrent) valueReturn = String(idCurrent?.birthday);
-    }
-    return valueReturn;
-  }, [listAccountBaby, nameRouteUserId]);
-
-  const isMonthOld = useMemo(() => {
+  const isDiffFirstDay = useMemo(() => {
     let dateObject;
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find(
-        (item) => Number(item.id) === Number(nameRouteUserId)
-      );
-      var dateParts = idCurrent?.birthday.split("-");
-
-      dateObject = dayjs(
-        new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
-      )
-        .add(28, "days")
-        .format("DD-MM-YYYY");
-    }
-    return dateObject;
-  }, [listAccountBaby]);
-
-  const isOneYear = useMemo(() => {
-    let dateObject;
-    if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find(
-        (item) => Number(item.id) === Number(nameRouteUserId)
-      );
-      var dateParts = idCurrent?.birthday.split("-");
-
-      dateObject = dayjs(
-        new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
-      )
-        .add(365, "days")
-        .format("DD-MM-YYYY");
-    }
-    return dateObject;
-  }, [listAccountBaby]);
-
-  const isDiffFirstDay1 = useMemo(() => {
-    let dateObject;
-    if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find(
-        (item) => Number(item.id) === Number(nameRouteUserId)
-      );
+      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
       var dateParts = idCurrent?.birthday.split("-");
 
       dateObject = dayjs(new Date()).diff(
-        dayjs(
-          new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
-        ).subtract(280, "days"),
+        dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])).subtract(280, "days"),
         "days"
       );
     }
     return dateObject;
   }, [listAccountBaby]);
 
-  const diffDay1 = useMemo(() => {
+  const diffDay = useMemo(() => {
     let day = "";
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find(
-        (item) => Number(item.id) === Number(nameRouteUserId)
-      );
+      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
       var dateParts = idCurrent && idCurrent?.birthday.split("-");
       day = `${dateParts[2]}-${dateParts[1]}-${+dateParts[0]}`;
     }
@@ -177,88 +85,31 @@ const ProcessBaby = ({
   }, [listAccountBaby, nameRouteUserId]);
 
   const [isShowEvent, setShowEvent] = useState<boolean>(false);
-  const [loadingAgain, setLoadingAgain] = useState(false);
   const [itemIdCurrent, setItemIdCurrent] = useState<any>();
   const [indexItemCurrent, setIndexItemCurrent] = useState<any>();
 
   const [listImageCurrent, setListImage] = useState<any>();
   const [isShowCurrentImage, setShowCurrentImage] = useState(false);
 
-  const { listEvent } = getAllEvent({ isLoading: loadingAgain });
+  useFocusEffect(
+    React.useCallback(() => {
+      setLoadingAgain(true);
+      setTimeout(() => {
+        setLoadingAgain(false);
+      }, 400);
+    }, [])
+  );
 
   const listEventCook = useMemo(() => {
-    const listEventCurrent = listEvent?.length > 0 ? listEvent : [];
-    const isHasFirstDay = listEventCurrent?.find(
-      (item) => Number(item.id) === -1
-    );
-    if (!isHasFirstDay)
-      listEventCurrent?.unshift({
-        id: -1,
-        date: isFirstDay,
-        event: "Thấy gì chưa!",
-        description: "Nhịp đập đầu tiên!",
-        status: "finish",
-        image: "",
-        linkvideo: "",
-      });
-    const isHasBirthDay = listEventCurrent?.find(
-      (item) => Number(item.id) === -2
-    );
-    if (!isHasBirthDay)
-      listEventCurrent?.push(
-        {
-          id: -2,
-          date: moment().format("DD-MM-YYYY"),
-          event: "Hôm nay",
-          description: "Con đang ngủ hay đang nghịch nhỉ?",
-          status: "wait",
-          image: "",
-          linkvideo: "",
-        },
-        {
-          id: -3,
-          date: isBirthday,
-          event: "Quan trọng nhá!",
-          description: "Oa oa",
-          status: "wait",
-          image: "",
-          linkvideo: "",
-        },
-        {
-          id: -4,
-          date: isMonthOld,
-          event: "Thôi nôi con nè",
-          description: "Ấy zà, nên chọn quà gì đây nhỉ",
-          status: "wait",
-          image: "",
-          linkvideo: "",
-        },
-        {
-          id: -5,
-          date: isOneYear,
-          event: "Một tuổi rồi nè!",
-          description: "Sinh nhật này to lắm đấy!",
-          status: "wait",
-          image: "",
-          linkvideo: "",
-        }
-      );
-
-    const newList = Array.from(new Set(listEventCurrent));
+    if (!listEvent) return [];
+    const newList = Array.from(new Set(listEvent));
+    console.log("newList", newList);
     const b = newList.sort(function (a: ProcessBabyBase, b: ProcessBabyBase) {
       var dateParts: any = String(a.date).split("-");
-      const dateObjectA = new Date(
-        +dateParts[2],
-        dateParts[1] - 1,
-        +dateParts[0]
-      );
+      const dateObjectA = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
 
       var datePartsB: any = String(b.date).split("-");
-      const dateObjectB = new Date(
-        +datePartsB[2],
-        datePartsB[1] - 1,
-        +datePartsB[0]
-      );
+      const dateObjectB = new Date(+datePartsB[2], datePartsB[1] - 1, +datePartsB[0]);
 
       return dateObjectA.getTime() - dateObjectB.getTime();
     });
@@ -277,7 +128,7 @@ const ProcessBaby = ({
         {
           text: "Xóa",
           onPress: () =>
-            deleteAEvent(itemId).then((isRes) => {
+            deleteAEvent(nameRouteUserId, itemId).then((isRes) => {
               setLoadingAgain(true);
               setTimeout(() => {
                 setLoadingAgain(false);
@@ -292,98 +143,6 @@ const ProcessBaby = ({
       ]);
   };
 
-  const listImage = useMemo(() => {
-    const a = listImageCurrent?.map((item) => {
-      return { uri: item.uri };
-    });
-    return a;
-  }, [listImageCurrent]);
-
-  if (isInfoComponent) {
-    return (
-      <View
-        style={{
-          width: windowWidth,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginLeft: -20,
-        }}
-      >
-        <Steps size="small" direction="horizontal">
-          <Step
-            key={0}
-            title={
-              <View>
-                <Text>Xuất phát:</Text>
-              </View>
-            }
-            description={
-              <Text>
-                <Button size="small" type="ghost">
-                  <Text>{isFirstDay}</Text>
-                </Button>
-              </Text>
-            }
-            status={"finish"}
-            renderIcon={() => (
-              <FontAwesomeIcon icon={faCheck} size={14} color="#1870bc" />
-            )}
-          />
-          <Step
-            key={1111}
-            title={
-              <View>
-                <WhiteSpace />
-                <Text>Cùng nhau:</Text>
-              </View>
-            }
-            description={
-              <Text>
-                <Button size="small" type="ghost">
-                  <Text style={{ color: "green", fontWeight: "600" }}>
-                    {isDiffFirstDay}
-                  </Text>
-                  <Text> ngày</Text>
-                </Button>
-              </Text>
-            }
-            status={"wait"}
-            renderIcon={() => (
-              <FontAwesomeIcon icon={faSeedling} color="green" size={14} />
-            )}
-          />
-          <Step
-            key={22222}
-            title={
-              <View>
-                <Text>Dự kiến:</Text>
-              </View>
-            }
-            description={
-              <Text>
-                <Button size="small" type="ghost">
-                  <Text style={{ color: "#faad00", fontWeight: "600" }}>
-                    {diffDay}
-                  </Text>
-                  <Text> ngày nữa!</Text>
-                </Button>
-              </Text>
-            }
-            status={"wait"}
-            icon={
-              <FontAwesomeIcon
-                icon={faHandsClapping}
-                color="#faad00"
-                size={13}
-              />
-            }
-          />
-        </Steps>
-      </View>
-    );
-  }
-
   return (
     <GestureHandlerRootView>
       <SafeAreaView>
@@ -392,12 +151,14 @@ const ProcessBaby = ({
           resizeMode="cover"
           style={{ width: windowWidth, height: windowHeight }}
         >
-          <ModalShowImage
-            listImage={listImage}
-            isShowCurrentImage={isShowCurrentImage}
-            setShowCurrentImage={() => setShowCurrentImage(false)}
+          <ImageView
+            images={listImageCurrent}
+            imageIndex={0}
+            visible={isShowCurrentImage}
+            onRequestClose={() => setShowCurrentImage(false)}
           />
           <ModalAddProcess
+            nameRouteUserId={nameRouteUserId}
             isShowEvent={isShowEvent}
             setShowEvent={() => setShowEvent(false)}
             setLoadingAgain={(value) => setLoadingAgain(value)}
@@ -458,9 +219,8 @@ const ProcessBaby = ({
                   color: "#1870bc",
                 }}
               >
-                {+isDiffFirstDay1 > 0 ? Math.floor(isDiffFirstDay1 / 7) : 0}/40
-                Tuần - {isDiffFirstDay1 - Math.floor(isDiffFirstDay1 / 7) * 7}{" "}
-                Ngày
+                {+isDiffFirstDay > 0 ? Math.floor(isDiffFirstDay / 7) : 0}/40 Tuần -{" "}
+                {isDiffFirstDay - Math.floor(isDiffFirstDay / 7) * 7} Ngày
               </Text>
             </View>
             <View
@@ -482,7 +242,7 @@ const ProcessBaby = ({
                   marginLeft: 10,
                 }}
               >
-                {isDiffFirstDay1}
+                {isDiffFirstDay}
               </Text>
               <FontAwesomeIcon icon={faHeart} color="red" />
               <Text
@@ -493,10 +253,12 @@ const ProcessBaby = ({
                   marginLeft: 5,
                 }}
               >
-                {+diffDay1 > 0 ? diffDay1 : 0}
+                {+diffDay > 0 ? diffDay : 0}
               </Text>
             </View>
           </View>
+          <WhiteSpace />
+          <ProcessLine isFirstDay={isFirstDay} isDiffFirstDay={isDiffFirstDay} diffDay={diffDay} />
           <WhiteSpace />
           <View
             style={{
@@ -506,12 +268,9 @@ const ProcessBaby = ({
               justifyContent: "space-between",
               flexDirection: "row",
               marginBottom: 10,
-              marginTop: 20,
             }}
           >
-            <Text
-              style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}
-            >
+            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}>
               Tiến trình phát triển:
             </Text>
             <Button
@@ -521,194 +280,163 @@ const ProcessBaby = ({
               onPress={() => setShowEvent(true)}
             >
               <FontAwesomeIcon icon={faAdd} />
-              <Text style={{ fontSize: 13, fontWeight: "500" }}>
-                Thêm sự kiện
-              </Text>
+              <Text style={{ fontSize: 13, fontWeight: "500" }}>Thêm sự kiện</Text>
             </Button>
           </View>
           <ScrollView>
             <View style={{ marginBottom: 100 }}>
-              <WingBlank size="md">
-                {listEventCook &&
-                  listEventCook?.length > 0 &&
-                  listEventCook?.map((item: ProcessBabyBase, index) => {
-                    return (
+              {listEventCook &&
+                listEventCook?.length > 0 &&
+                listEventCook?.map((item: ProcessBabyBase, indexItem) => {
+                  const sourceImageItem =
+                    listEventCook?.at(indexItem)?.image?.length > 0
+                      ? JSON?.parse(listEventCook?.at(indexItem)?.image)
+                      : "";
+                  return (
+                    <View key={indexItem}>
                       <View
                         style={{
-                          height: 200,
-                          width: windowWidth,
-                          backgroundColor: "transparent",
-                          borderRadius: 10,
-                          flexDirection: "row",
-                          marginBottom: 10,
+                          minHeight: 50,
+                          width: windowWidth - 10,
+                          backgroundColor: "white",
+                          borderColor: "#dedce2",
+                          borderWidth: 1,
+                          borderRadius: 5,
+                          margin: 5,
+                          padding: 5,
                         }}
                       >
                         <View
                           style={{
-                            height: "100%",
-                            marginLeft: 5,
-                            width: windowWidth - 20,
-                            backgroundColor: "white",
-                            borderColor: index % 2 ? "green" : "#faad00",
-                            borderWidth: 1,
-                            borderRadius: 10,
+                            display: "flex",
+                            flexDirection: "row",
                           }}
                         >
-                          <SwipeAction
-                            key={index + 1}
-                            buttonWidth={60}
-                            onSwipeableWillOpen={() => {
-                              setIndexItemCurrent(index);
-                              setItemIdCurrent(item.id);
-                            }}
-                            onSwipeableOpen={() => setIndexItemCurrent(index)}
-                            renderLeftActions={() => {
-                              if (
-                                indexItemCurrent === index &&
-                                itemIdCurrent !== -1 &&
-                                itemIdCurrent !== -2 &&
-                                itemIdCurrent !== -3
-                              ) {
-                                return (
-                                  <View
-                                    style={{
-                                      height: "100%",
-                                      width: 40,
-                                      borderWidth: 1,
-                                      borderRadius: 10,
-                                      flexDirection: "row",
-                                      display: "flex",
-                                      justifyContent: "flex-start",
-                                      alignItems: "center",
-                                      backgroundColor: "white",
-                                      borderColor:
-                                        +item.id === -2
-                                          ? "green"
-                                          : +item.id === -3
-                                          ? "#faad00"
-                                          : "#1870bc",
-                                    }}
-                                  >
-                                    <Button
-                                      style={{
-                                        width: 38,
-                                        borderRadius: 10,
-                                        height: 50,
-                                        paddingTop: 5,
-                                      }}
-                                      onPress={() => handleDeleteEvent(item.id)}
-                                    >
-                                      <FontAwesomeIcon
-                                        icon={faTrash}
-                                        color="red"
-                                      />
-                                    </Button>
-                                  </View>
-                                );
-                              } else {
-                                return (
-                                  <Text style={{ color: "transparent" }}>
-                                    '
-                                  </Text>
-                                );
-                              }
-                            }}
-                            containerStyle={{
-                              borderRadius: 10,
-                              marginLeft: -1,
+                          <View
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              margin: 5,
                             }}
                           >
-                            <List.Item
+                            <FontAwesomeIcon icon={faUser} />
+                          </View>
+                          <View>
+                            <Text
                               style={{
-                                width: windowWidth - 70,
-                                height: "100%",
-                                marginLeft: 20,
-                                borderRadius: 10,
+                                fontSize: 14,
+                                fontWeight: "bold",
                               }}
-                              extra={
-                                <View>
-                                  {(String(item.linkvideo)?.trim() !== "" ||
-                                    String(item.image)?.trim() !== "") && (
+                              adjustsFontSizeToFit
+                              lineBreakMode="clip"
+                            >
+                              {item?.event}
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                fontWeight: "bold",
+                                color: "#b0aca8",
+                              }}
+                            >
+                              {item?.date}
+                            </Text>
+                          </View>
+                        </View>
+                        <WhiteSpace />
+                        <Text
+                          style={{
+                            fontSize: 13,
+                            fontWeight: "400",
+                            marginLeft: 5,
+                          }}
+                        >
+                          {item.description}
+                        </Text>
+                        <View>
+                          {sourceImageItem && sourceImageItem?.length > 0 && (
+                            <View>
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  display: "flex",
+                                  paddingTop: 10,
+                                  justifyContent: "space-evenly",
+                                }}
+                              >
+                                {sourceImageItem?.map((image, indexImage) => {
+                                  if (image.type === "video") {
+                                    return (
+                                      <View
+                                        key={indexImage}
+                                        style={{
+                                          borderWidth: 1,
+                                          borderRadius: 10,
+                                          borderColor: "#b0aca8",
+                                          padding: 5,
+                                        }}
+                                        onTouchStart={() => {
+                                          video?.current?.presentFullscreenPlayer();
+                                          video?.current?.playAsync();
+                                        }}
+                                      >
+                                        <FontAwesomeIcon icon={faVideoCamera} size={10} />
+                                        <Video
+                                          ref={video}
+                                          style={{
+                                            height: 120,
+                                            width: (windowWidth - 60) / 3,
+                                          }}
+                                          source={image}
+                                          volume={1}
+                                          useNativeControls={false}
+                                          resizeMode={ResizeMode.CONTAIN}
+                                          isLooping
+                                        />
+                                      </View>
+                                    );
+                                  }
+                                  return (
                                     <View
+                                      key={indexImage}
+                                      onTouchStart={() => {
+                                        item.image &&
+                                          item.image?.length > 0 &&
+                                          setListImage(JSON?.parse(item.image));
+                                        setShowCurrentImage(true);
+                                      }}
                                       style={{
-                                        width: 50,
-                                        flexDirection: "row",
-                                        display: "flex",
+                                        borderWidth: 1,
+                                        borderRadius: 10,
+                                        borderColor: "#b0aca8",
+                                        padding: 5,
                                       }}
                                     >
-                                      {String(item.image)?.trim() !== "" && (
-                                        <Button
-                                          size="small"
-                                          style={{ width: 20 }}
-                                          onPress={() => {
-                                            setListImage(
-                                              JSON.parse(item.image)
-                                            );
-                                            setShowCurrentImage(true);
-                                          }}
-                                        >
-                                          <FontAwesomeIcon icon={faImage} />
-                                        </Button>
-                                      )}
-                                      {String(item.linkvideo)?.trim() !==
-                                        "" && (
-                                        <Button
-                                          size="small"
-                                          style={{
-                                            width: 20,
-                                            marginLeft: 10,
-                                          }}
-                                          onPress={() =>
-                                            Linking.openURL(item.linkvideo)
-                                          }
-                                        >
-                                          <FontAwesomeIcon icon={faVideo} />
-                                        </Button>
-                                      )}
+                                      <FontAwesomeIcon icon={faImage} size={10} />
+                                      <Image
+                                        // @ts-ignore
+                                        source={image}
+                                        style={{
+                                          height: 120,
+                                          width: (windowWidth - 60) / 3,
+                                          borderRadius: 10,
+                                        }}
+                                        transition={1000}
+                                        allowDownscaling
+                                        contentFit="cover"
+                                      />
                                     </View>
-                                  )}
-                                </View>
-                              }
-                            >
-                              <Text
-                                style={{
-                                  fontSize: 14,
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                {item?.date}: {item?.event}
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 13,
-                                  fontWeight: "400",
-                                }}
-                              >
-                                {item.description}
-                              </Text>
-                              <View>
-                                {listImage?.map((item, index) => (
-                                  <Image
-                                    key={index}
-                                    // @ts-ignore
-                                    source={{
-                                      uri: item.uri,
-                                    }}
-                                    style={{
-                                      height: 40,
-                                      width: 40,
-                                    }}
-                                    resizeMode="center"
-                                  />
-                                ))}
+                                  );
+                                })}
                               </View>
-                            </List.Item>
-                          </SwipeAction>
+                            </View>
+                          )}
                         </View>
                       </View>
-                    );
-                  })}
-              </WingBlank>
+                    </View>
+                  );
+                })}
             </View>
           </ScrollView>
         </ImageBackground>

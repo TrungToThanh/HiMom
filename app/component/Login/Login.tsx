@@ -1,12 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, Dimensions } from "react-native";
-import {
-  Radio,
-  Button,
-  WhiteSpace,
-  Toast,
-  WingBlank,
-} from "@ant-design/react-native";
+import { View, Text, Dimensions, KeyboardAvoidingView } from "react-native";
+import { Radio, Button, WhiteSpace, Toast, WingBlank } from "@ant-design/react-native";
 
 import { useNavigation } from "@react-navigation/native";
 
@@ -15,6 +9,8 @@ import { faEye, faEyeSlash, faUser } from "@fortawesome/free-solid-svg-icons";
 
 import { stylesInput } from "../../const/styleInput";
 import Input from "@ant-design/react-native/lib/input-item/Input";
+import { createProcessEventTable } from "../../../api/eventProcess/event";
+import dayjs from "dayjs";
 
 interface Props {
   listAccountBaby: any;
@@ -31,14 +27,24 @@ const Login = ({ listAccountBaby }: Props) => {
 
   const [typeInput, setTypeInput] = useState(true);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (listAccountBaby && listAccountBaby?.length > 0) {
       const isHasAccount = listAccountBaby.some(
-        (item) =>
-          +item.id === +userId &&
-          String(item.password) === String(passwordInput)
+        (item) => +item.id === +userId && String(item.password) === String(passwordInput)
       );
+      const isAccount = listAccountBaby.find(
+        (item) => +item.id === +userId && String(item.password) === String(passwordInput)
+      );
+
+      var dateParts = isAccount?.birthday.split("-");
+
+      // month is 0-based, that's why we need dataParts[1] - 1
+      const dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
+        .subtract(280, "days")
+        .format("DD-MM-YYYY");
+
       if (isHasAccount) {
+        await createProcessEventTable(isAccount.id, String(dateObject));
         // @ts-ignore
         userId && navigation.navigate("Home", { userId: Number(userId) });
       } else {

@@ -26,11 +26,14 @@ import SettingAccount from "../setting/setting";
 import InfoCommon from "../info/info";
 import ReminderComponent from "../reminder/reminder";
 import HomeListShopping from "../shopping/home_list_shopping";
+import { getAllEvent } from "../../../api/eventProcess/event";
 
 const Home = () => {
   const route = useRoute();
   const [isLoading, setIsLoading] = useState(false);
   const { height } = useWindowDimensions();
+  const [loadingAgain, setLoadingAgain] = useState(false);
+
   const nameRouteUserId = useMemo(() => {
     if (route) {
       /* @ts-ignore */
@@ -39,6 +42,11 @@ const Home = () => {
   }, []);
 
   const { listAccountBaby } = getAllBabyInBabyList(isLoading);
+  const { listEvent } = getAllEvent({
+    nameRouteUserId: nameRouteUserId,
+    isLoading: loadingAgain,
+  });
+
   const tabs = [
     {
       title: (
@@ -124,19 +132,25 @@ const Home = () => {
       usePaged={false}
       style={{ maxHeight: height - 70 }}
     >
-      <InfoCommon
+      {/* <InfoCommon
         listAccountBaby={listAccountBaby}
         nameRouteUserId={nameRouteUserId}
-      />
+      /> */}
+      <View>
+        <Text>12</Text>
+      </View>
       <ProcessBaby
         nameRouteUserId={nameRouteUserId}
         listAccountBaby={listAccountBaby}
+        listEvent={listEvent}
+        setLoadingAgain={(value) => setLoadingAgain(value)}
       />
       <HomeListShopping
         nameRouteUserId={nameRouteUserId}
         listAccountBaby={listAccountBaby}
       />
       <ReminderComponent />
+
       <SettingAccount
         nameRouteUserId={nameRouteUserId}
         listAccountBaby={listAccountBaby}

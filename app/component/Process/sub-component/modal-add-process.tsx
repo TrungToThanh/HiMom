@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { StyleSheet, useWindowDimensions, Image } from "react-native";
+import {
+  StyleSheet,
+  useWindowDimensions,
+  Image,
+  KeyboardAvoidingView,
+  Keyboard,
+} from "react-native";
 import {
   Modal,
   View,
@@ -19,16 +25,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import dayjs from "dayjs";
 import { insertANewEvent } from "../../../../api/eventProcess/event";
 import * as ImagePicker from "expo-image-picker";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import ImageView from "react-native-image-viewing";
 
 interface Props {
   isShowEvent?: boolean;
   setShowEvent?: () => void;
   setLoadingAgain: (value) => void;
+  nameRouteUserId: number;
 }
 const ModalAddProcess = ({
   isShowEvent = false,
   setShowEvent,
   setLoadingAgain,
+  nameRouteUserId,
 }: Props) => {
   const { width, height } = useWindowDimensions();
 
@@ -44,6 +54,7 @@ const ModalAddProcess = ({
 
   const handleAddEvent = () => {
     insertANewEvent(
+      nameRouteUserId,
       nameEvent,
       dateEvent,
       desEvent,
@@ -66,7 +77,7 @@ const ModalAddProcess = ({
   const handleSelectPic = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
       quality: 1,
       base64: false,
@@ -74,6 +85,7 @@ const ModalAddProcess = ({
       allowsMultipleSelection: true,
     });
 
+    console.log(result.assets);
     if (!result.canceled) {
       setImage(result.assets);
     }
@@ -113,26 +125,6 @@ const ModalAddProcess = ({
   return (
     <View>
       <Modal
-        visible={isShowCurrentImage}
-        popup
-        closable={false}
-        maskClosable={true}
-      >
-        <View>
-          <Image
-            // @ts-ignore
-            source={currentImage}
-            style={{
-              height: 400,
-              width: width,
-            }}
-            resizeMethod="auto"
-            resizeMode="cover"
-          />
-          <Button onPress={() => setShowCurrentImage(false)}> Thoát </Button>
-        </View>
-      </Modal>
-      <Modal
         style={{
           width: width - 10,
         }}
@@ -152,18 +144,7 @@ const ModalAddProcess = ({
               textAlign: "center",
             }}
           >
-            <Text
-              style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}
-            >
-              Thêm sự kiện:
-            </Text>
-            <Button
-              type="ghost"
-              size="small"
-              onPress={() => setIsShowDatePicker(true)}
-            >
-              <Text>Chọn ngày {dateEvent}</Text>
-            </Button>
+            <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>Thêm sự kiện</Text>
           </View>
         }
         footer={[
@@ -175,14 +156,8 @@ const ModalAddProcess = ({
           {
             text: "Thêm",
             onPress: () => {
-              if (
-                nameEvent?.trim() === "" ||
-                dateEvent?.trim() === "" ||
-                desEvent?.trim() === ""
-              ) {
-                Toast.fail(
-                  "Vui lòng kiểm tra: ngày sự kiện, mô tả sự kiện và tên sự kiện"
-                );
+              if (nameEvent?.trim() === "" || dateEvent?.trim() === "" || desEvent?.trim() === "") {
+                Toast.fail("Vui lòng kiểm tra: ngày sự kiện, mô tả sự kiện và tên sự kiện");
               } else {
                 setShowEvent();
                 handleAddEvent();
@@ -193,112 +168,136 @@ const ModalAddProcess = ({
       >
         <View style={{ width: width - 30, paddingTop: 10 }}>
           <View>
-            <DatePicker
-              visible={isShowDatePicker}
-              mode="date"
-              value={new Date()}
-              minDate={new Date(2015, 7, 6)}
-              maxDate={new Date(2026, 11, 3)}
-              format="YYYY-MM-DD"
-              okText="Chọn"
-              dismissText="Thoát"
-              onOk={() => setIsShowDatePicker(false)}
-              onDismiss={() => setIsShowDatePicker(false)}
-              onChange={(value) =>
-                setDateEvent(dayjs(value).format("DD-MM-YYYY"))
-              }
-            ></DatePicker>
-            <View style={styles.inputError}>
-              <Input
-                style={styles.inputItem}
-                multiline
-                maxLength={50}
-                placeholder="Tên sự kiện"
-                textBreakStrategy="highQuality"
-                onChangeText={(value) => setNameEvent(value?.trim())}
-              />
-            </View>
-            <View style={styles.inputError}>
-              <Input
-                style={styles.inputItem}
-                multiline
-                maxLength={200}
-                placeholder="Mô tả sự kiện"
-                textBreakStrategy="highQuality"
-                onChangeText={(value) => setDesEvent(value?.trim())}
-              />
-            </View>
-            <View style={styles.input}>
-              <Input
-                style={styles.inputItem}
-                multiline
-                placeholder="Link video"
-                textBreakStrategy="highQuality"
-                onChangeText={(value) => setLinkVideo(value?.trim())}
-              />
-            </View>
-            <View style={styles.input}>
-              <Input
-                style={styles.inputItem}
-                multiline
-                maxLength={200}
-                placeholder="Ghi chú"
-                textBreakStrategy="highQuality"
-                onChangeText={(value) => setNoteEvent(value?.trim())}
-              />
-            </View>
-            <WhiteSpace />
-
-            {image?.length > 0 && (
-              <View
-                style={{
-                  paddingTop: 10,
-                  borderWidth: 1,
-                  borderColor: "#1870bc",
-                  borderRadius: 10,
+            <ImageView
+              images={image}
+              imageIndex={0}
+              visible={isShowCurrentImage}
+              onRequestClose={() => setShowCurrentImage(false)}
+            />
+            <KeyboardAvoidingView>
+              <DatePicker
+                visible={isShowDatePicker}
+                mode="date"
+                value={new Date()}
+                minDate={new Date(2015, 7, 6)}
+                maxDate={new Date(2026, 11, 3)}
+                format="YYYY-MM-DD"
+                okText="Chọn"
+                dismissText="Thoát"
+                onOk={() => setIsShowDatePicker(false)}
+                onDismiss={() => setIsShowDatePicker(false)}
+                onChange={(value) => {
+                  setDateEvent(dayjs(value).format("DD-MM-YYYY"));
+                  Keyboard.dismiss();
                 }}
-              >
-                <Grid
-                  data={image}
-                  columnNum={3}
-                  itemStyle={{ height: 80 }}
-                  renderItem={(item) => (
-                    <Button
-                      style={{ width: 80, height: 80 }}
-                      type="ghost"
-                      onPress={() => handleShowPicture(item)}
-                    >
-                      <Image
-                        // @ts-ignore
-                        source={item}
-                        style={{
-                          height: 80,
-                          width: 80,
-                        }}
-                        resizeMethod="auto"
-                        resizeMode="cover"
-                      />
-                    </Button>
-                  )}
+              ></DatePicker>
+
+              <View style={styles.inputError}>
+                <Input
+                  style={styles.inputItem}
+                  multiline
+                  maxLength={50}
+                  placeholder="Tên sự kiện"
+                  textBreakStrategy="highQuality"
+                  onChangeText={(value) => setNameEvent(value?.trim())}
                 />
               </View>
-            )}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                size="small"
-                type="ghost"
-                onPress={() => handleSelectPic()}
-                style={{ width: 100, marginTop: 20 }}
-              >
-                Chọn ảnh
-              </Button>
-            </View>
+              <View style={styles.inputError}>
+                <Input
+                  style={styles.inputItem}
+                  maxLength={11}
+                  placeholder="Ngày xảy ra sự kiện"
+                  value={dateEvent}
+                  onTouchStart={() => {
+                    setIsShowDatePicker(true);
+                    Keyboard.dismiss();
+                  }}
+                  showSoftInputOnFocus={false}
+                />
+              </View>
+              <View style={styles.inputError}>
+                <Input
+                  style={styles.inputItem}
+                  multiline
+                  maxLength={200}
+                  placeholder="Mô tả sự kiện"
+                  textBreakStrategy="highQuality"
+                  onChangeText={(value) => setDesEvent(value?.trim())}
+                />
+              </View>
+              <View style={styles.input}>
+                <Text
+                  style={styles.inputItem}
+                  onPress={() => {
+                    handleSelectPic();
+                    Keyboard.dismiss();
+                  }}
+                >
+                  Tải file lên
+                </Text>
+              </View>
+              {image?.length > 0 && (
+                <View
+                  style={{
+                    paddingTop: 10,
+                    borderWidth: 1,
+                    borderColor: "#1870bc",
+                    borderRadius: 10,
+                  }}
+                >
+                  <Grid
+                    data={image}
+                    columnNum={3}
+                    itemStyle={{ height: 100 }}
+                    renderItem={(item) => (
+                      <Button
+                        style={{
+                          width: 100,
+                          height: 100,
+                          alignContent: "center",
+                          alignItems: "center",
+                          alignSelf: "center",
+                        }}
+                        type="ghost"
+                        onPress={() => handleShowPicture(item)}
+                      >
+                        <Image
+                          // @ts-ignore
+                          source={item}
+                          style={{
+                            height: 100,
+                            width: 100,
+                          }}
+                          resizeMethod="auto"
+                          resizeMode="cover"
+                        />
+                      </Button>
+                    )}
+                  />
+                </View>
+              )}
+              <View style={styles.input}>
+                <Input
+                  style={styles.inputItem}
+                  multiline
+                  placeholder="Link video khác"
+                  textBreakStrategy="highQuality"
+                  onChangeText={(value) => setLinkVideo(value?.trim())}
+                />
+              </View>
+              <View style={styles.input}>
+                <Input
+                  style={styles.inputItem}
+                  multiline
+                  maxLength={200}
+                  placeholder="Ghi chú"
+                  textBreakStrategy="highQuality"
+                  onChangeText={(value) => setNoteEvent(value?.trim())}
+                />
+              </View>
+            </KeyboardAvoidingView>
+
+            <WhiteSpace />
           </View>
         </View>
       </Modal>

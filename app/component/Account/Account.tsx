@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, DevSettings } from "react-native";
 import {
-  Button,
-  WhiteSpace,
-  DatePicker,
-  Toast,
-  WingBlank,
-} from "@ant-design/react-native";
+  View,
+  Text,
+  DevSettings,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
+import { Button, WhiteSpace, DatePicker, Toast, WingBlank } from "@ant-design/react-native";
 import dayjs from "dayjs";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -21,6 +22,7 @@ import {
 } from "../../../api/login/login";
 import { stylesInput } from "../../const/styleInput";
 import Input from "@ant-design/react-native/lib/input-item/Input";
+import { insertANewEvent } from "../../../api/eventProcess/event";
 
 interface Props {
   isShowDeleteButton?: boolean;
@@ -81,15 +83,11 @@ const Account = ({
         dismissText="Thoát"
         onOk={() => setIsShowDatePicker(false)}
         onDismiss={() => setIsShowDatePicker(false)}
-        onChange={(value) =>
-          setValueDatePicker(dayjs(value).format("DD-MM-YYYY"))
-        }
+        onChange={(value) => setValueDatePicker(dayjs(value).format("DD-MM-YYYY"))}
       ></DatePicker>
       <WhiteSpace />
       <WingBlank>
-        <View
-          style={isNameBabyError ? stylesInput.inputError : stylesInput.input}
-        >
+        <View style={isNameBabyError ? stylesInput.inputError : stylesInput.input}>
           <Input
             style={stylesInput.inputItem}
             maxLength={50}
@@ -98,23 +96,24 @@ const Account = ({
             value={isNameBaby}
           />
         </View>
-        <View
-          style={
-            valueDatePickerError ? stylesInput.inputError : stylesInput.input
-          }
-        >
-          <Input
-            style={stylesInput.inputItem}
-            maxLength={11}
-            placeholder="Ngày sinh dự kiến"
-            value={String(valueDatePicker)}
-            onTouchStart={() => setIsShowDatePicker(true)}
-            showSoftInputOnFocus={false}
-          />
-        </View>
-        <View
-          style={isPasswordError ? stylesInput.inputError : stylesInput.input}
-        >
+        <KeyboardAvoidingView>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={valueDatePickerError ? stylesInput.inputError : stylesInput.input}>
+              <Input
+                style={stylesInput.inputItem}
+                maxLength={11}
+                placeholder="Ngày sinh dự kiến"
+                value={String(valueDatePicker)}
+                onTouchStart={() => {
+                  setIsShowDatePicker(true);
+                  Keyboard.dismiss();
+                }}
+                showSoftInputOnFocus={false}
+              />
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+        <View style={isPasswordError ? stylesInput.inputError : stylesInput.input}>
           <Input
             style={stylesInput.inputItem}
             maxLength={6}
@@ -140,25 +139,19 @@ const Account = ({
           <Button
             type="warning"
             onPress={async () =>
-              await deleteAItemBabyFromBabyList(nameRouteUserId).then(
-                (isRes) => {
-                  if (isRes) {
-                    setIsLoading();
-                    Toast.success(
-                      "Đã xóa thành công! \n\r Vui lòng đăng nhập lại."
-                    );
-                    DevSettings.reload();
-                  } else {
-                    Toast.fail("Thất bại!");
-                  }
+              await deleteAItemBabyFromBabyList(nameRouteUserId).then((isRes) => {
+                if (isRes) {
+                  setIsLoading();
+                  Toast.success("Đã xóa thành công! \n\r Vui lòng đăng nhập lại.");
+                  DevSettings.reload();
+                } else {
+                  Toast.fail("Thất bại!");
                 }
-              )
+              })
             }
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "white" }} />
-            <Text
-              style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}
-            >
+            <Text style={{ color: "white", paddingLeft: 10, fontWeight: "600" }}>
               Xóa tài khoản
             </Text>
           </Button>
@@ -181,9 +174,7 @@ const Account = ({
             var dateParts = valueDatePicker.split("-");
 
             // month is 0-based, that's why we need dataParts[1] - 1
-            const dateObject = dayjs(
-              new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
-            );
+            const dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]));
 
             if (dateObject <= dayjs(new Date())) {
               setValueDatePickerError(true);
@@ -206,30 +197,25 @@ const Account = ({
               ).then((isRes) => {
                 if (isRes) {
                   setIsLoading();
-                  Toast.info(
-                    "Đã lưu thay đổi thành công. \n\r Vui lòng đăng nhập lại!",
-                    3
-                  );
+                  Toast.info("Đã lưu thay đổi thành công. \n\r Vui lòng đăng nhập lại!", 3);
                   DevSettings.reload();
                 } else {
                   Toast.fail("Thất bại!");
                 }
               });
             } else {
-              await insertValueBabyToBabyList(
-                isNameBaby,
-                valueDatePicker,
-                isPassword
-              ).then((isRes) => {
-                if (isRes) {
-                  Toast.success("Đã tạo mới thành công!");
-                  setIsLoading();
-                  // @ts-ignore
-                  navigation.navigate("Main");
-                } else {
-                  Toast.fail("Thất bại!");
+              await insertValueBabyToBabyList(isNameBaby, valueDatePicker, isPassword).then(
+                (isRes) => {
+                  if (isRes) {
+                    Toast.success("Đã tạo mới thành công!");
+                    setIsLoading();
+                    // @ts-ignore
+                    navigation.navigate("Main");
+                  } else {
+                    Toast.fail("Thất bại!");
+                  }
                 }
-              });
+              );
             }
           }}
         >
