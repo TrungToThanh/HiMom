@@ -23,7 +23,6 @@ import ProcessBaby from "../process/process";
 
 import LoadingData from "../../const/loading";
 import SettingAccount from "../setting/setting";
-import InfoCommon from "../info/info";
 import ReminderComponent from "../reminder/reminder";
 import HomeListShopping from "../shopping/home_list_shopping";
 import { getAllEvent } from "../../../api/eventProcess/event";
