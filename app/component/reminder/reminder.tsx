@@ -25,6 +25,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faAdd, faArrowCircleRight } from "@fortawesome/free-solid-svg-icons";
 
 import ModalAddEvent from "./sub-component/modal-add-event";
+import moment from "moment";
 
 const nameCalenderSource = "HiMomGoogleCalendar";
 
@@ -37,18 +38,19 @@ const ReminderComponent = () => {
 
   const { width, height } = useWindowDimensions();
 
-  const [currentDate, setCurrentDate] = useState<any>();
-  // `${moment().format("YYYY")}-${moment().format("MM")}-${moment().format(
-  //   "DD"
-  // )}`
+  const [currentDate, setCurrentDate] = useState<any>(
+    `${moment().format("YYYY")}-${moment().format("MM")}-${moment().format(
+      "DD"
+    )}`
+  );
 
   const [status, requestPermission] = Calendar.useCalendarPermissions();
   Calendar.getCalendarPermissionsAsync();
 
   const datesWhitelist = [
     {
-      // start: moment().subtract(10, "days"),
-      // end: moment().add(365, "days"),
+      start: moment().subtract(10, "days"),
+      end: moment().add(365, "days"),
     },
   ];
 
@@ -56,25 +58,25 @@ const ReminderComponent = () => {
     async (selectedDate) => {
       setIsLoading(true);
       let listEvent: any;
-      // await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT)
-      //   .then(async (item) => {
-      //     if (item && item.length > 0) {
-      //       const calendarIdExisted = item?.find(
-      //         (childItem) => childItem?.source?.name === nameCalenderSource
-      //       );
-      //       let calendarId = calendarIdExisted?.id;
-      //       listEvent = await Calendar.getEventsAsync(
-      //         [calendarId],
-      //         moment(selectedDate).startOf("day").toDate(),
-      //         moment(selectedDate).endOf("day").toDate()
-      //       );
-      //       setTodoList(listEvent);
-      //     }
-      //   })
-      //   .then(() => {
-      //     setTodoList(listEvent);
-      //     setIsLoading(false);
-      //   });
+      await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT)
+        .then(async (item) => {
+          if (item && item.length > 0) {
+            const calendarIdExisted = item?.find(
+              (childItem) => childItem?.source?.name === nameCalenderSource
+            );
+            let calendarId = calendarIdExisted?.id;
+            listEvent = await Calendar.getEventsAsync(
+              [calendarId],
+              moment(selectedDate).startOf("day").toDate(),
+              moment(selectedDate).endOf("day").toDate()
+            );
+            setTodoList(listEvent);
+          }
+        })
+        .then(() => {
+          setTodoList(listEvent);
+          setIsLoading(false);
+        });
     },
     [currentDate, todoList]
   );
@@ -91,13 +93,13 @@ const ReminderComponent = () => {
           resizeMode="cover"
           style={{ width: width, height: height }}
         >
-          {/* <ModalAddEvent
+          <ModalAddEvent
             currentDate={currentDate}
             isShowEvent={isShowEvent}
             setShowEvent={() => setShowEvent(false)}
             nameCalenderSource={nameCalenderSource}
-          /> */}
-          {/* <CalendarStrip
+          />
+          <CalendarStrip
             headerText="Nhắc nhở"
             calendarAnimation={{ type: "sequence", duration: 30 }}
             style={{
@@ -129,21 +131,20 @@ const ReminderComponent = () => {
             disabledDateNameStyle={{ color: "grey" }}
             disabledDateNumberStyle={{ color: "grey", paddingTop: 10 }}
             iconContainer={{ flex: 0.1 }}
-            selectedDate={new Date()}
-            // datesWhitelist={datesWhitelist}
-            // selectedDate={currentDate}
-            // onDateSelected={(date) => {
-            //   // const selectedDate = `${moment(date).format("YYYY")}-${moment(
-            //   //   date
-            //   // ).format("MM")}-${moment(date).format("DD")}`;
-            //   // setCurrentDate(selectedDate);
-            //   // getAllEvent(selectedDate);
-            //   // if (moment(date) >= moment().subtract(1, "d")) {
-            //   //   setDisableButtonEvent(false);
-            //   // } else {
-            //   //   setDisableButtonEvent(true);
-            //   // }
-            // }}
+            datesWhitelist={datesWhitelist}
+            selectedDate={currentDate}
+            onDateSelected={(date) => {
+              const selectedDate = `${moment(date).format("YYYY")}-${moment(
+                date
+              ).format("MM")}-${moment(date).format("DD")}`;
+              setCurrentDate(selectedDate);
+              getAllEvent(selectedDate);
+              if (moment(date) >= moment().subtract(1, "d")) {
+                setDisableButtonEvent(false);
+              } else {
+                setDisableButtonEvent(true);
+              }
+            }}
             locale={{
               name: "vi",
               config: {
@@ -151,11 +152,11 @@ const ReminderComponent = () => {
                 weekdaysMin: "CN_T2_T3_T4_T5_T6_T7".split("_"),
               },
             }}
-          /> */}
-          {/* <Text
+          />
+          <Text
             style={{ paddingLeft: 10, fontWeight: "bold" }}
-          >{`Hôm nay: ${new Date()}`}</Text> */}
-          {/* <WhiteSpace />
+          >{`Hôm nay: ${moment().format("DD/MM/YYYY hh:mm")}`}</Text>
+          <WhiteSpace />
           <View
             style={{
               width: width - 20,
@@ -183,7 +184,7 @@ const ReminderComponent = () => {
                 Thêm sự kiện
               </Text>
             </Button>
-          </View> */}
+          </View>
           {isLoading ? (
             <View
               style={{
@@ -245,8 +246,8 @@ const ReminderComponent = () => {
                               marginRight: 10,
                             }}
                           >
-                            {/* {String(moment(item?.startDate).format("hh"))}:
-                            {moment(item?.startDate).format("mm")} */}
+                            {String(moment(item?.startDate).format("hh"))}:
+                            {moment(item?.startDate).format("mm")}
                           </Text>
                           <Text
                             style={{

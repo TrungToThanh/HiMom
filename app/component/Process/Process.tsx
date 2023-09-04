@@ -6,6 +6,7 @@ import {
   ScrollView,
   ImageBackground,
   Linking,
+  Image,
 } from "react-native";
 import {
   Button,
@@ -528,23 +529,146 @@ const ProcessBaby = ({
           <ScrollView>
             <View style={{ marginBottom: 100 }}>
               <WingBlank size="md">
-                <Steps>
-                  {listEventCook &&
-                    listEventCook?.length > 0 &&
-                    listEventCook?.map((item: ProcessBabyBase, index) => {
-                      return (
-                        <Step
-                          key={index}
-                          title={
-                            <View
+                {listEventCook &&
+                  listEventCook?.length > 0 &&
+                  listEventCook?.map((item: ProcessBabyBase, index) => {
+                    return (
+                      <View
+                        style={{
+                          height: 200,
+                          width: windowWidth,
+                          backgroundColor: "transparent",
+                          borderRadius: 10,
+                          flexDirection: "row",
+                          marginBottom: 10,
+                        }}
+                      >
+                        <View
+                          style={{
+                            height: "100%",
+                            marginLeft: 5,
+                            width: windowWidth - 20,
+                            backgroundColor: "white",
+                            borderColor: index % 2 ? "green" : "#faad00",
+                            borderWidth: 1,
+                            borderRadius: 10,
+                          }}
+                        >
+                          <SwipeAction
+                            key={index + 1}
+                            buttonWidth={60}
+                            onSwipeableWillOpen={() => {
+                              setIndexItemCurrent(index);
+                              setItemIdCurrent(item.id);
+                            }}
+                            onSwipeableOpen={() => setIndexItemCurrent(index)}
+                            renderLeftActions={() => {
+                              if (
+                                indexItemCurrent === index &&
+                                itemIdCurrent !== -1 &&
+                                itemIdCurrent !== -2 &&
+                                itemIdCurrent !== -3
+                              ) {
+                                return (
+                                  <View
+                                    style={{
+                                      height: "100%",
+                                      width: 40,
+                                      borderWidth: 1,
+                                      borderRadius: 10,
+                                      flexDirection: "row",
+                                      display: "flex",
+                                      justifyContent: "flex-start",
+                                      alignItems: "center",
+                                      backgroundColor: "white",
+                                      borderColor:
+                                        +item.id === -2
+                                          ? "green"
+                                          : +item.id === -3
+                                          ? "#faad00"
+                                          : "#1870bc",
+                                    }}
+                                  >
+                                    <Button
+                                      style={{
+                                        width: 38,
+                                        borderRadius: 10,
+                                        height: 50,
+                                        paddingTop: 5,
+                                      }}
+                                      onPress={() => handleDeleteEvent(item.id)}
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faTrash}
+                                        color="red"
+                                      />
+                                    </Button>
+                                  </View>
+                                );
+                              } else {
+                                return (
+                                  <Text style={{ color: "transparent" }}>
+                                    '
+                                  </Text>
+                                );
+                              }
+                            }}
+                            containerStyle={{
+                              borderRadius: 10,
+                              marginLeft: -1,
+                            }}
+                          >
+                            <List.Item
                               style={{
-                                flex: 0.3,
-                                flexDirection: "row",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                width: windowWidth - 56,
+                                width: windowWidth - 70,
+                                height: "100%",
+                                marginLeft: 20,
+                                borderRadius: 10,
                               }}
+                              extra={
+                                <View>
+                                  {(String(item.linkvideo)?.trim() !== "" ||
+                                    String(item.image)?.trim() !== "") && (
+                                    <View
+                                      style={{
+                                        width: 50,
+                                        flexDirection: "row",
+                                        display: "flex",
+                                      }}
+                                    >
+                                      {String(item.image)?.trim() !== "" && (
+                                        <Button
+                                          size="small"
+                                          style={{ width: 20 }}
+                                          onPress={() => {
+                                            setListImage(
+                                              JSON.parse(item.image)
+                                            );
+                                            setShowCurrentImage(true);
+                                          }}
+                                        >
+                                          <FontAwesomeIcon icon={faImage} />
+                                        </Button>
+                                      )}
+                                      {String(item.linkvideo)?.trim() !==
+                                        "" && (
+                                        <Button
+                                          size="small"
+                                          style={{
+                                            width: 20,
+                                            marginLeft: 10,
+                                          }}
+                                          onPress={() =>
+                                            Linking.openURL(item.linkvideo)
+                                          }
+                                        >
+                                          <FontAwesomeIcon icon={faVideo} />
+                                        </Button>
+                                      )}
+                                    </View>
+                                  )}
+                                </View>
+                              }
                             >
                               <Text
                                 style={{
@@ -554,213 +678,36 @@ const ProcessBaby = ({
                               >
                                 {item?.date}: {item?.event}
                               </Text>
-                            </View>
-                          }
-                          description={
-                            <View
-                              style={{
-                                height: 50,
-                                width: windowWidth - 90,
-                                backgroundColor:
-                                  +item.id === -2
-                                    ? "green"
-                                    : +item.id === -3
-                                    ? "#faad00"
-                                    : "#1870bc",
-                                borderRadius: 10,
-                                flexDirection: "row",
-                              }}
-                            >
-                              <View
+                              <Text
                                 style={{
-                                  height: 50,
-                                  marginLeft: 5,
-                                  width: windowWidth - 60,
-                                  backgroundColor: "white",
-                                  borderColor:
-                                    +item.id === -2
-                                      ? "green"
-                                      : +item.id === -3
-                                      ? "#faad00"
-                                      : "#1870bc",
-                                  borderWidth: 1,
-                                  borderRadius: 10,
+                                  fontSize: 13,
+                                  fontWeight: "400",
                                 }}
                               >
-                                <SwipeAction
-                                  key={index + 1}
-                                  buttonWidth={60}
-                                  onSwipeableWillOpen={() => {
-                                    setIndexItemCurrent(index);
-                                    setItemIdCurrent(item.id);
-                                  }}
-                                  onSwipeableOpen={() =>
-                                    setIndexItemCurrent(index)
-                                  }
-                                  renderLeftActions={() => {
-                                    if (
-                                      indexItemCurrent === index &&
-                                      itemIdCurrent !== -1 &&
-                                      itemIdCurrent !== -2 &&
-                                      itemIdCurrent !== -3
-                                    ) {
-                                      return (
-                                        <View
-                                          style={{
-                                            height: 50,
-                                            width: 40,
-                                            borderWidth: 1,
-                                            borderRadius: 10,
-                                            flexDirection: "row",
-                                            display: "flex",
-                                            justifyContent: "flex-start",
-                                            alignItems: "center",
-                                            backgroundColor: "white",
-                                            borderColor:
-                                              +item.id === -2
-                                                ? "green"
-                                                : +item.id === -3
-                                                ? "#faad00"
-                                                : "#1870bc",
-                                          }}
-                                        >
-                                          <Button
-                                            style={{
-                                              width: 38,
-                                              borderRadius: 10,
-                                              height: 50,
-                                              paddingTop: 5,
-                                            }}
-                                            onPress={() =>
-                                              handleDeleteEvent(item.id)
-                                            }
-                                          >
-                                            <FontAwesomeIcon
-                                              icon={faTrash}
-                                              color="red"
-                                            />
-                                          </Button>
-                                        </View>
-                                      );
-                                    } else {
-                                      return (
-                                        <Text style={{ color: "transparent" }}>
-                                          '
-                                        </Text>
-                                      );
-                                    }
-                                  }}
-                                  containerStyle={{
-                                    borderRadius: 10,
-                                    marginLeft: -1,
-                                  }}
-                                >
-                                  <List.Item
-                                    style={{
-                                      width: windowWidth - 70,
-                                      height: 46,
-                                      marginLeft: 20,
-                                      borderRadius: 10,
+                                {item.description}
+                              </Text>
+                              <View>
+                                {listImage?.map((item, index) => (
+                                  <Image
+                                    key={index}
+                                    // @ts-ignore
+                                    source={{
+                                      uri: item.uri,
                                     }}
-                                    extra={
-                                      <View>
-                                        {(String(item.linkvideo)?.trim() !==
-                                          "" ||
-                                          String(item.image)?.trim() !==
-                                            "") && (
-                                          <View
-                                            style={{
-                                              width: 50,
-                                              flexDirection: "row",
-                                              display: "flex",
-                                            }}
-                                          >
-                                            {String(item.image)?.trim() !==
-                                              "" && (
-                                              <Button
-                                                size="small"
-                                                style={{ width: 20 }}
-                                                onPress={() => {
-                                                  setListImage(
-                                                    JSON.parse(item.image)
-                                                  );
-                                                  setShowCurrentImage(true);
-                                                }}
-                                              >
-                                                <FontAwesomeIcon
-                                                  icon={faImage}
-                                                />
-                                              </Button>
-                                            )}
-                                            {String(item.linkvideo)?.trim() !==
-                                              "" && (
-                                              <Button
-                                                size="small"
-                                                style={{
-                                                  width: 20,
-                                                  marginLeft: 10,
-                                                }}
-                                                onPress={() =>
-                                                  Linking.openURL(
-                                                    item.linkvideo
-                                                  )
-                                                }
-                                              >
-                                                <FontAwesomeIcon
-                                                  icon={faVideo}
-                                                />
-                                              </Button>
-                                            )}
-                                          </View>
-                                        )}
-                                      </View>
-                                    }
-                                  >
-                                    <Text
-                                      style={{
-                                        fontSize: 13,
-                                        fontWeight: "400",
-                                      }}
-                                    >
-                                      {item.description}
-                                    </Text>
-                                  </List.Item>
-                                </SwipeAction>
+                                    style={{
+                                      height: 40,
+                                      width: 40,
+                                    }}
+                                    resizeMode="center"
+                                  />
+                                ))}
                               </View>
-                            </View>
-                          }
-                          status={item?.status || "finish"}
-                          renderIcon={() => {
-                            if (+item.id === -2) {
-                              return (
-                                <FontAwesomeIcon
-                                  icon={faCircle}
-                                  color="green"
-                                  size={22}
-                                />
-                              );
-                            } else if (+item.id === -3) {
-                              return (
-                                <FontAwesomeIcon
-                                  icon={faCircle}
-                                  color="#faad00"
-                                  size={22}
-                                />
-                              );
-                            } else {
-                              return (
-                                <FontAwesomeIcon
-                                  icon={faCircle}
-                                  size={22}
-                                  color="#1870bc"
-                                />
-                              );
-                            }
-                          }}
-                        />
-                      );
-                    })}
-                </Steps>
+                            </List.Item>
+                          </SwipeAction>
+                        </View>
+                      </View>
+                    );
+                  })}
               </WingBlank>
             </View>
           </ScrollView>

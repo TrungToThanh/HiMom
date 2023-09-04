@@ -10,7 +10,8 @@
       }
     },
     "android": {
-      "package": "com.trthanr.blank"
+      "package": "com.trthanr.blank",
+      "icon": "./assets/icon.png"
     },
     "splash": {
       "image": "./assets/pics/born.png"

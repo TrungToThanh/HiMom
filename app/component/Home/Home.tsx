@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
 import { Tabs, ActivityIndicator } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faBasketShopping,
   faCalendarCheck,
@@ -129,20 +128,15 @@ const Home = () => {
         listAccountBaby={listAccountBaby}
         nameRouteUserId={nameRouteUserId}
       />
-
       <ProcessBaby
         nameRouteUserId={nameRouteUserId}
         listAccountBaby={listAccountBaby}
       />
-
       <HomeListShopping
         nameRouteUserId={nameRouteUserId}
         listAccountBaby={listAccountBaby}
       />
-      {/* <ReminderComponent /> */}
-      <View>
-        <Text>1</Text>
-      </View>
+      <ReminderComponent />
       <SettingAccount
         nameRouteUserId={nameRouteUserId}
         listAccountBaby={listAccountBaby}
