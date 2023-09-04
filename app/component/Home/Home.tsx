@@ -55,21 +55,6 @@ const Home = () => {
             justifyContent: "center",
             alignItems: "center",
             alignSelf: "center",
-            height: 50,
-          }}
-        >
-          <FontAwesomeIcon icon={faHomeUser} />
-          <Text>Trang chủ</Text>
-        </View>
-      ),
-    },
-    {
-      title: (
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
           }}
         >
           <FontAwesomeIcon icon={faSeedling} color="green" />
@@ -121,8 +106,7 @@ const Home = () => {
     },
   ];
 
-  if (!listAccountBaby || listAccountBaby?.length < 1 || isLoading)
-    return <LoadingData />;
+  if (!listAccountBaby || listAccountBaby?.length < 1 || isLoading) return <LoadingData />;
 
   return (
     <Tabs
@@ -132,23 +116,13 @@ const Home = () => {
       usePaged={false}
       style={{ maxHeight: height - 70 }}
     >
-      {/* <InfoCommon
-        listAccountBaby={listAccountBaby}
-        nameRouteUserId={nameRouteUserId}
-      /> */}
-      <View>
-        <Text>12</Text>
-      </View>
       <ProcessBaby
         nameRouteUserId={nameRouteUserId}
         listAccountBaby={listAccountBaby}
         listEvent={listEvent}
         setLoadingAgain={(value) => setLoadingAgain(value)}
       />
-      <HomeListShopping
-        nameRouteUserId={nameRouteUserId}
-        listAccountBaby={listAccountBaby}
-      />
+      <HomeListShopping nameRouteUserId={nameRouteUserId} listAccountBaby={listAccountBaby} />
       <ReminderComponent />
 
       <SettingAccount
