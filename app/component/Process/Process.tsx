@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, Dimensions, ScrollView, ImageBackground } from "react-native";
 import { Image } from "expo-image";
-import { Button, WhiteSpace, Toast, Modal } from "@ant-design/react-native";
+import { Button, WhiteSpace, Toast, Modal, ActionSheet } from "@ant-design/react-native";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
@@ -11,6 +11,8 @@ import {
   faHeart,
   faVideoCamera,
   faImage,
+  faListDots,
+  faEllipsisV,
 } from "@fortawesome/free-solid-svg-icons";
 import ImageView from "react-native-image-viewing";
 import dayjs from "dayjs";
@@ -24,6 +26,7 @@ import ModalAddProcess from "./sub-component/modal-add-process";
 import ProcessLine from "./sub-component/process-line";
 import { Video, ResizeMode } from "expo-av";
 import { useFocusEffect } from "@react-navigation/native";
+import ModalViewProcess from "./sub-component/modal-view-process";
 
 interface Props {
   listAccountBaby?: any;
@@ -31,16 +34,10 @@ interface Props {
   nameRouteUserId?: number;
   setLoadingAgain: (value) => void;
 }
-const ProcessBaby = ({
-  listAccountBaby,
-  listEvent,
-  nameRouteUserId,
-
-  setLoadingAgain,
-}: Props) => {
+const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAgain }: Props) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const image = require("../../../assets/background.jpg");
+  const imageBackground = require("../../../assets/background.jpg");
   const video = React.useRef(null);
 
   //Get value date
@@ -56,6 +53,21 @@ const ProcessBaby = ({
       dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
         .subtract(280, "days")
         .format("DD-MM-YYYY");
+    }
+    return dateObject;
+  }, [listAccountBaby]);
+
+  const isFirstDate = useMemo(() => {
+    let dateObject;
+    if (listAccountBaby) {
+      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
+      var dateParts = idCurrent?.birthday.split("-");
+
+      // month is 0-based, that's why we need dataParts[1] - 1
+      dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])).subtract(
+        280,
+        "days"
+      );
     }
     return dateObject;
   }, [listAccountBaby]);
@@ -84,6 +96,7 @@ const ProcessBaby = ({
     return String(dayjs(day).diff(new Date(), "days"));
   }, [listAccountBaby, nameRouteUserId]);
 
+  const [isDisplayModalAddEvent, setDisplayModalAddEvent] = useState<boolean>(false);
   const [isShowEvent, setShowEvent] = useState<boolean>(false);
   const [itemIdCurrent, setItemIdCurrent] = useState<any>();
   const [indexItemCurrent, setIndexItemCurrent] = useState<any>();
@@ -117,49 +130,57 @@ const ProcessBaby = ({
   }, [listEvent]);
 
   const handleDeleteEvent = (itemId) => {
-    +itemId !== -1 &&
-      +itemId !== -2 &&
-      +itemId !== -3 &&
-      Modal.alert("Xóa sự kiện", "Bạn có thật sự muốn xóa sự kiện này?", [
-        {
-          text: "Thoát",
-          style: "cancel",
-        },
-        {
-          text: "Xóa",
-          onPress: () =>
-            deleteAEvent(nameRouteUserId, itemId).then((isRes) => {
-              setLoadingAgain(true);
-              setTimeout(() => {
-                setLoadingAgain(false);
-              }, 100);
-              if (isRes) {
-                Toast.success("Xóa thành công!");
-              } else {
-                Toast.fail("Xóa thất bại!");
-              }
-            }),
-        },
-      ]);
+    +itemId !== 1
+      ? Modal.alert("Xóa sự kiện", "Bạn có thật sự muốn xóa sự kiện này?", [
+          {
+            text: "Thoát",
+            style: "cancel",
+          },
+          {
+            text: "Xóa",
+            onPress: () =>
+              deleteAEvent(nameRouteUserId, itemId).then((isRes) => {
+                setLoadingAgain(true);
+                setTimeout(() => {
+                  setLoadingAgain(false);
+                }, 100);
+                if (isRes) {
+                  Toast.success("Xóa thành công!");
+                } else {
+                  Toast.fail("Xóa thất bại!");
+                }
+              }),
+          },
+        ])
+      : Toast.fail("Không thể xóa sự kiện này!");
   };
 
   return (
     <GestureHandlerRootView>
       <SafeAreaView>
         <ImageBackground
-          source={image}
+          source={imageBackground}
           resizeMode="cover"
           style={{ width: windowWidth, height: windowHeight }}
         >
           <ImageView
-            images={listImageCurrent}
+            images={listImageCurrent?.filter((item) => item.type !== "video")}
             imageIndex={0}
             visible={isShowCurrentImage}
             onRequestClose={() => setShowCurrentImage(false)}
           />
           <ModalAddProcess
             nameRouteUserId={nameRouteUserId}
+            isFirstDate={isFirstDate}
+            isDisplayModalAddEvent={isDisplayModalAddEvent}
+            setDisplayModalAddEvent={() => setDisplayModalAddEvent(false)}
+            setLoadingAgain={(value) => setLoadingAgain(value)}
+          />
+          <ModalViewProcess
+            nameRouteUserId={nameRouteUserId}
+            isFirstDate={isFirstDate}
             isShowEvent={isShowEvent}
+            item={itemIdCurrent}
             setShowEvent={() => setShowEvent(false)}
             setLoadingAgain={(value) => setLoadingAgain(value)}
           />
@@ -277,7 +298,7 @@ const ProcessBaby = ({
               type="ghost"
               size="small"
               style={{ width: 110, backgroundColor: "transparent" }}
-              onPress={() => setShowEvent(true)}
+              onPress={() => setDisplayModalAddEvent(true)}
             >
               <FontAwesomeIcon icon={faAdd} />
               <Text style={{ fontSize: 13, fontWeight: "500" }}>Thêm sự kiện</Text>
@@ -288,12 +309,15 @@ const ProcessBaby = ({
               {listEventCook &&
                 listEventCook?.length > 0 &&
                 listEventCook?.map((item: ProcessBabyBase, indexItem) => {
+                  let imageFirst;
                   const sourceImageItem =
                     // @ts-ignore
-                    listEventCook?.at(indexItem)?.image?.length > 0
+                    item?.image?.length > 0
                       ? // @ts-ignore
-                        JSON?.parse(listEventCook?.at(indexItem)?.image)
+                        JSON?.parse(item?.image)
                       : "";
+                  indexItem === 0 ? (imageFirst = sourceImageItem.uri) : undefined;
+                  console.log("sourceImageItem", imageFirst);
                   return (
                     <View key={indexItem}>
                       <View
@@ -310,40 +334,73 @@ const ProcessBaby = ({
                       >
                         <View
                           style={{
+                            width: windowWidth - 20,
                             display: "flex",
                             flexDirection: "row",
+                            justifyContent: "space-between",
                           }}
                         >
                           <View
                             style={{
                               display: "flex",
                               flexDirection: "row",
-                              alignItems: "center",
-                              margin: 5,
                             }}
                           >
-                            <FontAwesomeIcon icon={faUser} />
+                            <View
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                margin: 5,
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faUser} />
+                            </View>
+                            <View>
+                              <Text
+                                style={{
+                                  fontSize: 14,
+                                  fontWeight: "bold",
+                                }}
+                                adjustsFontSizeToFit
+                                lineBreakMode="clip"
+                              >
+                                {item?.event}
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  fontWeight: "bold",
+                                  color: "#b0aca8",
+                                }}
+                              >
+                                {item?.date}
+                              </Text>
+                            </View>
                           </View>
-                          <View>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                                fontWeight: "bold",
-                              }}
-                              adjustsFontSizeToFit
-                              lineBreakMode="clip"
-                            >
-                              {item?.event}
-                            </Text>
-                            <Text
-                              style={{
-                                fontSize: 12,
-                                fontWeight: "bold",
-                                color: "#b0aca8",
-                              }}
-                            >
-                              {item?.date}
-                            </Text>
+                          <View
+                            onTouchStart={() => {
+                              // setShowEvent(true);
+                              setItemIdCurrent(item);
+                              ActionSheet.showActionSheetWithOptions(
+                                {
+                                  options: ["Xóa sự kiện", "Chỉnh sửa", "Thoát"],
+                                  cancelButtonIndex: 2,
+                                  cancelButtonTintColor: "red",
+                                },
+                                (index) => {
+                                  if (index === 0) {
+                                    handleDeleteEvent(item.id);
+                                  }
+                                  if (index === 1) {
+                                    setShowEvent(true);
+                                  }
+                                  console.log(index);
+                                }
+                              );
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faEllipsisV} />
                           </View>
                         </View>
                         <WhiteSpace />
@@ -367,8 +424,8 @@ const ProcessBaby = ({
                                   justifyContent: "space-evenly",
                                 }}
                               >
-                                {sourceImageItem?.map((image, indexImage) => {
-                                  if (image.type === "video") {
+                                {sourceImageItem?.map((imageItem, indexImage) => {
+                                  if (imageItem.type === "video") {
                                     return (
                                       <View
                                         key={indexImage}
@@ -390,7 +447,7 @@ const ProcessBaby = ({
                                             height: 120,
                                             width: (windowWidth - 60) / 3,
                                           }}
-                                          source={image}
+                                          source={imageItem}
                                           volume={1}
                                           useNativeControls={false}
                                           resizeMode={ResizeMode.CONTAIN}
@@ -418,7 +475,7 @@ const ProcessBaby = ({
                                       <FontAwesomeIcon icon={faImage} size={10} />
                                       <Image
                                         // @ts-ignore
-                                        source={image}
+                                        source={imageItem}
                                         style={{
                                           height: 120,
                                           width: (windowWidth - 60) / 3,

@@ -1,3 +1,5 @@
+import * as SQLite from "expo-sqlite";
+
 export const nameDB = "test111.db";
 
 export const exportDb = async () => {
@@ -50,4 +52,13 @@ export const importDb = async () => {
     await db.closeAsync();
     setDb(SQLite.openDatabase(`${nameDB}`));
   }
+};
+
+export const ResetDB = () => {
+  const db = SQLite.openDatabase(nameDB);
+  db.closeAsync();
+  db.deleteAsync();
+  return new Promise(function (resolve) {
+    resolve(true);
+  });
 };

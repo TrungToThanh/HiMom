@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
-import { Accordion, WhiteSpace } from "@ant-design/react-native";
+import { View, Text, StyleSheet, Dimensions, DevSettings } from "react-native";
+import { Accordion, WhiteSpace, Button, Modal } from "@ant-design/react-native";
 
 import Account from "../account/account";
 import InfoApp from "./sub-component/info_app";
+import { ResetDB } from "../../../api/database";
 
 interface Props {
   isShowDeleteButton?: boolean;
@@ -30,9 +31,7 @@ const SettingAccount = ({
       }}
     >
       <WhiteSpace />
-      <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>
-        Cài đặt tài khoản:
-      </Text>
+      <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>Cài đặt tài khoản:</Text>
       <WhiteSpace />
       <Accordion
         style={{ width: windowWidth - 10 }}
@@ -48,7 +47,22 @@ const SettingAccount = ({
           />
         </Accordion.Panel>
         <Accordion.Panel header="Cài đặt" key="1">
-          ...
+          <Button
+            onPress={() => {
+              Modal.alert("", "Bạn muốn xóa tất cả dữ liệu?", [
+                {
+                  text: "Thoát",
+                  style: "cancel",
+                },
+                {
+                  text: "Xóa",
+                  onPress: () => ResetDB().then(() => DevSettings.reload()),
+                },
+              ]);
+            }}
+          >
+            <Text>Reset dữ liệu</Text>
+          </Button>
         </Accordion.Panel>
         <Accordion.Panel header="Thông tin phần mềm" key="2">
           <InfoApp />

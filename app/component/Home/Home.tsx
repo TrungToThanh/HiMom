@@ -113,7 +113,7 @@ const Home = () => {
       tabBarPosition="bottom"
       swipeable={false}
       usePaged={false}
-      style={{ maxHeight: height - 70 }}
+      style={{ maxHeight: height - 50 }}
     >
       <ProcessBaby
         nameRouteUserId={nameRouteUserId}

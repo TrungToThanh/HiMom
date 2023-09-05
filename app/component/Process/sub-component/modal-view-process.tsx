@@ -4,14 +4,8 @@ import dayjs from "dayjs";
 import * as ImagePicker from "expo-image-picker";
 import ImageView from "react-native-image-viewing";
 
-import {
-  StyleSheet,
-  useWindowDimensions,
-  Image,
-  KeyboardAvoidingView,
-  Keyboard,
-} from "react-native";
-
+import { StyleSheet, useWindowDimensions, KeyboardAvoidingView, Keyboard } from "react-native";
+import { Image } from "expo-image";
 import {
   Modal,
   View,
@@ -24,26 +18,39 @@ import {
 } from "@ant-design/react-native";
 import Input from "@ant-design/react-native/lib/input-item/Input";
 
-import { insertANewEvent } from "../../../../api/eventProcess/event";
+import { insertANewEvent, updateAEvent } from "../../../../api/eventProcess/event";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faUpload, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faImage,
+  faTrash,
+  faUpload,
+  faUser,
+  faVideoCamera,
+} from "@fortawesome/free-solid-svg-icons";
+import moment from "moment";
+import { ProcessBabyBase } from "../../../const/type";
+import { ResizeMode, Video } from "expo-av";
 
 interface Props {
-  isDisplayModalAddEvent?: boolean;
-  setDisplayModalAddEvent?: () => void;
+  isShowEvent?: boolean;
+  setShowEvent?: () => void;
   setLoadingAgain: (value) => void;
   nameRouteUserId: number;
   isFirstDate: any;
+  item: ProcessBabyBase;
 }
-const ModalAddProcess = ({
-  isDisplayModalAddEvent = false,
-  setDisplayModalAddEvent,
+const ModalViewProcess = ({
+  isShowEvent = false,
+  setShowEvent,
   setLoadingAgain,
   nameRouteUserId,
   isFirstDate,
+  item,
 }: Props) => {
   const { width, height } = useWindowDimensions();
+  const video = React.useRef(null);
+  const [itemId, setItemId] = useState<any>();
 
   const [isShowDatePicker, setIsShowDatePicker] = useState(false);
   const [nameEvent, setNameEvent] = useState<any>("");
@@ -52,43 +59,67 @@ const ModalAddProcess = ({
   const [linkVideo, setLinkVideo] = useState<any>("");
   const [noteEvent, setNoteEvent] = useState<any>("");
   const [image, setImage] = useState<any>(null);
+
   const [isShowCurrentImage, setShowCurrentImage] = useState(false);
+  const [imageShow, setImageShow] = useState<any>(null);
 
   const [isNameEvent, setCheckNameEvent] = useState(false);
   const [isDateEvent, setCheckDateEvent] = useState(false);
 
   useEffect(() => {
-    setNameEvent("");
-    setDateEvent("");
-    setDesEvent("");
-    setImage("");
-    setLinkVideo("");
-    setNoteEvent("");
+    setIsShowDatePicker(false);
+    setShowCurrentImage(false);
     setCheckNameEvent(false);
     setCheckDateEvent(false);
-    setShowCurrentImage(false);
-  }, [isDisplayModalAddEvent]);
 
-  const handleAddEvent = () => {
-    insertANewEvent(
-      nameRouteUserId,
-      nameEvent,
-      dateEvent,
-      desEvent,
-      noteEvent,
-      image,
-      linkVideo
-    ).then((isRes) => {
-      setLoadingAgain(true);
-      setTimeout(() => {
-        setLoadingAgain(false);
-      }, 500);
-      if (isRes) {
-        Toast.success("Thêm sự kiện mới thành công!");
-      } else {
-        Toast.fail("Thất bại!");
-      }
-    });
+    if (item) {
+      setItemId(item.id);
+
+      setNameEvent(item.event);
+      setDateEvent(item.date);
+      setDesEvent(item.description);
+      const sourceImageItem =
+        // @ts-ignore
+        item?.image?.length > 0
+          ? // @ts-ignore
+            JSON?.parse(item?.image)
+          : "";
+      setImage(sourceImageItem);
+      setLinkVideo("");
+      setNoteEvent("");
+    }
+  }, [isShowEvent]);
+
+  const handleSaveEvent = () => {
+    itemId &&
+      updateAEvent(
+        nameRouteUserId,
+        nameEvent,
+        dateEvent,
+        desEvent,
+        noteEvent,
+        image,
+        linkVideo,
+        itemId
+      ).then((isRes) => {
+        if (nameEvent?.trim() === "") setCheckNameEvent(true);
+        if (dateEvent?.trim() === "") setCheckDateEvent(true);
+
+        if (nameEvent?.trim() === "" || dateEvent?.trim() === "") {
+          Toast.fail("Vui lòng kiểm tra: ngày sự kiện và tên sự kiện");
+        } else {
+          setLoadingAgain(true);
+          setTimeout(() => {
+            setLoadingAgain(false);
+          }, 500);
+          if (isRes) {
+            Toast.success("Cập nhập thành công!");
+          } else {
+            Toast.fail("Thất bại!");
+          }
+          setShowEvent();
+        }
+      });
   };
 
   const handleSelectPic = async () => {
@@ -147,7 +178,7 @@ const ModalAddProcess = ({
         style={{
           width: width - 10,
         }}
-        visible={isDisplayModalAddEvent}
+        visible={isShowEvent}
         transparent
         animationType="fade"
         title={
@@ -168,21 +199,13 @@ const ModalAddProcess = ({
         footer={[
           {
             text: "Thoát",
-            onPress: () => setDisplayModalAddEvent(),
+            onPress: () => setShowEvent(),
             style: "cancel",
           },
           {
-            text: "Thêm",
+            text: "Lưu",
             onPress: () => {
-              if (nameEvent?.trim() === "") setCheckNameEvent(true);
-              if (dateEvent?.trim() === "") setCheckDateEvent(true);
-
-              if (nameEvent?.trim() === "" || dateEvent?.trim() === "") {
-                Toast.fail("Vui lòng kiểm tra: ngày sự kiện và tên sự kiện");
-              } else {
-                setDisplayModalAddEvent();
-                handleAddEvent();
-              }
+              handleSaveEvent();
             },
           },
         ]}
@@ -190,7 +213,7 @@ const ModalAddProcess = ({
         <View style={{ width: width - 30, paddingTop: 10 }}>
           <View>
             <ImageView
-              images={image}
+              images={imageShow}
               imageIndex={0}
               visible={isShowCurrentImage}
               onRequestClose={() => setShowCurrentImage(false)}
@@ -233,6 +256,7 @@ const ModalAddProcess = ({
                     style={isNameEvent ? styles.inputItemError : styles.inputItem}
                     multiline
                     maxLength={50}
+                    value={nameEvent}
                     placeholder="Tên sự kiện"
                     textBreakStrategy="highQuality"
                     onChangeText={(value) => setNameEvent(value)}
@@ -250,56 +274,102 @@ const ModalAddProcess = ({
                   />
                 </View>
               </View>
-              <View style={{ height: 300 }}>
+              <View style={{ height: "auto", maxHeight: 120 }}>
                 <Input
+                  scrollEnabled
                   style={styles.inputItem}
                   multiline
+                  value={desEvent}
                   maxLength={200}
                   placeholder="Mô tả sự kiện"
                   textBreakStrategy="highQuality"
                   onChangeText={(value) => setDesEvent(value)}
                 />
               </View>
-              {image?.length > 0 && (
-                <View
-                  style={{
-                    paddingTop: 10,
-                    borderWidth: 1,
-                    borderColor: "#1870bc",
-                    borderRadius: 10,
-                  }}
-                >
-                  <Grid
-                    data={image}
-                    columnNum={3}
-                    itemStyle={{ height: 100 }}
-                    renderItem={(item) => (
-                      <Button
-                        style={{
-                          width: 100,
-                          height: 100,
-                          alignContent: "center",
-                          alignItems: "center",
-                          alignSelf: "center",
-                        }}
-                        type="ghost"
-                        onPress={() => setShowCurrentImage(true)}
-                      >
-                        <Image
-                          // @ts-ignore
-                          source={item}
-                          style={{
-                            height: 100,
-                            width: 100,
-                          }}
-                          resizeMethod="auto"
-                          resizeMode="cover"
-                        />
-                      </Button>
-                    )}
-                  />
-                </View>
-              )}
+
+              <View>
+                {image && image?.length > 0 && (
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        display: "flex",
+                        paddingTop: 10,
+                        justifyContent: "space-evenly",
+                      }}
+                    >
+                      {image?.map((image, indexImage) => {
+                        if (image.type === "video") {
+                          return (
+                            <View
+                              key={indexImage}
+                              style={{
+                                borderWidth: 1,
+                                borderRadius: 10,
+                                borderColor: "#b0aca8",
+                                padding: 5,
+                              }}
+                              onTouchStart={() => {
+                                video?.current?.presentFullscreenPlayer();
+                                video?.current?.playAsync();
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faVideoCamera} size={10} />
+                              <Video
+                                ref={video}
+                                style={{
+                                  height: 120,
+                                  width: (width - 60) / 3,
+                                }}
+                                source={image}
+                                volume={1}
+                                useNativeControls={false}
+                                resizeMode={ResizeMode.CONTAIN}
+                                isLooping
+                              />
+                            </View>
+                          );
+                        }
+                        return (
+                          <View
+                            key={indexImage}
+                            style={{
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              borderColor: "#b0aca8",
+                              padding: 5,
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faImage} size={10} />
+                            <Image
+                              // @ts-ignore
+                              source={image}
+                              style={{
+                                height: 120,
+                                width: (width - 60) / 3,
+                                borderRadius: 10,
+                              }}
+                              transition={1000}
+                              allowDownscaling
+                              contentFit="cover"
+                              onTouchStart={() => {
+                                const sourceImageItem =
+                                  // @ts-ignore
+                                  image
+                                    ? // @ts-ignore
+                                      [image]
+                                    : null;
+                                setImageShow(sourceImageItem);
+                                setShowCurrentImage(true);
+                              }}
+                            />
+                          </View>
+                        );
+                      })}
+                    </View>
+                  </View>
+                )}
+              </View>
               <View
                 style={styles.input}
                 onTouchStart={() => {
@@ -309,6 +379,16 @@ const ModalAddProcess = ({
               >
                 <FontAwesomeIcon icon={faUpload} color="green" />
                 <Text style={styles.inputItem}> Đính kèm ảnh/video</Text>
+              </View>
+              <View
+                style={styles.input}
+                onTouchStart={() => {
+                  setImage(null);
+                  Keyboard.dismiss();
+                }}
+              >
+                <FontAwesomeIcon icon={faTrash} color="red" />
+                <Text style={styles.inputItem}> Xóa tất cả ảnh/video</Text>
               </View>
             </KeyboardAvoidingView>
 
@@ -320,4 +400,4 @@ const ModalAddProcess = ({
   );
 };
 
-export default ModalAddProcess;
+export default ModalViewProcess;

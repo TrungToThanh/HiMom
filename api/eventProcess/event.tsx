@@ -3,12 +3,15 @@ import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
 import dayjs from "dayjs";
 import { nameDB } from "../database";
+import { Asset } from "expo-asset";
 
 const preNameTable = "tableEventProcessUserId";
 
-export const createProcessEventTable = (isUserId, date) => {
+export const createProcessEventTable = (isUserId, date, image) => {
   const nameTable = `${preNameTable}${isUserId}`;
   console.log("nameTable", nameTable);
+
+  const listImage = JSON.stringify(image);
   const db = SQLite.openDatabase(nameDB);
 
   db.transaction((tx) => {
@@ -23,7 +26,7 @@ export const createProcessEventTable = (isUserId, date) => {
         if (value.length === 0) {
           tx.executeSql(
             `INSERT INTO ${nameTable} (event, date, description, note, image, linkvideo) values (?, ?, ?, ?, ?, ?)`,
-            ["Nhịp đập đầu tiên!", String(date), "", "", "", ""]
+            ["Nhịp đập đầu tiên! 💓", String(date), "Cả nhà đều vui 😍🎉", "", listImage, ""]
           );
         } else {
           tx.executeSql(`UPDATE ${nameTable} SET date = ? WHERE id = ?`, [String(date), 1]);
@@ -43,6 +46,31 @@ export const insertANewEvent = (isUserId, event, date, description, note, image,
       tx.executeSql(
         `INSERT INTO ${nameTable} (event, date, description, note, image, linkvideo) values (?, ?, ?, ?, ?, ?)`,
         [event, date, description, note, listImage, String(linkvideo)],
+        (txObj, resultSet) => resolve(true),
+        (txObj, error) => false
+      );
+    });
+  });
+};
+
+export const updateAEvent = (
+  isUserId,
+  event,
+  date,
+  description,
+  note,
+  image,
+  linkvideo,
+  idEvent
+) => {
+  const nameTable = `${preNameTable}${isUserId}`;
+  const listImage = image && image?.length > 0 ? JSON.stringify(image) : "";
+  const db = SQLite.openDatabase(nameDB);
+  return new Promise(function (resolve) {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `UPDATE ${nameTable} SET event = ?, date = ?, description = ?, note = ?, image = ?, linkvideo = ? WHERE id = ?`,
+        [event, date, description, note, listImage, String(linkvideo), idEvent],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );

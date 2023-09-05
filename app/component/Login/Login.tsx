@@ -11,6 +11,7 @@ import { stylesInput } from "../../const/styleInput";
 import Input from "@ant-design/react-native/lib/input-item/Input";
 import { createProcessEventTable } from "../../../api/eventProcess/event";
 import dayjs from "dayjs";
+import { Asset } from "expo-asset";
 
 interface Props {
   listAccountBaby: any;
@@ -18,7 +19,6 @@ interface Props {
 const Login = ({ listAccountBaby }: Props) => {
   const RadioItem = Radio.RadioItem;
   const navigation = useNavigation();
-
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
 
@@ -26,6 +26,17 @@ const Login = ({ listAccountBaby }: Props) => {
   const [passwordInput, setPasswordInput] = useState("");
 
   const [typeInput, setTypeInput] = useState(true);
+
+  const [image, setImage] = useState<any>();
+
+  useEffect(() => {
+    (async () => {
+      const image = Asset.fromModule(require("../../../assets/firstBeat.png"));
+      await image.downloadAsync();
+      setImage(image);
+      console.log("image", image);
+    })();
+  });
 
   const handleLogin = async () => {
     if (listAccountBaby && listAccountBaby?.length > 0) {
@@ -44,7 +55,7 @@ const Login = ({ listAccountBaby }: Props) => {
         .format("DD-MM-YYYY");
 
       if (isHasAccount) {
-        await createProcessEventTable(isAccount.id, String(dateObject));
+        await createProcessEventTable(isAccount.id, String(dateObject), image);
         // @ts-ignore
         userId && navigation.navigate("Home", { userId: Number(userId) });
       } else {
