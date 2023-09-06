@@ -122,7 +122,7 @@ const Home = () => {
         setLoadingAgain={(value) => setLoadingAgain(value)}
       />
       <HomeListShopping nameRouteUserId={nameRouteUserId} />
-      <ReminderComponent />
+      <ReminderComponent isUserId={nameRouteUserId} />
 
       <SettingAccount
         nameRouteUserId={nameRouteUserId}

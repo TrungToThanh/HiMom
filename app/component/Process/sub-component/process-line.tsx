@@ -47,12 +47,6 @@ const ProcessLine = ({ idUserCurrent, nameRouteUserId, isFirstDate, setLoadingAg
     return dateObject;
   }, [idUserCurrent, listEventProcessLine]);
 
-  const eventInfo = useMemo(() => {
-    if (listEventProcessLine) {
-      return { event1: listEventProcessLine[0]?.eventFirst };
-    }
-  }, [listEventProcessLine]);
-
   return (
     <View
       style={{
