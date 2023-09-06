@@ -121,7 +121,7 @@ const Home = () => {
         listEvent={listEvent}
         setLoadingAgain={(value) => setLoadingAgain(value)}
       />
-      <HomeListShopping nameRouteUserId={nameRouteUserId} listAccountBaby={listAccountBaby} />
+      <HomeListShopping nameRouteUserId={nameRouteUserId} />
       <ReminderComponent />
 
       <SettingAccount

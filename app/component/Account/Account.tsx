@@ -7,7 +7,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { Button, WhiteSpace, DatePicker, Toast, WingBlank } from "@ant-design/react-native";
+import {
+  Button,
+  WhiteSpace,
+  DatePicker,
+  Toast,
+  WingBlank,
+  Checkbox,
+} from "@ant-design/react-native";
 import dayjs from "dayjs";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -23,6 +30,7 @@ import {
 import { stylesInput } from "../../const/styleInput";
 import Input from "@ant-design/react-native/lib/input-item/Input";
 import { insertANewEvent } from "../../../api/eventProcess/event";
+import moment from "moment";
 
 interface Props {
   isShowDeleteButton?: boolean;
@@ -40,15 +48,19 @@ const Account = ({
 
   const [isNameBaby, setIsNameBaby] = useState("");
   const [isPassword, setIsPassword] = useState("");
-  const [valueDatePicker, setValueDatePicker] = useState<any>(
+  const [valueExpectBirthDay, setValueExpectBirthDay] = useState<any>(
     dayjs(new Date()).format("DD-MM-YYYY")
   );
+  const [valueBirthDay, setValueBirthDay] = useState<any>(dayjs(new Date()).format("DD-MM-YYYY"));
+  const [isBorn, setIsBorn] = useState(false);
 
   const [isNameBabyError, setIsNameBabyError] = useState(false);
   const [isPasswordError, setIsPasswordError] = useState(false);
-  const [valueDatePickerError, setValueDatePickerError] = useState(false);
+  const [valueExpectBirthdayPickerError, setValueExpectBirthdayPickerError] = useState(false);
+  const [valueBirthdayPickerError, setValueBirthdayPickerError] = useState(false);
 
-  const [isShowDatePicker, setIsShowDatePicker] = useState(false);
+  const [isShowDatePickerExpectBirthday, setIsShowDatePickerExpectBirthday] = useState(false);
+  const [isShowDatePickerBirthday, setIsShowDatePickerBirthday] = useState(false);
 
   useEffect(() => {
     if (isShowDeleteButton && nameRouteUserId && listAccountBaby?.length > 0) {
@@ -58,7 +70,11 @@ const Account = ({
       if (idCurrent) {
         setIsNameBaby(idCurrent?.nameBaby);
         setIsPassword(idCurrent?.password);
-        setValueDatePicker(idCurrent?.birthday);
+        setValueExpectBirthDay(idCurrent?.expectedBirthday);
+        setIsBorn(Boolean(idCurrent?.isBorn));
+        setValueBirthDay(
+          Boolean(idCurrent?.isBorn) ? idCurrent?.birthday : idCurrent?.expectedBirthday
+        );
       }
     }
   }, [isShowDeleteButton, nameRouteUserId, listAccountBaby]);
@@ -73,17 +89,38 @@ const Account = ({
       }}
     >
       <DatePicker
-        visible={isShowDatePicker}
+        title="Ngày dự sinh"
+        visible={isShowDatePickerExpectBirthday}
         mode="date"
         value={new Date()}
-        minDate={new Date(2015, 7, 6)}
-        maxDate={new Date(2026, 11, 3)}
+        minDate={new Date()}
+        maxDate={new Date(moment().add(300, "day").format())}
         format="YYYY-MM-DD"
         okText="Chọn"
         dismissText="Thoát"
-        onOk={() => setIsShowDatePicker(false)}
-        onDismiss={() => setIsShowDatePicker(false)}
-        onChange={(value) => setValueDatePicker(dayjs(value).format("DD-MM-YYYY"))}
+        onOk={() => setIsShowDatePickerExpectBirthday(false)}
+        onDismiss={() => setIsShowDatePickerExpectBirthday(false)}
+        onChange={(value) => {
+          setValueExpectBirthDay(dayjs(value).format("DD-MM-YYYY"));
+          !isBorn && setValueBirthDay(dayjs(value).format("DD-MM-YYYY"));
+        }}
+      ></DatePicker>
+      <WhiteSpace />
+      <DatePicker
+        title="Ngày sinh nhật"
+        visible={isShowDatePickerBirthday}
+        mode="date"
+        value={new Date()}
+        minDate={new Date(moment().subtract(300, "day").format())}
+        maxDate={new Date()}
+        format="YYYY-MM-DD"
+        okText="Chọn"
+        dismissText="Thoát"
+        onOk={() => setIsShowDatePickerBirthday(false)}
+        onDismiss={() => setIsShowDatePickerBirthday(false)}
+        onChange={(value) => {
+          setValueBirthDay(dayjs(value).format("DD-MM-YYYY"));
+        }}
       ></DatePicker>
       <WhiteSpace />
       <WingBlank>
@@ -98,14 +135,16 @@ const Account = ({
         </View>
         <KeyboardAvoidingView>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={valueDatePickerError ? stylesInput.inputError : stylesInput.input}>
+            <View
+              style={valueExpectBirthdayPickerError ? stylesInput.inputError : stylesInput.input}
+            >
               <Input
                 style={stylesInput.inputItem}
                 maxLength={11}
                 placeholder="Ngày sinh dự kiến"
-                value={String(valueDatePicker)}
+                value={String(valueExpectBirthDay)}
                 onTouchStart={() => {
-                  setIsShowDatePicker(true);
+                  setIsShowDatePickerExpectBirthday(true);
                   Keyboard.dismiss();
                 }}
                 showSoftInputOnFocus={false}
@@ -124,6 +163,50 @@ const Account = ({
             secureTextEntry
           />
         </View>
+        {isShowDeleteButton && (
+          <View>
+            <View>
+              <KeyboardAvoidingView>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                  <View style={{ display: "flex", flexDirection: "row", marginTop: 10 }}>
+                    <Checkbox
+                      checked={isBorn}
+                      onChange={(value) => {
+                        setIsBorn(value?.target?.checked);
+                        setValueBirthDay(dayjs(new Date()).format("DD-MM-YYYY"));
+                      }}
+                    />
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 14,
+                        fontWeight: "bold",
+                        textAlignVertical: "center",
+                      }}
+                    >
+                      Đã sinh:
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              </KeyboardAvoidingView>
+            </View>
+            {isBorn && (
+              <View style={valueBirthdayPickerError ? stylesInput.inputError : stylesInput.input}>
+                <Input
+                  style={stylesInput.inputItem}
+                  maxLength={11}
+                  placeholder="Ngày sinh nhật"
+                  value={isBorn ? String(valueBirthDay) : String(valueExpectBirthDay)}
+                  onTouchStart={() => {
+                    setIsShowDatePickerBirthday(true);
+                    Keyboard.dismiss();
+                  }}
+                  showSoftInputOnFocus={false}
+                />
+              </View>
+            )}
+          </View>
+        )}
       </WingBlank>
       <WhiteSpace />
       <View
@@ -171,51 +254,67 @@ const Account = ({
               setIsPasswordError(false);
             }
 
-            var dateParts = valueDatePicker.split("-");
+            if (isBorn && String(valueBirthDay)?.trim() === "") {
+              setValueBirthdayPickerError(true);
+            } else {
+              setValueBirthdayPickerError(false);
+            }
+
+            var dateParts = valueExpectBirthDay.split("-");
 
             // month is 0-based, that's why we need dataParts[1] - 1
-            const dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]));
+            const dateObjectExpectBirthday = dayjs(
+              new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+            );
 
-            if (dateObject <= dayjs(new Date())) {
-              setValueDatePickerError(true);
+            if (dateObjectExpectBirthday <= dayjs(new Date())) {
+              setValueExpectBirthdayPickerError(true);
             } else {
-              setValueDatePickerError(false);
+              setValueExpectBirthdayPickerError(false);
             }
+
             const stop =
               String(isNameBaby?.trim()) === "" ||
               String(isPassword?.trim()) === "" ||
-              dateObject <= dayjs(new Date());
+              dateObjectExpectBirthday <= dayjs(new Date()) ||
+              (isBorn && String(valueBirthDay)?.trim() === "");
 
             if (stop) return;
 
             if (isShowDeleteButton) {
               await updateValueOfABabyInBabyList(
                 isNameBaby,
-                valueDatePicker,
+                valueExpectBirthDay,
+                valueBirthDay,
                 isPassword,
+                isBorn,
                 nameRouteUserId
               ).then((isRes) => {
                 if (isRes) {
                   setIsLoading();
-                  Toast.info("Đã lưu thay đổi thành công. \n\r Vui lòng đăng nhập lại!", 3);
+                  Toast.info("Đã lưu thay đổi thành công.\n\rVui lòng đăng nhập lại!", 3);
                   DevSettings.reload();
                 } else {
                   Toast.fail("Thất bại!");
                 }
               });
             } else {
-              await insertValueBabyToBabyList(isNameBaby, valueDatePicker, isPassword).then(
-                (isRes) => {
-                  if (isRes) {
-                    Toast.success("Đã tạo mới thành công!");
-                    setIsLoading();
-                    // @ts-ignore
-                    navigation.navigate("Main");
-                  } else {
-                    Toast.fail("Thất bại!");
-                  }
+              await insertValueBabyToBabyList(
+                isNameBaby,
+                valueExpectBirthDay,
+                valueExpectBirthDay,
+                isPassword,
+                false
+              ).then((isRes) => {
+                if (isRes) {
+                  Toast.success("Đã tạo mới thành công!");
+                  setIsLoading();
+                  // @ts-ignore
+                  navigation.navigate("Main");
+                } else {
+                  Toast.fail("Thất bại!");
                 }
-              );
+              });
             }
           }}
         >

@@ -1,6 +1,6 @@
 import * as SQLite from "expo-sqlite";
 
-export const nameDB = "test111.db";
+export const nameDB = "newDB1.db";
 
 export const exportDb = async () => {
   if (Platform.OS === "android") {

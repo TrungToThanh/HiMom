@@ -11,22 +11,28 @@ export const createABabyTable = () => {
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, nameBaby TEXT , birthday TEXT, password TEXT )`
+        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, nameBaby TEXT , expectedBirthday TEXT , birthday TEXT, password TEXT,  isBorn boolean )`
       );
     });
   });
 };
 
-export const insertValueBabyToBabyList = (nameBaby, birthday, password) => {
+export const insertValueBabyToBabyList = (
+  nameBaby,
+  expectedBirthday,
+  birthday,
+  password,
+  isBorn
+) => {
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, nameBaby TEXT , birthday TEXT, password TEXT )`
+        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, nameBaby TEXT , expectedBirthday TEXT , birthday TEXT, password TEXT,  isBorn BOOLEAN )`
       );
       tx.executeSql(
-        `INSERT INTO ${nameTable} (nameBaby, birthday, password) values (?, ?, ?)`,
-        [String(nameBaby), String(birthday), String(password)],
+        `INSERT INTO ${nameTable} (nameBaby, expectedBirthday, birthday, password, isBorn) values (?, ?, ?, ?, ?)`,
+        [String(nameBaby), String(expectedBirthday), String(birthday), String(password), isBorn],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );
@@ -76,16 +82,25 @@ export const deleteAItemBabyFromBabyList = (id) => {
 
 export const updateValueOfABabyInBabyList = (
   nameBaby,
+  expectedBirthday,
   birthday,
   password,
+  isBorn,
   id
 ) => {
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
-        `UPDATE ${nameTable} SET nameBaby = ?, birthday = ?, password = ? WHERE id = ?`,
-        [nameBaby, birthday, password, Number(id)],
+        `UPDATE ${nameTable} SET nameBaby = ?, expectedBirthday = ?, birthday = ?, password = ?, isBorn = ? WHERE id = ?`,
+        [
+          nameBaby,
+          expectedBirthday,
+          Boolean(isBorn) ? birthday : expectedBirthday,
+          password,
+          isBorn,
+          Number(id),
+        ],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );

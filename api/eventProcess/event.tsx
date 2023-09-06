@@ -1,15 +1,11 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
-import dayjs from "dayjs";
 import { nameDB } from "../database";
-import { Asset } from "expo-asset";
 
 const preNameTable = "tableEventProcessUserId";
 
 export const createProcessEventTable = (isUserId, date, image) => {
   const nameTable = `${preNameTable}${isUserId}`;
-  console.log("nameTable", nameTable);
 
   const listImage = JSON.stringify(image);
   const db = SQLite.openDatabase(nameDB);

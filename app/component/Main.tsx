@@ -38,7 +38,6 @@ export default function Main() {
 
   const { listAccountBaby } = getAllBabyInBabyList(isLoading);
 
-  console.log("listAccountBaby", listAccountBaby);
   const isDisableButtonLogin = useMemo(() => {
     return !listAccountBaby ? true : false;
   }, [listAccountBaby]);

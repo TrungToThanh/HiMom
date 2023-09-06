@@ -12,6 +12,7 @@ import Input from "@ant-design/react-native/lib/input-item/Input";
 import { createProcessEventTable } from "../../../api/eventProcess/event";
 import dayjs from "dayjs";
 import { Asset } from "expo-asset";
+import { createProcessLineTable } from "../../../api/eventProcess/process line";
 
 interface Props {
   listAccountBaby: any;
@@ -34,7 +35,6 @@ const Login = ({ listAccountBaby }: Props) => {
       const image = Asset.fromModule(require("../../../assets/firstBeat.png"));
       await image.downloadAsync();
       setImage(image);
-      console.log("image", image);
     })();
   });
 
@@ -47,17 +47,38 @@ const Login = ({ listAccountBaby }: Props) => {
         (item) => +item.id === +userId && String(item.password) === String(passwordInput)
       );
 
-      var dateParts = isAccount?.birthday.split("-");
-
-      // month is 0-based, that's why we need dataParts[1] - 1
-      const dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
-        .subtract(280, "days")
-        .format("DD-MM-YYYY");
-
       if (isHasAccount) {
-        await createProcessEventTable(isAccount.id, String(dateObject), image);
-        // @ts-ignore
-        userId && navigation.navigate("Home", { userId: Number(userId) });
+        var datePartsExpectedBirthday = isAccount?.expectedBirthday?.split("-");
+
+        // month is 0-based, that's why we need dataParts[1] - 1
+        const dateObjectExpectedBirthday = dayjs(
+          new Date(
+            +datePartsExpectedBirthday[2],
+            datePartsExpectedBirthday[1] - 1,
+            +datePartsExpectedBirthday[0]
+          )
+        ).format("DD-MM-YYYY");
+
+        const dateObjectFirstDay = dayjs(
+          new Date(
+            +datePartsExpectedBirthday[2],
+            datePartsExpectedBirthday[1] - 1,
+            +datePartsExpectedBirthday[0]
+          )
+        )
+          .subtract(280, "days")
+          .format("DD-MM-YYYY");
+
+        createProcessEventTable(isAccount.id, String(dateObjectFirstDay), image);
+        createProcessLineTable(
+          isAccount.id,
+          String(dateObjectFirstDay),
+          String(dateObjectExpectedBirthday)
+        );
+        setTimeout(() => {
+          // @ts-ignore
+          userId && navigation.navigate("Home", { userId: Number(userId) });
+        }, 200);
       } else {
         Toast.fail("Sai mã đăng nhập!");
       }

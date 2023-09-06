@@ -132,7 +132,6 @@ const ModalViewProcess = ({
       allowsMultipleSelection: true,
     });
 
-    console.log(result.assets);
     if (!result.canceled) {
       setImage(result.assets);
     }
@@ -307,7 +306,7 @@ const ModalViewProcess = ({
                                 borderWidth: 1,
                                 borderRadius: 10,
                                 borderColor: "#b0aca8",
-                                padding: 5,
+                                padding: 2,
                               }}
                               onTouchStart={() => {
                                 video?.current?.presentFullscreenPlayer();
@@ -323,9 +322,9 @@ const ModalViewProcess = ({
                                 }}
                                 source={image}
                                 volume={1}
-                                useNativeControls={false}
+                                useNativeControls
                                 resizeMode={ResizeMode.CONTAIN}
-                                isLooping
+                                isLooping={true}
                               />
                             </View>
                           );
@@ -337,7 +336,7 @@ const ModalViewProcess = ({
                               borderWidth: 1,
                               borderRadius: 10,
                               borderColor: "#b0aca8",
-                              padding: 5,
+                              padding: 2,
                             }}
                           >
                             <FontAwesomeIcon icon={faImage} size={10} />

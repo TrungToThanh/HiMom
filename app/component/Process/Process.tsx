@@ -27,6 +27,8 @@ import ProcessLine from "./sub-component/process-line";
 import { Video, ResizeMode } from "expo-av";
 import { useFocusEffect } from "@react-navigation/native";
 import ModalViewProcess from "./sub-component/modal-view-process";
+import ModalAddProcessLine from "./sub-component/modal-add-process-line";
+import HeaderProcess from "./sub-component/header-process";
 
 interface Props {
   listAccountBaby?: any;
@@ -43,25 +45,19 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
   //Get value date
   const now = dayjs().format("DD-MM-YYYYY");
 
-  const isFirstDay = useMemo(() => {
-    let dateObject = "";
+  const idUserCurrent = useMemo(() => {
+    let idCurrent;
     if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
-      var dateParts = idCurrent?.birthday.split("-");
-
-      // month is 0-based, that's why we need dataParts[1] - 1
-      dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
-        .subtract(280, "days")
-        .format("DD-MM-YYYY");
+      idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
     }
-    return dateObject;
+    return idCurrent;
   }, [listAccountBaby]);
 
   const isFirstDate = useMemo(() => {
     let dateObject;
     if (listAccountBaby) {
       let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
-      var dateParts = idCurrent?.birthday.split("-");
+      var dateParts = idCurrent?.expectedBirthday?.split("-");
 
       // month is 0-based, that's why we need dataParts[1] - 1
       dateObject = dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])).subtract(
@@ -72,34 +68,9 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
     return dateObject;
   }, [listAccountBaby]);
 
-  const isDiffFirstDay = useMemo(() => {
-    let dateObject;
-    if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
-      var dateParts = idCurrent?.birthday.split("-");
-
-      dateObject = dayjs(new Date()).diff(
-        dayjs(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])).subtract(280, "days"),
-        "days"
-      );
-    }
-    return dateObject;
-  }, [listAccountBaby]);
-
-  const diffDay = useMemo(() => {
-    let day = "";
-    if (listAccountBaby) {
-      let idCurrent = listAccountBaby?.find((item) => Number(item.id) === Number(nameRouteUserId));
-      var dateParts = idCurrent && idCurrent?.birthday.split("-");
-      day = `${dateParts[2]}-${dateParts[1]}-${+dateParts[0]}`;
-    }
-    return String(dayjs(day).diff(new Date(), "days"));
-  }, [listAccountBaby, nameRouteUserId]);
-
   const [isDisplayModalAddEvent, setDisplayModalAddEvent] = useState<boolean>(false);
   const [isShowEvent, setShowEvent] = useState<boolean>(false);
   const [itemIdCurrent, setItemIdCurrent] = useState<any>();
-  const [indexItemCurrent, setIndexItemCurrent] = useState<any>();
 
   const [listImageCurrent, setListImage] = useState<any>();
   const [isShowCurrentImage, setShowCurrentImage] = useState(false);
@@ -116,7 +87,6 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
   const listEventCook = useMemo(() => {
     if (!listEvent) return [];
     const newList = Array.from(new Set(listEvent));
-    console.log("newList", newList);
     const b = newList.sort(function (a: ProcessBabyBase, b: ProcessBabyBase) {
       var dateParts: any = String(a.date).split("-");
       const dateObjectA = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
@@ -176,6 +146,7 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
             setDisplayModalAddEvent={() => setDisplayModalAddEvent(false)}
             setLoadingAgain={(value) => setLoadingAgain(value)}
           />
+
           <ModalViewProcess
             nameRouteUserId={nameRouteUserId}
             isFirstDate={isFirstDate}
@@ -202,84 +173,16 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
               Chuẩn bị
             </Text>
           </View>
-          <View
-            style={{
-              width: windowWidth - 10,
-              height: 40,
-              paddingLeft: 10,
-              paddingTop: 10,
-              flexDirection: "row",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <View
-              style={{
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: "#e1e8fb",
-                width: windowWidth - 100,
-                height: 40,
-                flexDirection: "row",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <View style={{ marginTop: 10, marginLeft: 5 }}>
-                <Text>
-                  <FontAwesomeIcon icon={faCalendar} color="green" size={12} />
-                  {moment().format("DD/MM/YYYY")}
-                </Text>
-              </View>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: "bold",
-                  marginTop: 8,
-                  marginRight: 10,
-                  color: "#1870bc",
-                }}
-              >
-                {+isDiffFirstDay > 0 ? Math.floor(isDiffFirstDay / 7) : 0}/40 Tuần -{" "}
-                {isDiffFirstDay - Math.floor(isDiffFirstDay / 7) * 7} Ngày
-              </Text>
-            </View>
-            <View
-              style={{
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: "#e1e8fb",
-                width: windowWidth - 50,
-                height: 40,
-                flexDirection: "row",
-                display: "flex",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: "bold",
-                  marginTop: 10,
-                  marginLeft: 10,
-                }}
-              >
-                {isDiffFirstDay}
-              </Text>
-              <FontAwesomeIcon icon={faHeart} color="red" />
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: "bold",
-                  marginTop: 10,
-                  marginLeft: 5,
-                }}
-              >
-                {+diffDay > 0 ? diffDay : 0}
-              </Text>
-            </View>
-          </View>
+          <HeaderProcess idUserCurrent={idUserCurrent} />
           <WhiteSpace />
-          <ProcessLine isFirstDay={isFirstDay} isDiffFirstDay={isDiffFirstDay} diffDay={diffDay} />
+          <View>
+            <ProcessLine
+              isFirstDate={isFirstDate}
+              idUserCurrent={idUserCurrent}
+              nameRouteUserId={nameRouteUserId}
+              setLoadingAgain={(value) => setLoadingAgain(value)}
+            />
+          </View>
           <WhiteSpace />
           <View
             style={{
@@ -317,7 +220,6 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                         JSON?.parse(item?.image)
                       : "";
                   indexItem === 0 ? (imageFirst = sourceImageItem.uri) : undefined;
-                  console.log("sourceImageItem", imageFirst);
                   return (
                     <View key={indexItem}>
                       <View
@@ -395,7 +297,6 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                   if (index === 1) {
                                     setShowEvent(true);
                                   }
-                                  console.log(index);
                                 }
                               );
                             }}
@@ -432,8 +333,8 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                         style={{
                                           borderWidth: 1,
                                           borderRadius: 10,
-                                          borderColor: "#b0aca8",
-                                          padding: 5,
+                                          borderColor: "#1870bc",
+                                          padding: 2,
                                         }}
                                         onTouchStart={() => {
                                           video?.current?.presentFullscreenPlayer();
@@ -451,7 +352,7 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                           volume={1}
                                           useNativeControls={false}
                                           resizeMode={ResizeMode.CONTAIN}
-                                          isLooping
+                                          isLooping={false}
                                         />
                                       </View>
                                     );
@@ -468,8 +369,8 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                       style={{
                                         borderWidth: 1,
                                         borderRadius: 10,
-                                        borderColor: "#b0aca8",
-                                        padding: 5,
+                                        borderColor: "#1870bc",
+                                        padding: 2,
                                       }}
                                     >
                                       <FontAwesomeIcon icon={faImage} size={10} />
