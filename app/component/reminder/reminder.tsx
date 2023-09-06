@@ -18,6 +18,7 @@ import { ScrollView, GestureHandlerRootView } from "react-native-gesture-handler
 import { ImageBackground, useWindowDimensions } from "react-native";
 import ReminderCalendar from "./sub-component/reminder-calendar";
 import ReminderList from "./sub-component/reminder-list";
+import { getAllEventReminder } from "../../../api/reminder/reminder";
 
 interface Props {
   isUserId: number;
@@ -27,6 +28,7 @@ const ReminderComponent = ({ isUserId }: Props) => {
   const image = require("../../../assets/background.jpg");
   const { width, height } = useWindowDimensions();
   const [isPanelActive, setPanelActive] = useState<any>(0);
+
   return (
     <GestureHandlerRootView>
       <SafeAreaView>
@@ -52,11 +54,11 @@ const ReminderComponent = ({ isUserId }: Props) => {
             <SegmentedControl
               selectedIndex={isPanelActive}
               values={["Lịch", "Danh mục"]}
-              style={{ width: 200 }}
+              style={{ width: 200, backgroundColor: "transparent" }}
               onChange={(e) => setPanelActive(e.nativeEvent.selectedSegmentIndex)}
             />
           </View>
-          <View>
+          <View style={{ backgroundColor: "transparent" }}>
             {isPanelActive == 0 ? <ReminderCalendar /> : <ReminderList isUserId={isUserId} />}
           </View>
         </ImageBackground>

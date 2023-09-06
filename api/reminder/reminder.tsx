@@ -34,14 +34,14 @@ export const insertANewReminder = (isUserId, name, type, done) => {
   });
 };
 
-export const updateEventReminder = (isUserId, name, type, done, id) => {
+export const updateEventReminder = (isUserId, done, id) => {
   const nameTable = `${preNameTable}${isUserId}`;
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
-        `UPDATE ${nameTable} SET name = ?, type = ?, done = ? WHERE id = ?`,
-        [name, type, done, id],
+        `UPDATE ${nameTable} SET done = ? WHERE id = ?`,
+        [Boolean(done), id],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );
@@ -53,9 +53,9 @@ export const getAllEventReminder = (nameRouteUserId, isLoading) => {
   const nameTable = `${preNameTable}${nameRouteUserId}`;
   const [db, setDb] = useState(SQLite.openDatabase(nameDB));
   const [listReminderTodo, setListEvent] = useState<any>();
-  var items = new Array();
 
   useEffect(() => {
+    var items = new Array();
     db.transaction((tx) => {
       tx.executeSql(
         `SELECT * FROM ${nameTable}`,
@@ -66,7 +66,7 @@ export const getAllEventReminder = (nameRouteUserId, isLoading) => {
           for (var i = 0; i < len; i++) {
             items.push(resultSet.rows.item(i));
           }
-          items && items.length > 0 && setListEvent(items);
+          setListEvent(items);
         },
         (txObj, error) => false
       );
