@@ -28,16 +28,6 @@ const Login = ({ listAccountBaby }: Props) => {
 
   const [typeInput, setTypeInput] = useState(true);
 
-  const [image, setImage] = useState<any>();
-
-  useEffect(() => {
-    (async () => {
-      const image = Asset.fromModule(require("../../../assets/firstBeat.png"));
-      await image.downloadAsync();
-      setImage(image);
-    })();
-  });
-
   const handleLogin = async () => {
     if (listAccountBaby && listAccountBaby?.length > 0) {
       const isHasAccount = listAccountBaby.some(
@@ -69,7 +59,7 @@ const Login = ({ listAccountBaby }: Props) => {
           .subtract(280, "days")
           .format("DD-MM-YYYY");
 
-        createProcessEventTable(isAccount.id, String(dateObjectFirstDay), image);
+        createProcessEventTable(isAccount.id, String(dateObjectFirstDay), "");
         createProcessLineTable(
           isAccount.id,
           String(dateObjectFirstDay),

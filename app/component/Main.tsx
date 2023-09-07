@@ -5,7 +5,6 @@ import { Button, WhiteSpace, ActivityIndicator, Result } from "@ant-design/react
 import * as Font from "expo-font";
 
 import { getAllBabyInBabyList } from "../../api/login/login";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Login from "./login/login";
 import Account from "./account/account";
 
@@ -15,7 +14,8 @@ export default function Main() {
   const windowHeight = Dimensions.get("window").height;
   const [isShowLogin, setIsShowLogin] = useState(true);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     const loading = async () => {
       await Font.loadAsync(
@@ -35,75 +35,73 @@ export default function Main() {
   }, [listAccountBaby]);
 
   return (
-    <GestureHandlerRootView>
+    <View
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#f2f2f2",
+      }}
+    >
+      <Result
+        imgUrl={image}
+        title="Hi Mom!"
+        message={"Chúng ta là một gia đình"}
+        style={{ width: windowWidth, marginTop: 50, backgroundColor: "#f2f2f2" }}
+      />
       <View
         style={{
+          flexDirection: "row",
+          width: windowWidth,
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: "space-around",
           backgroundColor: "#f2f2f2",
         }}
       >
-        <Result
-          imgUrl={image}
-          title="Hi Mom!"
-          message={"Chúng ta là một gia đình"}
-          style={{ width: windowWidth, marginTop: 50, backgroundColor: "#f2f2f2" }}
-        />
-        <View
+        <Button
+          onPress={() => setIsShowLogin(true)}
+          type="ghost"
           style={{
-            flexDirection: "row",
-            width: windowWidth,
-            display: "flex",
-            justifyContent: "space-around",
-            backgroundColor: "#f2f2f2",
+            borderTopWidth: 0,
+            borderRightWidth: 0,
+            borderLeftWidth: 0,
+            borderBottomWidth:
+              isShowLogin && listAccountBaby && listAccountBaby?.length > 0 ? 1 : 0,
+          }}
+          disabled={isDisableButtonLogin}
+        >
+          <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng nhập</Text>
+        </Button>
+        <Button
+          onPress={() => setIsShowLogin(false)}
+          type="ghost"
+          style={{
+            borderTopWidth: 0,
+            borderRightWidth: 0,
+            borderLeftWidth: 0,
+            borderBottomWidth:
+              isShowLogin && listAccountBaby && listAccountBaby?.length > 0 ? 0 : 1,
           }}
         >
-          <Button
-            onPress={() => setIsShowLogin(true)}
-            type="ghost"
-            style={{
-              borderTopWidth: 0,
-              borderRightWidth: 0,
-              borderLeftWidth: 0,
-              borderBottomWidth:
-                isShowLogin && listAccountBaby && listAccountBaby?.length > 0 ? 1 : 0,
-            }}
-            disabled={isDisableButtonLogin}
-          >
-            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng nhập</Text>
-          </Button>
-          <Button
-            onPress={() => setIsShowLogin(false)}
-            type="ghost"
-            style={{
-              borderTopWidth: 0,
-              borderRightWidth: 0,
-              borderLeftWidth: 0,
-              borderBottomWidth:
-                isShowLogin && listAccountBaby && listAccountBaby?.length > 0 ? 0 : 1,
-            }}
-          >
-            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng ký</Text>
-          </Button>
-        </View>
-        <WhiteSpace size="xl" />
-        <View>
-          {isShowLogin && listAccountBaby && listAccountBaby?.length > 0 ? (
-            <Login listAccountBaby={listAccountBaby} />
-          ) : (
-            <Account
-              setIsLoading={() => {
-                setIsLoading(true);
-                setTimeout(() => {
-                  setIsLoading(false);
-                }, 300);
-                setIsShowLogin(true);
-              }}
-            />
-          )}
-        </View>
+          <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng ký</Text>
+        </Button>
       </View>
-    </GestureHandlerRootView>
+      <WhiteSpace size="xl" />
+      <View>
+        {isShowLogin && listAccountBaby && listAccountBaby?.length > 0 ? (
+          <Login listAccountBaby={listAccountBaby} />
+        ) : (
+          <Account
+            setIsLoading={() => {
+              setIsLoading(true);
+              setTimeout(() => {
+                setIsLoading(false);
+              }, 300);
+              setIsShowLogin(true);
+            }}
+          />
+        )}
+      </View>
+    </View>
   );
 }

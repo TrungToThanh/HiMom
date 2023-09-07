@@ -309,7 +309,7 @@ const Account = ({
                 false
               ).then((isRes) => {
                 if (isRes) {
-                  Toast.success("Đã tạo mới thành công!");
+                  Toast.success("Đã tạo mới thành công!", 1);
                   setIsLoading();
                   // @ts-ignore
                   navigation.navigate("Main");
