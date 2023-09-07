@@ -369,7 +369,8 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                     >
                                       <Image
                                         // @ts-ignore
-                                        source={imageItem}
+                                        source={`data:image/png;base64,${imageItem.base64}`}
+                                        // source={imageItem}
                                         style={{
                                           height: 120,
                                           width: (windowWidth - 60) / 3,
@@ -379,6 +380,7 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                         allowDownscaling
                                         contentFit="cover"
                                       />
+
                                       <FontAwesomeIcon
                                         icon={faImage}
                                         size={10}

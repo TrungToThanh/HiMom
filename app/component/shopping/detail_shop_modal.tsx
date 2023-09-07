@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import {
   Button,
   Card,
@@ -10,7 +10,7 @@ import {
   Modal,
   Grid,
 } from "@ant-design/react-native";
-
+import { Image } from "expo-image";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faCheckSquare,
@@ -40,6 +40,7 @@ import * as ImagePicker from "expo-image-picker";
 import getDimensions from "../../hook/get_dimension";
 import CardHeaderComponent from "./sub-component/cardHeader";
 import CardFooterComponent from "./sub-component/cardFooter";
+import ImageView from "react-native-image-viewing";
 
 interface Props {
   setShowDetailModal: () => void;
@@ -72,6 +73,9 @@ const DetailShopModal = ({
   const [isMoney, setMoneyItem] = useState("0");
   const [isNote, setNote] = useState("");
   const [image, setImage] = useState<any>(null);
+
+  const [isShowCurrentImage, setShowCurrentImage] = useState(false);
+  const [imageShow, setImageShow] = useState<any>(null);
 
   const { listAItems } =
     isInfo &&
@@ -155,8 +159,8 @@ const DetailShopModal = ({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
-      base64: false,
-      selectionLimit: 6,
+      base64: true,
+      selectionLimit: 3,
       allowsMultipleSelection: true,
     });
 
@@ -174,6 +178,12 @@ const DetailShopModal = ({
           alignItems: "center",
         }}
       >
+        <ImageView
+          images={imageShow}
+          imageIndex={0}
+          visible={isShowCurrentImage}
+          onRequestClose={() => setShowCurrentImage(false)}
+        />
         <Card
           style={{
             width: windowWidth - 10,
@@ -300,56 +310,40 @@ const DetailShopModal = ({
                       height: 300,
                     },
                   }}
-                  renderItem={(item) => (
-                    <Button
-                      style={{ width: "100%", height: "100%" }}
-                      type="ghost"
-                      onPress={() => {
-                        Modal.alert(
-                          "Trình hiển thị hình ảnh",
-                          <View
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              height: 300,
-                              width: 300,
-                            }}
-                          >
-                            <Image
-                              // @ts-ignore
-                              source={item}
-                              style={{
-                                height: 300,
-                                width: 300,
-                              }}
-                              resizeMethod="auto"
-                              resizeMode="cover"
-                            />
-                          </View>,
-                          [
-                            {
-                              text: "Xóa",
-                              style: "cancel",
-                            },
-                            {
-                              text: "Thoát",
-                            },
-                          ]
-                        );
+                  renderItem={(item, index) => (
+                    <View
+                      key={index}
+                      style={{
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        borderColor: "#b0aca8",
+                        padding: 2,
+                      }}
+                      onTouchStart={() => {
+                        const sourceImageItem =
+                          // @ts-ignore
+                          item
+                            ? // @ts-ignore
+                              [item]
+                            : null;
+                        setImageShow(sourceImageItem);
+                        setShowCurrentImage(true);
                       }}
                     >
                       <Image
                         // @ts-ignore
-                        source={item}
+                        source={`data:image/png;base64,${item?.base64}`}
+                        // source={imageItem}
                         style={{
-                          height: 100,
-                          width: 100,
+                          height: 120,
+                          width: "100%",
+                          borderRadius: 10,
                         }}
-                        resizeMethod="auto"
-                        resizeMode="cover"
+                        transition={1000}
+                        allowDownscaling
+                        contentFit="fill"
                       />
-                    </Button>
+                    </View>
                   )}
                 />
               </ScrollView>

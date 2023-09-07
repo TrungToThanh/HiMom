@@ -346,7 +346,8 @@ const ModalViewProcess = ({
                           >
                             <Image
                               // @ts-ignore
-                              source={image}
+                              source={`data:image/png;base64,${image?.base64}`}
+                              // source={image}
                               style={{
                                 height: 120,
                                 width: (width - 60) / 3,

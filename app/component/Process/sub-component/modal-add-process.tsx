@@ -95,7 +95,7 @@ const ModalAddProcess = ({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
       quality: 1,
-      base64: false,
+      base64: true,
       selectionLimit: 3,
       allowsMultipleSelection: true,
     });
