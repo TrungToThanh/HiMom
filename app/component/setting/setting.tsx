@@ -4,7 +4,9 @@ import { Accordion, WhiteSpace, Button, Modal } from "@ant-design/react-native";
 
 import Account from "../account/account";
 import InfoApp from "./sub-component/info_app";
-import { ResetDB } from "../../../api/database";
+import { ResetDB, exportDb, importDb } from "../../../api/database";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faFileExport, faFileImport, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   isShowDeleteButton?: boolean;
@@ -50,22 +52,51 @@ const SettingAccount = ({
           />
         </Accordion.Panel>
         <Accordion.Panel header="Cài đặt" key="1">
-          <Button
-            onPress={() => {
-              Modal.alert("", "Bạn muốn xóa tất cả dữ liệu?", [
-                {
-                  text: "Thoát",
-                  style: "cancel",
-                },
-                {
-                  text: "Xóa",
-                  onPress: () => ResetDB().then(() => DevSettings.reload()),
-                },
-              ]);
-            }}
-          >
-            <Text>Xóa toàn bộ dữ liệu</Text>
-          </Button>
+          <View style={{ margin: 20 }}>
+            <Button
+              onPress={() => {
+                Modal.alert("", "Bạn muốn xóa tất cả dữ liệu?", [
+                  {
+                    text: "Thoát",
+                    style: "cancel",
+                  },
+                  {
+                    text: "Xóa",
+                    onPress: () => ResetDB().then(() => DevSettings.reload()),
+                  },
+                ]);
+              }}
+            >
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                <Text>Xóa toàn bộ dữ liệu</Text>
+                <FontAwesomeIcon icon={faTrash} color="red" />
+              </View>
+            </Button>
+            <Button
+              onPress={() => {
+                exportDb();
+              }}
+            >
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                <Text>Xuất dữ liệu</Text>
+                <FontAwesomeIcon icon={faFileExport} color="green" />
+              </View>
+            </Button>
+          </View>
         </Accordion.Panel>
         <Accordion.Panel header="Thông tin phần mềm" key="2">
           <InfoApp />

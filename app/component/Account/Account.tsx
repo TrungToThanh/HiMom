@@ -29,8 +29,8 @@ import {
 } from "../../../api/login/login";
 import { stylesInput } from "../../const/styleInput";
 import Input from "@ant-design/react-native/lib/input-item/Input";
-import { insertANewEvent } from "../../../api/eventProcess/event";
 import moment from "moment";
+import { importDb } from "../../../api/database";
 
 interface Props {
   isShowDeleteButton?: boolean;
@@ -328,6 +328,13 @@ const Account = ({
         {isSetting && <WhiteSpace size="xl" />}
         <WhiteSpace />
       </View>
+      <WhiteSpace />
+      <WhiteSpace />
+      {!isSetting && (
+        <View onTouchStart={() => importDb()}>
+          <Text>Sử dụng dữ liệu có sẵn</Text>
+        </View>
+      )}
     </View>
   );
 };

@@ -1,4 +1,10 @@
 import * as SQLite from "expo-sqlite";
+import * as FileSystem from "expo-file-system";
+import moment from "moment";
+import { Toast } from "@ant-design/react-native";
+import * as DocumentPicker from "expo-document-picker";
+import { useState } from "react";
+import { DevSettings } from "react-native";
 
 export const nameDB = "newDB1.db";
 
@@ -22,8 +28,9 @@ export const exportDb = async () => {
           await FileSystem.writeAsStringAsync(uri, base64, {
             encoding: FileSystem.EncodingType.Base64,
           });
+          Toast.success("Đã xuất database thành công!");
         })
-        .catch((e) => console.log(e));
+        .catch((e) => Toast.fail("Lỗi! Không thể xuất database."));
     } else {
       console.log("Permission not granted");
     }
@@ -33,25 +40,26 @@ export const exportDb = async () => {
 };
 
 export const importDb = async () => {
+  const db = SQLite.openDatabase(nameDB);
   let result = await DocumentPicker.getDocumentAsync({
     copyToCacheDirectory: true,
   });
 
-  if (result.type === "success") {
-    if (!(await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite")).exists) {
-      await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + "SQLite");
-    }
-
-    const base64 = await FileSystem.readAsStringAsync(result.uri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-
-    await FileSystem.writeAsStringAsync(FileSystem.documentDirectory + `SQLite/${nameDB}`, base64, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-    await db.closeAsync();
-    setDb(SQLite.openDatabase(`${nameDB}`));
+  if (!(await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite")).exists) {
+    await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + "SQLite");
   }
+
+  const base64 = await FileSystem.readAsStringAsync(result.assets?.at(0)?.uri, {
+    encoding: FileSystem.EncodingType.Base64,
+  });
+
+  await FileSystem.writeAsStringAsync(FileSystem.documentDirectory + `SQLite/${nameDB}`, base64, {
+    encoding: FileSystem.EncodingType.Base64,
+  });
+  await db.closeAsync();
+  // setDb(SQLite.openDatabase(`${nameDB}`));
+  Toast.success("Thành công!");
+  DevSettings.reload();
 };
 
 export const ResetDB = () => {
