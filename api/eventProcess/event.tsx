@@ -9,27 +9,29 @@ export const createProcessEventTable = (isUserId, date, image) => {
 
   const listImage = JSON.stringify(image);
   const db = SQLite.openDatabase(nameDB);
-
-  db.transaction((tx) => {
-    tx.executeSql(
-      `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, event TEXT, date TEXT , description TEXT, note TEXT, image TEXT, linkvideo TEXT )`
-    );
-    tx.executeSql(
-      `SELECT * FROM ${nameTable}`,
-      null,
-      (txObj, resultSet) => {
-        const value = resultSet.rows;
-        if (value.length === 0) {
-          tx.executeSql(
-            `INSERT INTO ${nameTable} (event, date, description, note, image, linkvideo) values (?, ?, ?, ?, ?, ?)`,
-            ["Nhịp đập đầu tiên! 💓", String(date), "Cả nhà đều vui 😍🎉", "", listImage, ""]
-          );
-        } else {
-          tx.executeSql(`UPDATE ${nameTable} SET date = ? WHERE id = ?`, [String(date), 1]);
-        }
-      },
-      (txObj, error) => false
-    );
+  return new Promise(function (resolve) {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, event TEXT, date TEXT , description TEXT, note TEXT, image TEXT, linkvideo TEXT )`
+      );
+      tx.executeSql(
+        `SELECT * FROM ${nameTable}`,
+        null,
+        (txObj, resultSet) => {
+          const value = resultSet.rows;
+          if (value.length === 0) {
+            tx.executeSql(
+              `INSERT INTO ${nameTable} (event, date, description, note, image, linkvideo) values (?, ?, ?, ?, ?, ?)`,
+              ["Nhịp đập đầu tiên! 💓", String(date), "Cả nhà đều vui 😍🎉", "", listImage, ""]
+            );
+          } else {
+            tx.executeSql(`UPDATE ${nameTable} SET date = ? WHERE id = ?`, [String(date), 1]);
+          }
+          resolve(true);
+        },
+        (txObj, error) => false
+      );
+    });
   });
 };
 

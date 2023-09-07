@@ -8,25 +8,27 @@ export const createProcessLineTable = (isUserId, firstDate, birthday) => {
   const nameTable = `${preNameTable}${isUserId}`;
 
   const db = SQLite.openDatabase(nameDB);
-
-  db.transaction((tx) => {
-    tx.executeSql(
-      `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, eventFirst TEXT, dateFirst TEXT , eventSecond TEXT, dateSecond TEXT, eventThree TEXT, dateThree TEXT )`
-    );
-    tx.executeSql(
-      `SELECT * FROM ${nameTable}`,
-      null,
-      (txObj, resultSet) => {
-        const value = resultSet.rows;
-        if (value.length === 0) {
-          tx.executeSql(
-            `INSERT INTO ${nameTable} (eventFirst, dateFirst, eventSecond, dateSecond, eventThree, dateThree) values (?, ?, ?, ?, ?, ?)`,
-            ["Khởi đầu", firstDate, "Cùng nhau", "", "Dự kiến sinh", birthday]
-          );
-        }
-      },
-      (txObj, error) => false
-    );
+  return new Promise(function (resolve) {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, eventFirst TEXT, dateFirst TEXT , eventSecond TEXT, dateSecond TEXT, eventThree TEXT, dateThree TEXT )`
+      );
+      tx.executeSql(
+        `SELECT * FROM ${nameTable}`,
+        null,
+        (txObj, resultSet) => {
+          const value = resultSet.rows;
+          if (value.length === 0) {
+            tx.executeSql(
+              `INSERT INTO ${nameTable} (eventFirst, dateFirst, eventSecond, dateSecond, eventThree, dateThree) values (?, ?, ?, ?, ?, ?)`,
+              ["Khởi đầu", firstDate, "Cùng nhau", "", "Dự kiến sinh", birthday]
+            );
+          }
+          resolve(true);
+        },
+        (txObj, error) => false
+      );
+    });
   });
 };
 

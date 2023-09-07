@@ -31,7 +31,9 @@ const SettingAccount = ({
       }}
     >
       <WhiteSpace />
-      <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold" }}>Cài đặt tài khoản:</Text>
+      <Text style={{ color: "#1870bc", fontSize: 16, fontWeight: "bold", marginTop: 20 }}>
+        Cài đặt tài khoản:
+      </Text>
       <WhiteSpace />
       <Accordion
         style={{ width: windowWidth - 10 }}
@@ -44,6 +46,7 @@ const SettingAccount = ({
             isShowDeleteButton={isShowDeleteButton}
             nameRouteUserId={nameRouteUserId}
             setIsLoading={setIsLoading}
+            isSetting={true}
           />
         </Accordion.Panel>
         <Accordion.Panel header="Cài đặt" key="1">

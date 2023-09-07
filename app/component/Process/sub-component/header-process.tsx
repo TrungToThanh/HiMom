@@ -1,5 +1,14 @@
 import { View } from "@ant-design/react-native";
-import { faCalendar, faHeart } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowUp19,
+  faCalendar,
+  faCalendarCheck,
+  faCheckCircle,
+  faCheckDouble,
+  faHeart,
+  faHeartCircleCheck,
+  faPuzzlePiece,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import moment from "moment";
 import React, { useMemo } from "react";
@@ -57,8 +66,13 @@ const HeaderProcess = ({ idUserCurrent }: Props) => {
         }}
       >
         <View style={{ marginTop: 10, marginLeft: 5 }}>
-          <Text>
-            <FontAwesomeIcon icon={faCalendar} color="green" size={12} />
+          <FontAwesomeIcon
+            icon={faCalendarCheck}
+            size={12}
+            style={{ marginTop: -8, marginLeft: 30 }}
+            color="green"
+          />
+          <Text style={{ fontWeight: "500" }}>
             {Boolean(idUserCurrent?.isBorn)
               ? idUserCurrent.birthday
               : idUserCurrent.expectedBirthday}
@@ -105,7 +119,7 @@ const HeaderProcess = ({ idUserCurrent }: Props) => {
         <Text
           style={{
             fontSize: 14,
-            fontWeight: "bold",
+            fontWeight: "500",
             marginTop: 10,
             marginLeft: 10,
           }}
@@ -114,6 +128,7 @@ const HeaderProcess = ({ idUserCurrent }: Props) => {
             ? `${Math.floor(isDiffFirstDay / 365)} Tuổi`
             : `${isDiffFirstDay} Ngày`}
         </Text>
+        <FontAwesomeIcon icon={faHeartCircleCheck} color="green" size={14} />
       </View>
     </View>
   );

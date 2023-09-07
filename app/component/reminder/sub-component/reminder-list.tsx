@@ -5,6 +5,7 @@ import {
   Checkbox,
   List,
   Modal,
+  Result,
   Text,
   Toast,
   View,
@@ -27,6 +28,7 @@ interface Props {
   isUserId: number;
 }
 const ReminderList = ({ isUserId }: Props) => {
+  const image = require("../../../../assets/mother.png");
   const Item = List.Item;
   const { width, height } = useWindowDimensions();
   const [isShowModal, setShowModal] = useState(false);
@@ -108,7 +110,7 @@ const ReminderList = ({ isUserId }: Props) => {
           backgroundColor: "transparent",
         }}
       >
-        {listRender?.length > 0 && (
+        {listRender?.length > 0 ? (
           <Accordion
             style={{ width: width, backgroundColor: "transparent", marginLeft: -10 }}
             activeSections={activePanel}
@@ -220,6 +222,13 @@ const ReminderList = ({ isUserId }: Props) => {
               );
             })}
           </Accordion>
+        ) : (
+          <Result
+            imgUrl={image}
+            title=""
+            message="Không có ghi chú"
+            style={{ backgroundColor: "transparent" }}
+          />
         )}
       </View>
       <WhiteSpace />

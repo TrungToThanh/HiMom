@@ -284,7 +284,12 @@ const ModalAddProcess = ({
                               video?.current?.playAsync();
                             }}
                           >
-                            <FontAwesomeIcon icon={faVideoCamera} size={10} />
+                            <FontAwesomeIcon
+                              icon={faVideoCamera}
+                              size={10}
+                              style={{ position: "absolute", margin: 5 }}
+                              color="red"
+                            />
                             <Video
                               ref={video}
                               style={{
@@ -310,7 +315,6 @@ const ModalAddProcess = ({
                             padding: 2,
                           }}
                         >
-                          <FontAwesomeIcon icon={faImage} size={10} />
                           <Image
                             // @ts-ignore
                             source={image}
@@ -332,6 +336,12 @@ const ModalAddProcess = ({
                               setImageShow(sourceImageItem);
                               setShowCurrentImage(true);
                             }}
+                          />
+                          <FontAwesomeIcon
+                            icon={faImage}
+                            size={10}
+                            style={{ position: "absolute", margin: 5 }}
+                            color="green"
                           />
                         </View>
                       );

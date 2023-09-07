@@ -37,12 +37,14 @@ interface Props {
   setIsLoading?: () => void;
   listAccountBaby?: any;
   nameRouteUserId?: number;
+  isSetting?: boolean;
 }
 const Account = ({
   isShowDeleteButton = false,
   setIsLoading,
   listAccountBaby,
   nameRouteUserId,
+  isSetting = false,
 }: Props) => {
   const navigation = useNavigation();
 
@@ -85,7 +87,7 @@ const Account = ({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "white",
+        backgroundColor: isSetting ? "white" : "#f2f2f2",
       }}
     >
       <DatePicker
@@ -279,7 +281,7 @@ const Account = ({
               dateObjectExpectBirthday <= dayjs(new Date()) ||
               (isBorn && String(valueBirthDay)?.trim() === "");
 
-            if (stop) return;
+            if (stop) return Toast.fail("Vui lòng nhập đầy đủ và kiểm tra lại thông tin!");
 
             if (isShowDeleteButton) {
               await updateValueOfABabyInBabyList(
@@ -323,6 +325,8 @@ const Account = ({
             {isShowDeleteButton ? "Lưu thông tin" : "Tạo tài khoản"}
           </Text>
         </Button>
+        {isSetting && <WhiteSpace size="xl" />}
+        <WhiteSpace />
       </View>
     </View>
   );

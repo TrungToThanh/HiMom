@@ -27,7 +27,7 @@ import moment from "moment";
 const nameCalenderSource = "HiMomGoogleCalendar";
 
 const ReminderCalendar = () => {
-  const image = require("../../../../assets/background.jpg");
+  const image = require("../../../../assets/mother.png");
   const [todoList, setTodoList] = useState([]);
   const [isShowEvent, setShowEvent] = useState(false);
   const [isDisableButtonEvent, setDisableButtonEvent] = useState(true);
@@ -253,9 +253,7 @@ const ReminderCalendar = () => {
               </View>
             ) : (
               <Result
-                imgUrl={{
-                  uri: "https://zos.alipayobjects.com/rmsportal/GcBguhrOdlYvGfnsXgrE.png",
-                }}
+                imgUrl={image}
                 title=""
                 message="Không có ghi chú"
                 style={{ backgroundColor: "transparent" }}

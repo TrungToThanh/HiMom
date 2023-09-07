@@ -313,7 +313,6 @@ const ModalViewProcess = ({
                                 video?.current?.playAsync();
                               }}
                             >
-                              <FontAwesomeIcon icon={faVideoCamera} size={10} />
                               <Video
                                 ref={video}
                                 style={{
@@ -325,6 +324,12 @@ const ModalViewProcess = ({
                                 useNativeControls
                                 resizeMode={ResizeMode.CONTAIN}
                                 isLooping={true}
+                              />
+                              <FontAwesomeIcon
+                                icon={faVideoCamera}
+                                size={10}
+                                style={{ position: "absolute", margin: 5 }}
+                                color="red"
                               />
                             </View>
                           );
@@ -339,7 +344,6 @@ const ModalViewProcess = ({
                               padding: 2,
                             }}
                           >
-                            <FontAwesomeIcon icon={faImage} size={10} />
                             <Image
                               // @ts-ignore
                               source={image}
@@ -362,6 +366,12 @@ const ModalViewProcess = ({
                                 setShowCurrentImage(true);
                               }}
                             />
+                            <FontAwesomeIcon
+                              icon={faImage}
+                              size={10}
+                              style={{ position: "absolute", margin: 5 }}
+                              color="green"
+                            />
                           </View>
                         );
                       })}
@@ -379,16 +389,18 @@ const ModalViewProcess = ({
                 <FontAwesomeIcon icon={faUpload} color="green" />
                 <Text style={styles.inputItem}> Đính kèm ảnh/video</Text>
               </View>
-              <View
-                style={styles.input}
-                onTouchStart={() => {
-                  setImage(null);
-                  Keyboard.dismiss();
-                }}
-              >
-                <FontAwesomeIcon icon={faTrash} color="red" />
-                <Text style={styles.inputItem}> Xóa tất cả ảnh/video</Text>
-              </View>
+              {image && image?.length > 0 && (
+                <View
+                  style={styles.input}
+                  onTouchStart={() => {
+                    setImage(null);
+                    Keyboard.dismiss();
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTrash} color="red" />
+                  <Text style={styles.inputItem}> Xóa tất cả ảnh/video</Text>
+                </View>
+              )}
             </KeyboardAvoidingView>
 
             <WhiteSpace />

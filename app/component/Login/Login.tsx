@@ -91,7 +91,7 @@ const Login = ({ listAccountBaby }: Props) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "white",
+        backgroundColor: "#f2f2f2",
         width: windowWidth,
       }}
     >
@@ -109,15 +109,33 @@ const Login = ({ listAccountBaby }: Props) => {
           style={{
             width: windowWidth - 50,
             borderRadius: 20,
-            backgroundColor: "white",
+            backgroundColor: "#f2f2f2",
           }}
           onChange={(e) => setUserId(Number(e?.target?.value))}
         >
           {listAccountBaby &&
             listAccountBaby?.map((item, index) => (
-              <RadioItem key={item.id} value={item.id}>
-                <Text style={{ height: "100%", textAlignVertical: "center" }}>
-                  {index + 1}. {item?.nameBaby}
+              <RadioItem
+                key={item.id}
+                value={item.id}
+                style={{
+                  backgroundColor: "#f2f2f2",
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: "#dadada",
+                  marginTop: 5,
+                }}
+              >
+                <FontAwesomeIcon icon={faUser} color="#4294ff" />
+                <Text
+                  style={{
+                    height: "100%",
+                    textAlignVertical: "center",
+                    fontSize: 14,
+                    fontWeight: "600",
+                  }}
+                >
+                  {item?.nameBaby}
                 </Text>
               </RadioItem>
             ))}
@@ -134,26 +152,19 @@ const Login = ({ listAccountBaby }: Props) => {
         >
           Mã đăng nhập:
         </Text>
-        <WingBlank>
-          <View style={stylesInput.input}>
-            <Input
-              style={{ width: "90%", height: "110%" }}
-              maxLength={6}
-              placeholder="Mã đăng nhập"
-              onChangeText={(value) => setPasswordInput(value)}
-              keyboardType="number-pad"
-              secureTextEntry={typeInput}
-            />
-            <Button
-              onPress={() => setTypeInput(!typeInput)}
-              type="ghost"
-              size="small"
-              style={{ marginTop: 3 }}
-            >
-              <FontAwesomeIcon icon={typeInput ? faEye : faEyeSlash} />
-            </Button>
+        <View style={stylesInput.input}>
+          <Input
+            style={{ width: "90%", height: "110%" }}
+            maxLength={6}
+            placeholder="Mã đăng nhập"
+            onChangeText={(value) => setPasswordInput(value)}
+            keyboardType="phone-pad"
+            secureTextEntry={typeInput}
+          />
+          <View onTouchStart={() => setTypeInput(!typeInput)} style={{ marginTop: 5 }}>
+            <FontAwesomeIcon icon={typeInput ? faEye : faEyeSlash} />
           </View>
-        </WingBlank>
+        </View>
       </WingBlank>
       <WhiteSpace />
       <View

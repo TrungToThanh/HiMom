@@ -6,28 +6,21 @@ import { Button, WhiteSpace, Toast, Modal, ActionSheet } from "@ant-design/react
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faUser,
-  faCalendar,
   faAdd,
-  faHeart,
   faVideoCamera,
   faImage,
-  faListDots,
   faEllipsisV,
 } from "@fortawesome/free-solid-svg-icons";
 import ImageView from "react-native-image-viewing";
 import dayjs from "dayjs";
-import { deleteAEvent, getAllEvent, insertANewEvent } from "../../../api/eventProcess/event";
+import { deleteAEvent } from "../../../api/eventProcess/event";
 import { ProcessBabyBase } from "../../const/type";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import moment from "moment";
-import _ from "lodash";
 import ModalAddProcess from "./sub-component/modal-add-process";
 import ProcessLine from "./sub-component/process-line";
 import { Video, ResizeMode } from "expo-av";
-import { useFocusEffect } from "@react-navigation/native";
 import ModalViewProcess from "./sub-component/modal-view-process";
-import ModalAddProcessLine from "./sub-component/modal-add-process-line";
 import HeaderProcess from "./sub-component/header-process";
 
 interface Props {
@@ -74,15 +67,6 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
 
   const [listImageCurrent, setListImage] = useState<any>();
   const [isShowCurrentImage, setShowCurrentImage] = useState(false);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      setLoadingAgain(true);
-      setTimeout(() => {
-        setLoadingAgain(false);
-      }, 400);
-    }, [])
-  );
 
   const listEventCook = useMemo(() => {
     if (!listEvent) return [];
@@ -146,7 +130,6 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
             setDisplayModalAddEvent={() => setDisplayModalAddEvent(false)}
             setLoadingAgain={(value) => setLoadingAgain(value)}
           />
-
           <ModalViewProcess
             nameRouteUserId={nameRouteUserId}
             isFirstDate={isFirstDate}
@@ -170,7 +153,7 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                 fontWeight: "bold",
               }}
             >
-              Chuẩn bị
+              Hành trình
             </Text>
           </View>
           <HeaderProcess idUserCurrent={idUserCurrent} />
@@ -254,9 +237,14 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                 flexDirection: "row",
                                 alignItems: "center",
                                 margin: 5,
+                                borderWidth: 1,
+                                width: 25,
+                                borderRadius: 20,
+                                paddingLeft: 3,
+                                borderColor: "#b0aca8",
                               }}
                             >
-                              <FontAwesomeIcon icon={faUser} />
+                              <FontAwesomeIcon icon={faUser} color="#4294ff" />
                             </View>
                             <View>
                               <Text
@@ -289,6 +277,7 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                   options: ["Xóa sự kiện", "Chỉnh sửa", "Thoát"],
                                   cancelButtonIndex: 2,
                                   cancelButtonTintColor: "red",
+                                  destructiveButtonIndex: 0,
                                 },
                                 (index) => {
                                   if (index === 0) {
@@ -341,7 +330,6 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                           video?.current?.playAsync();
                                         }}
                                       >
-                                        <FontAwesomeIcon icon={faVideoCamera} size={10} />
                                         <Video
                                           ref={video}
                                           style={{
@@ -353,6 +341,12 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                           useNativeControls={false}
                                           resizeMode={ResizeMode.CONTAIN}
                                           isLooping={false}
+                                        />
+                                        <FontAwesomeIcon
+                                          icon={faVideoCamera}
+                                          size={10}
+                                          style={{ position: "absolute", margin: 5 }}
+                                          color="red"
                                         />
                                       </View>
                                     );
@@ -373,7 +367,6 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                         padding: 2,
                                       }}
                                     >
-                                      <FontAwesomeIcon icon={faImage} size={10} />
                                       <Image
                                         // @ts-ignore
                                         source={imageItem}
@@ -385,6 +378,12 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                         transition={1000}
                                         allowDownscaling
                                         contentFit="cover"
+                                      />
+                                      <FontAwesomeIcon
+                                        icon={faImage}
+                                        size={10}
+                                        style={{ position: "absolute", margin: 5 }}
+                                        color="green"
                                       />
                                     </View>
                                   );

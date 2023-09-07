@@ -1,11 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, Dimensions } from "react-native";
-import {
-  Button,
-  WhiteSpace,
-  ActivityIndicator,
-  Result,
-} from "@ant-design/react-native";
+import { Button, WhiteSpace, ActivityIndicator, Result } from "@ant-design/react-native";
 
 import * as Font from "expo-font";
 
@@ -27,10 +22,7 @@ export default function Main() {
         "antoutline",
         require("@ant-design/icons-react-native/fonts/antoutline.ttf")
       );
-      await Font.loadAsync(
-        "antfill",
-        require("@ant-design/icons-react-native/fonts/antfill.ttf")
-      );
+      await Font.loadAsync("antfill", require("@ant-design/icons-react-native/fonts/antfill.ttf"));
       setIsLoading(false);
     };
     loading();
@@ -42,21 +34,6 @@ export default function Main() {
     return !listAccountBaby ? true : false;
   }, [listAccountBaby]);
 
-  // if (isLoading )
-  //   return (
-  //     <View
-  //       style={{
-  //         display: "flex",
-  //         justifyContent: "center",
-  //         alignItems: "center",
-  //       }}
-  //     >
-  //       <Text>
-  //         Loading <ActivityIndicator />
-  //       </Text>
-  //     </View>
-  //   );
-
   return (
     <GestureHandlerRootView>
       <View
@@ -64,14 +41,14 @@ export default function Main() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "white",
+          backgroundColor: "#f2f2f2",
         }}
       >
         <Result
           imgUrl={image}
           title="Hi Mom!"
           message={"Chúng ta là một gia đình"}
-          style={{ width: windowWidth, marginTop: 50 }}
+          style={{ width: windowWidth, marginTop: 50, backgroundColor: "#f2f2f2" }}
         />
         <View
           style={{
@@ -79,7 +56,7 @@ export default function Main() {
             width: windowWidth,
             display: "flex",
             justifyContent: "space-around",
-            backgroundColor: "white",
+            backgroundColor: "#f2f2f2",
           }}
         >
           <Button
@@ -90,15 +67,11 @@ export default function Main() {
               borderRightWidth: 0,
               borderLeftWidth: 0,
               borderBottomWidth:
-                isShowLogin && listAccountBaby && listAccountBaby?.length > 0
-                  ? 1
-                  : 0,
+                isShowLogin && listAccountBaby && listAccountBaby?.length > 0 ? 1 : 0,
             }}
             disabled={isDisableButtonLogin}
           >
-            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>
-              Đăng nhập
-            </Text>
+            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng nhập</Text>
           </Button>
           <Button
             onPress={() => setIsShowLogin(false)}
@@ -108,14 +81,10 @@ export default function Main() {
               borderRightWidth: 0,
               borderLeftWidth: 0,
               borderBottomWidth:
-                isShowLogin && listAccountBaby && listAccountBaby?.length > 0
-                  ? 0
-                  : 1,
+                isShowLogin && listAccountBaby && listAccountBaby?.length > 0 ? 0 : 1,
             }}
           >
-            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>
-              Đăng ký
-            </Text>
+            <Text style={{ fontWeight: "600", color: "#1870bc", fontSize: 16 }}>Đăng ký</Text>
           </Button>
         </View>
         <WhiteSpace size="xl" />
