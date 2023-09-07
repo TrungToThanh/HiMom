@@ -20,6 +20,7 @@ const HomeListShopping = ({ nameRouteUserId }: Props) => {
   const image = require("../../../assets/background.jpg");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isShowMoney, setIsShowMoney] = useState(true);
 
   const { windowWidth, windowHeight } = getDimensions();
   const { listAllItemsMom, listAllItemsBaby, listAllItemsOther } = getAllItemShoppingMain(
@@ -47,6 +48,7 @@ const HomeListShopping = ({ nameRouteUserId }: Props) => {
       moneyGoodsBuy:
         Number(moneyGoodsBuy) > 0 ? Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy)) : 0,
       moneyTotal: moneyGoods,
+      moneyAreBuy: moneyGoodsBuy,
     };
   }, [listAllItemsMom]);
 
@@ -70,6 +72,7 @@ const HomeListShopping = ({ nameRouteUserId }: Props) => {
       moneyGoodsBuy:
         Number(moneyGoodsBuy) > 0 ? Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy)) : 0,
       moneyTotal: moneyGoods,
+      moneyAreBuy: moneyGoodsBuy,
     };
   }, [listAllItemsBaby]);
 
@@ -93,6 +96,7 @@ const HomeListShopping = ({ nameRouteUserId }: Props) => {
       moneyGoodsBuy:
         Number(moneyGoodsBuy) > 0 ? Intl.NumberFormat("en-US").format(Number(moneyGoodsBuy)) : 0,
       moneyTotal: moneyGoods,
+      moneyAreBuy: moneyGoodsBuy,
     };
   }, [listAllItemsOther]);
 
@@ -105,12 +109,21 @@ const HomeListShopping = ({ nameRouteUserId }: Props) => {
       : "$ 0";
   }, [mom, baby, other]);
 
+  const totalMoneyAreBuy = useMemo(() => {
+    const total = Number(mom.moneyAreBuy + baby.moneyAreBuy + other.moneyAreBuy);
+    return +total > 0
+      ? `$ ${Intl.NumberFormat("en-US").format(
+          Number(mom.moneyAreBuy + baby.moneyAreBuy + other.moneyAreBuy)
+        )}`
+      : "$ 0";
+  }, [mom, baby, other]);
+
   useFocusEffect(
     React.useCallback(() => {
       setIsLoading(false);
       setTimeout(() => {
         setIsLoading(true);
-      }, 300);
+      }, 100);
     }, [])
   );
 
@@ -158,7 +171,10 @@ const HomeListShopping = ({ nameRouteUserId }: Props) => {
               }}
               resizeMode="cover"
             />
-            <View style={{ position: "absolute", paddingLeft: 20, paddingTop: 30 }}>
+            <View
+              style={{ position: "absolute", paddingLeft: 20, paddingTop: 30 }}
+              onTouchStart={() => setIsShowMoney(!isShowMoney)}
+            >
               <View
                 style={{
                   width: windowWidth - 60,
@@ -205,7 +221,9 @@ const HomeListShopping = ({ nameRouteUserId }: Props) => {
               </Text>
               <WhiteSpace />
               <WhiteSpace />
-              <Text style={{ fontSize: 30, fontWeight: "bold" }}>{totalMoneyPrepare}</Text>
+              <Text style={{ fontSize: 30, fontWeight: "bold" }}>
+                {isShowMoney ? totalMoneyPrepare : totalMoneyAreBuy}
+              </Text>
               <WhiteSpace />
             </View>
           </View>

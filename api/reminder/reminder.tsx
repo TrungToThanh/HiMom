@@ -11,7 +11,7 @@ export const createReminderTable = (isUserId) => {
 
   db.transaction((tx) => {
     tx.executeSql(
-      `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT , done BOOLEAN)`
+      `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT , done BOOLEAN, dateDone TEXT)`
     );
   });
 };
@@ -22,10 +22,10 @@ export const insertANewReminder = (isUserId, name, type, done) => {
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT , done BOOLEAN)`
+        `CREATE TABLE IF NOT EXISTS ${nameTable} (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT , done BOOLEAN, dateDone TEXT)`
       );
       tx.executeSql(
-        `INSERT INTO ${nameTable} (name, type, done) values (?, ?, ?)`,
+        `INSERT INTO ${nameTable} (name, type, done, dateDone) values (?, ?, ?, ?)`,
         [name, type, done],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
@@ -34,14 +34,14 @@ export const insertANewReminder = (isUserId, name, type, done) => {
   });
 };
 
-export const updateEventReminder = (isUserId, done, id) => {
+export const updateEventReminder = (isUserId, done, dateDone, id) => {
   const nameTable = `${preNameTable}${isUserId}`;
   const db = SQLite.openDatabase(nameDB);
   return new Promise(function (resolve) {
     db.transaction((tx) => {
       tx.executeSql(
-        `UPDATE ${nameTable} SET done = ? WHERE id = ?`,
-        [Boolean(done), id],
+        `UPDATE ${nameTable} SET done = ?, dateDone = ? WHERE id = ?`,
+        [Boolean(done), dateDone, id],
         (txObj, resultSet) => resolve(true),
         (txObj, error) => false
       );

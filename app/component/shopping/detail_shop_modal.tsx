@@ -21,13 +21,14 @@ import {
   faEdit,
   faAdd,
   faClose,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
 import CardHeader from "@ant-design/react-native/lib/card/CardHeader";
 import CardBody from "@ant-design/react-native/lib/card/CardBody";
 
-import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import { GestureHandlerRootView, ScrollView, Switch } from "react-native-gesture-handler";
 
 import {
   getAItemShoppingDetail,
@@ -67,7 +68,7 @@ const DetailShopModal = ({
   const [isError, setIsError] = useState(false);
   const [isNameItem, setNameItem] = useState("");
   const [isDescriptionItem, setDescriptionItem] = useState("");
-  const [isBuy, setBuyItem] = useState("");
+  const [isBuy, setBuyItem] = useState<any>();
   const [isMoney, setMoneyItem] = useState("0");
   const [isNote, setNote] = useState("");
   const [image, setImage] = useState<any>(null);
@@ -80,7 +81,7 @@ const DetailShopModal = ({
     if (isInfo && listAItems && listAItems?.length > 0) {
       setNameItem(listAItems?.at(0)?.nameItem);
       setDescriptionItem(listAItems?.at(0)?.description);
-      setBuyItem(listAItems?.at(0)?.buy);
+      setBuyItem(+listAItems?.at(0)?.buy);
       setMoneyItem(listAItems?.at(0)?.money);
       setNote(listAItems?.at(0)?.note);
       const listImage = listAItems?.at(0)?.picture;
@@ -89,66 +90,62 @@ const DetailShopModal = ({
     if (isCreate) {
       setNameItem("");
       setDescriptionItem("");
-      setBuyItem("");
+      setBuyItem(false);
       setMoneyItem("0");
       setNote("");
     }
   }, [isInfo, listAItems, itemIdCurrent, isCreate]);
 
   const handleSave = () => {
-    if (isError) {
+    const inValid = new RegExp("^\\s+$");
+
+    if (String(isNameItem)?.trim() === "" || inValid.test(isNameItem)) {
+      setIsError(true);
       Toast.fail("Phải nhập thông tin hàng hóa!");
       return;
-    } else {
-      if (
-        String(isNameItem) !== "" &&
-        String(isDescriptionItem) !== "" &&
-        String(isBuy) !== "" &&
-        String(isMoney) !== ""
-      ) {
-        if (isCreate) {
-          insertANewItemToShoppingDetail(
-            nameRouteTypeTable,
-            nameRouteUserId,
-            nameRouteItemId,
-            isNameItem,
-            isDescriptionItem,
-            isBuy,
-            isMoney,
-            isNote,
-            image
-          ).then((isRes) => {
-            setReload();
-            if (isRes) {
-              Toast.success("Đã tạo mới thành công!");
-            } else {
-              Toast.fail("Thất bại!");
-            }
-            setShowDetailModal();
-          });
+    }
+
+    if (isCreate) {
+      insertANewItemToShoppingDetail(
+        nameRouteTypeTable,
+        nameRouteUserId,
+        nameRouteItemId,
+        isNameItem,
+        isDescriptionItem,
+        isBuy,
+        isMoney,
+        isNote,
+        image
+      ).then((isRes) => {
+        setReload();
+        setShowDetailModal();
+        if (isRes) {
+          Toast.success("Đã tạo mới thành công!");
         } else {
-          updateAItemsOfShoppingDetail(
-            nameRouteTypeTable,
-            nameRouteUserId,
-            nameRouteItemId,
-            isNameItem,
-            isDescriptionItem,
-            isBuy,
-            isMoney,
-            isNote,
-            image,
-            itemIdCurrent
-          ).then((isRes) => {
-            setReload();
-            setShowDetailModal();
-            if (isRes) {
-              Toast.success("Cập nhập thành công!");
-            } else {
-              Toast.fail("Thất bại!");
-            }
-          });
+          Toast.fail("Thất bại!");
         }
-      }
+      });
+    } else {
+      updateAItemsOfShoppingDetail(
+        nameRouteTypeTable,
+        nameRouteUserId,
+        nameRouteItemId,
+        isNameItem,
+        isDescriptionItem,
+        isBuy,
+        isMoney,
+        isNote,
+        image,
+        itemIdCurrent
+      ).then((isRes) => {
+        setReload();
+        setShowDetailModal();
+        if (isRes) {
+          Toast.success("Cập nhập thành công!");
+        } else {
+          Toast.fail("Thất bại!");
+        }
+      });
     }
   };
 
@@ -198,7 +195,7 @@ const DetailShopModal = ({
               <ScrollView
                 style={{
                   marginTop: -10,
-                  height: bodyCardHeight,
+                  height: bodyCardHeight + 50,
                 }}
               >
                 <Text style={styles.titleText}>Tên hàng hóa:</Text>
@@ -210,14 +207,8 @@ const DetailShopModal = ({
                   placeholder="Tên hàng hóa"
                   style={styles.input}
                   onChangeText={(value) => {
-                    const inValid = new RegExp("^\\s+$");
-                    if (inValid.test(value) || String(value) === "") {
-                      setNameItem("");
-                      setIsError(true);
-                    } else {
-                      setIsError(false);
-                      setNameItem(value);
-                    }
+                    setNameItem(value);
+                    setIsError(false);
                   }}
                   onErrorClick={() => Toast.info("Phải nhập tên hàng hóa!")}
                 ></InputItem>
@@ -225,6 +216,7 @@ const DetailShopModal = ({
                 <InputItem
                   defaultValue={isDescriptionItem}
                   clear
+                  scrollEnabled={true}
                   maxLength={100}
                   placeholder="Mô tả hàng hóa"
                   multiline
@@ -232,22 +224,20 @@ const DetailShopModal = ({
                   onChangeText={(value) => setDescriptionItem(value)}
                 ></InputItem>
                 <Text style={styles.titleText}>Trạng thái:</Text>
-                <Radio.Group
+                <View
                   style={{
+                    display: "flex",
                     flexDirection: "row",
-                    justifyContent: "space-around",
-                    paddingVertical: 6,
+                    justifyContent: "space-between",
+                    marginLeft: 20,
+                    marginRight: 30,
                   }}
-                  onChange={(value) => setBuyItem(String(value?.target?.value))}
-                  value={isBuy !== "" ? isBuy : "2"}
                 >
-                  <Radio value={"1"}>
-                    <Text style={{ fontSize: 16 }}>Đã mua</Text>
-                  </Radio>
-                  <Radio value={"2"}>
-                    <Text style={{ fontSize: 16 }}>Đang xem xét</Text>
-                  </Radio>
-                </Radio.Group>
+                  <Text style={{ fontSize: 16, marginTop: 10, marginLeft: 10 }}>
+                    {Boolean(+isBuy) ? "Đã mua" : "Đang xem xét"}
+                  </Text>
+                  <Switch value={Boolean(+isBuy)} onValueChange={(value) => setBuyItem(value)} />
+                </View>
                 <Text style={styles.titleText}>Đơn giá (dự kiến):</Text>
                 <InputItem
                   defaultValue={isMoney}
@@ -259,7 +249,7 @@ const DetailShopModal = ({
                   onChangeText={(value) => {
                     const re = /^[0-9\b]+$/;
                     if (value === "") setMoneyItem("0");
-                    if (re.test(value) && value?.length <= 9) {
+                    if (re.test(value) && value?.length <= 11) {
                       setMoneyItem(value);
                     } else {
                       setMoneyItem("0");
@@ -295,7 +285,8 @@ const DetailShopModal = ({
                     onPress={() => handleSelectPic()}
                     style={{ width: 100, marginTop: 20 }}
                   >
-                    Chọn ảnh
+                    <FontAwesomeIcon icon={faUpload} color="green" />
+                    <Text> Chọn ảnh </Text>
                   </Button>
                 </View>
                 <WhiteSpace />

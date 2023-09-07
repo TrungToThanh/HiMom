@@ -64,7 +64,7 @@ const SettingAccount = ({
               ]);
             }}
           >
-            <Text>Reset dữ liệu</Text>
+            <Text>Xóa toàn bộ dữ liệu</Text>
           </Button>
         </Accordion.Panel>
         <Accordion.Panel header="Thông tin phần mềm" key="2">

@@ -9,18 +9,21 @@ import { Modal, View, Text, Button, Toast } from "@ant-design/react-native";
 
 import Input from "@ant-design/react-native/lib/input-item/Input";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import dayjs from "dayjs";
 
 interface Props {
   currentDate: string;
   isShowEvent?: boolean;
   setShowEvent?: () => void;
   nameCalenderSource: string;
+  setReload: () => void;
 }
 const ModalAddEvent = ({
   currentDate,
   isShowEvent = false,
   setShowEvent,
   nameCalenderSource,
+  setReload,
 }: Props) => {
   const { width, height } = useWindowDimensions();
   const [timePicker, setTimePicker] = useState<any>(moment(currentDate).toDate());
@@ -109,7 +112,10 @@ const ModalAddEvent = ({
             timeZone: Localization.timezone,
           };
           Calendar.createEventAsync(calendarId.toString(), event).then((isRes) => {
-            if (isRes) Toast.success("Đã thêm thành công!");
+            if (isRes) {
+              setReload();
+              Toast.success("Đã thêm thành công!");
+            }
           });
         });
     }
@@ -162,7 +168,7 @@ const ModalAddEvent = ({
               Thêm sự kiện: {moment(currentDate).format("DD/MM/YYYY")}
             </Text>
             <Button type="ghost" size="small" onPress={() => setShowDatePicker(true)}>
-              <Text>{moment(timePicker).format("hh:mm")}</Text>
+              <Text>{moment(timePicker).format("HH:mm")}</Text>
             </Button>
           </View>
         }

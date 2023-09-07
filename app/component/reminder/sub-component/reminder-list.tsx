@@ -3,6 +3,7 @@ import {
   ActionSheet,
   Button,
   Checkbox,
+  Icon,
   List,
   Modal,
   Result,
@@ -23,6 +24,7 @@ import {
 } from "../../../../api/reminder/reminder";
 import _ from "lodash";
 import LoadingData from "../../../const/loading";
+import moment from "moment";
 
 interface Props {
   isUserId: number;
@@ -35,6 +37,7 @@ const ReminderList = ({ isUserId }: Props) => {
   const [activePanel, setActivePanel] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   const { listReminderTodo } = getAllEventReminder(isUserId, isLoading);
+  const [valueTypeReminder, setTypeReminder] = useState("");
 
   const listRender = useMemo(() => {
     if (!listReminderTodo || listReminderTodo?.length < 1) return undefined;
@@ -70,9 +73,13 @@ const ReminderList = ({ isUserId }: Props) => {
       }}
     >
       <ModalAddReminder
+        valueTypeReminder={valueTypeReminder}
         isUserId={isUserId}
         isShowModal={isShowModal}
-        setShowModal={() => setShowModal(false)}
+        setShowModal={() => {
+          setShowModal(false);
+          setTypeReminder("");
+        }}
         setIsLoading={(value) => setIsLoading(value)}
       />
       <WhiteSpace size="xl" />
@@ -94,7 +101,10 @@ const ReminderList = ({ isUserId }: Props) => {
           type="ghost"
           size="small"
           style={{ width: 110, backgroundColor: "transparent" }}
-          onPress={() => setShowModal(true)}
+          onPress={() => {
+            setTypeReminder("");
+            setShowModal(true);
+          }}
         >
           <FontAwesomeIcon icon={faAdd} />
           <Text style={{ fontSize: 13, fontWeight: "500" }}>Thêm nhắc nhở</Text>
@@ -112,9 +122,9 @@ const ReminderList = ({ isUserId }: Props) => {
       >
         {listRender?.length > 0 ? (
           <Accordion
-            style={{ width: width, backgroundColor: "transparent", marginLeft: -10 }}
+            style={{ width: width + 40, backgroundColor: "transparent", marginLeft: -10 }}
             activeSections={activePanel}
-            onChange={(value) => setActivePanel(value)}
+            renderAsFlatList
           >
             {listRender?.map((item, index) => {
               const data: any = item?.at(0)?.data;
@@ -126,98 +136,132 @@ const ReminderList = ({ isUserId }: Props) => {
                         width: "100%",
                         height: 40,
                         display: "flex",
-                        justifyContent: "center",
+                        flexDirection: "row",
                         marginLeft: -15,
+                        justifyContent: "space-between",
                         backgroundColor: "transparent",
+                        alignContent: "center",
+                        alignItems: "center",
                       }}
+                      onTouchStart={() =>
+                        setActivePanel(activePanel?.at(0) === index ? [] : [index])
+                      }
                     >
                       <Text style={{ fontSize: 14, fontWeight: "800", marginLeft: 10 }}>
                         {`${index + 1}. ${item?.at(0)?.title}`}
                       </Text>
+                      <View
+                        onTouchStart={(e) => {
+                          e.stopPropagation();
+                          setTypeReminder(item?.at(0)?.title), setShowModal(true);
+                        }}
+                      >
+                        <Icon name="plus-circle" color="#1870bc" />
+                      </View>
                     </View>
                   }
                   key={String(index + 1)}
                 >
-                  {data &&
-                    data?.map((detailItem, index) => {
-                      return (
-                        <Item
-                          key={index}
-                          style={{
-                            width: "110%",
-                            height: 40,
-                            backgroundColor: "transparent",
-                            marginLeft: -10,
-                            marginRight: -10,
-                          }}
-                          extra={
-                            <View
-                              style={{ backgroundColor: "transparent" }}
-                              onTouchStart={() => {
-                                ActionSheet.showActionSheetWithOptions(
-                                  {
-                                    options: ["Xóa", "Thoát"],
-                                    cancelButtonIndex: 1,
-                                    destructiveButtonIndex: 0,
-                                  },
-                                  (index) => {
-                                    if (index === 0) {
-                                      Modal.alert("Xóa ghi chú", "Bạn muốn xóa mục này?", [
-                                        { text: "Thoát", style: "cancel" },
-                                        {
-                                          text: "Đồng ý",
-                                          onPress: () => {
-                                            deleteAReminder(isUserId, detailItem?.id).then(
-                                              (isRes) => {
-                                                if (isRes) {
-                                                  Toast.success("Xóa thành công!");
-                                                  setTimeout(() => {
-                                                    setIsLoading(true);
-                                                  }, 100);
-                                                  setTimeout(() => {
-                                                    setIsLoading(false);
-                                                  }, 300);
-                                                } else {
-                                                  Toast.fail("Xóa thất bại!");
+                  <View>
+                    {data &&
+                      data?.map((detailItem, index) => {
+                        return (
+                          <Item
+                            key={index}
+                            style={{
+                              width: "110%",
+                              height: 40,
+                              backgroundColor: "transparent",
+                              marginLeft: -10,
+                              marginRight: -10,
+                            }}
+                            extra={
+                              <View
+                                style={{ backgroundColor: "transparent" }}
+                                onTouchStart={() => {
+                                  ActionSheet.showActionSheetWithOptions(
+                                    {
+                                      options: ["Xóa", "Thoát"],
+                                      cancelButtonIndex: 1,
+                                      destructiveButtonIndex: 0,
+                                    },
+                                    (index) => {
+                                      if (index === 0) {
+                                        Modal.alert("Xóa ghi chú", "Bạn muốn xóa mục này?", [
+                                          { text: "Thoát", style: "cancel" },
+                                          {
+                                            text: "Đồng ý",
+                                            onPress: () => {
+                                              deleteAReminder(isUserId, detailItem?.id).then(
+                                                (isRes) => {
+                                                  if (isRes) {
+                                                    Toast.success("Xóa thành công!");
+                                                    setTimeout(() => {
+                                                      setIsLoading(true);
+                                                    }, 100);
+                                                    setTimeout(() => {
+                                                      setIsLoading(false);
+                                                    }, 300);
+                                                  } else {
+                                                    Toast.fail("Xóa thất bại!");
+                                                  }
                                                 }
-                                              }
-                                            );
+                                              );
+                                            },
                                           },
-                                        },
-                                      ]);
+                                        ]);
+                                      }
                                     }
-                                  }
-                                );
+                                  );
+                                }}
+                              >
+                                <FontAwesomeIcon icon={faEllipsisV} />
+                              </View>
+                            }
+                          >
+                            <View
+                              style={{
+                                width: width - 10,
+                                display: "flex",
+                                flexDirection: "row",
+                                backgroundColor: "transparent",
+                                justifyContent: "space-between",
                               }}
                             >
-                              <FontAwesomeIcon icon={faEllipsisV} />
+                              <View
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  backgroundColor: "transparent",
+                                }}
+                              >
+                                <Checkbox
+                                  style={{ width: 30 }}
+                                  defaultChecked={Boolean(detailItem?.done)}
+                                  onChange={(value) => {
+                                    updateEventReminder(
+                                      isUserId,
+                                      value?.target?.checked,
+                                      moment().format("DD-MM-YYYY"),
+                                      detailItem?.id
+                                    );
+                                  }}
+                                />
+                                <Text>{`${detailItem?.name}`}</Text>
+                              </View>
+                              <View
+                                onTouchStart={() => {
+                                  Boolean(detailItem?.done) &&
+                                    Toast.info(`Đã hoàn thành vào ngày ${detailItem?.dateDone}`);
+                                }}
+                              >
+                                <Icon name="info-circle" color="gray" />
+                              </View>
                             </View>
-                          }
-                        >
-                          <View
-                            style={{
-                              width: width - 50,
-                              display: "flex",
-                              flexDirection: "row",
-                              backgroundColor: "transparent",
-                            }}
-                          >
-                            <Checkbox
-                              style={{ width: 30 }}
-                              defaultChecked={Boolean(detailItem?.done)}
-                              onChange={(value) => {
-                                updateEventReminder(
-                                  isUserId,
-                                  value?.target?.checked,
-                                  detailItem?.id
-                                );
-                              }}
-                            />
-                            <Text>{`${detailItem?.name}:`}</Text>
-                          </View>
-                        </Item>
-                      );
-                    })}
+                          </Item>
+                        );
+                      })}
+                  </View>
                 </Accordion.Panel>
               );
             })}

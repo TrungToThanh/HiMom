@@ -80,13 +80,22 @@ const ReminderCalendar = () => {
     requestPermission();
   }, [todoList]);
 
+  useEffect(() => {
+    setTodoList([]);
+    setShowEvent(false);
+    setDisableButtonEvent(true);
+  }, []);
+
   return (
     <GestureHandlerRootView>
       <SafeAreaView>
         <ModalAddEvent
           currentDate={currentDate}
           isShowEvent={isShowEvent}
-          setShowEvent={() => setShowEvent(false)}
+          setShowEvent={() => {
+            setShowEvent(false);
+          }}
+          setReload={() => getAllEvent(currentDate)}
           nameCalenderSource={nameCalenderSource}
         />
         <CalendarStrip
@@ -221,7 +230,7 @@ const ReminderCalendar = () => {
                             marginRight: 10,
                           }}
                         >
-                          {String(moment(item?.startDate).format("hh"))}:
+                          {String(moment(item?.startDate).format("HH"))}:
                           {moment(item?.startDate).format("mm")}
                         </Text>
                         <Text

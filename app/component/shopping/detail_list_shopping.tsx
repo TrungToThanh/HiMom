@@ -41,6 +41,7 @@ const DetailShopList = () => {
   const [isInfo, setShowInfo] = useState(false);
   const [isCreate, setShowDetailModalToCreate] = useState(false);
   const [showComponent, setReload] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [itemIdCurrent, setItemIdCurrent] = useState<number>();
 
   return (
@@ -53,10 +54,10 @@ const DetailShopList = () => {
             setShowDetailModal(false), setShowDetailModalToCreate(false);
           }}
           setReload={() => {
-            setReload(false);
+            setIsLoading(false);
             setTimeout(() => {
-              setReload(true);
-            }, 300);
+              setIsLoading(true);
+            }, 100);
           }}
           nameRouteTypeTable={nameRouteTypeTable}
           nameRouteUserId={nameRouteUserId}
@@ -67,6 +68,7 @@ const DetailShopList = () => {
         <View>
           {showComponent && (
             <DetailListModal
+              isLoading={isLoading}
               setShowDetailModal={() => setShowDetailModal(true)}
               setShowDetailModalToCreate={() => {
                 setShowDetailModalToCreate(true), setShowInfo(false);
@@ -81,6 +83,7 @@ const DetailShopList = () => {
                   setReload(true);
                 }, 300);
               }}
+              setIsLoading={(value) => setIsLoading(value)}
               nameRouteTypeTable={nameRouteTypeTable}
               nameRouteUserId={nameRouteUserId}
               nameRouteItemId={nameRouteItemId}

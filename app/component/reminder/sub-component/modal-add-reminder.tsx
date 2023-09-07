@@ -11,9 +11,16 @@ interface Props {
   setShowModal: () => void;
   isUserId: number;
   setIsLoading: (value) => void;
+  valueTypeReminder: string;
 }
 
-const ModalAddReminder = ({ isUserId, isShowModal, setShowModal, setIsLoading }: Props) => {
+const ModalAddReminder = ({
+  isUserId,
+  isShowModal,
+  setShowModal,
+  setIsLoading,
+  valueTypeReminder,
+}: Props) => {
   const { width, height } = useWindowDimensions();
 
   const [isName, setIsName] = useState("");
@@ -51,6 +58,9 @@ const ModalAddReminder = ({ isUserId, isShowModal, setShowModal, setIsLoading }:
   });
 
   const handleAddReminderTodo = () => {
+    if (isName?.trim() === "") setIsErrorName(true);
+    if (isType?.trim() === "") setIsErrorType(true);
+
     const stop = isName?.trim() === "" || isType?.trim() === "" || isBuy === undefined;
     if (stop) return;
     insertANewReminder(isUserId, isName, isType, isBuy ? true : false).then((isRes) => {
@@ -66,6 +76,15 @@ const ModalAddReminder = ({ isUserId, isShowModal, setShowModal, setIsLoading }:
       }
     });
   };
+
+  useEffect(() => {
+    setIsErrorName(false);
+    setIsErrorType(false);
+    setIsBuy(false);
+
+    setIsName("");
+    setIsType(valueTypeReminder);
+  }, [isShowModal]);
 
   return (
     <View>
@@ -115,7 +134,7 @@ const ModalAddReminder = ({ isUserId, isShowModal, setShowModal, setIsLoading }:
               maxLength={50}
               placeholder={
                 isErrorName
-                  ? "Không được phép bỏ qua trường thông tin này. Hãy nhập tên nhắc nhở"
+                  ? "Không được phép bỏ qua trường thông tin này."
                   : "Nội dung cần nhắc nhở"
               }
               value={isName}
@@ -133,7 +152,7 @@ const ModalAddReminder = ({ isUserId, isShowModal, setShowModal, setIsLoading }:
               maxLength={250}
               placeholder={
                 isErrorType
-                  ? "Không được phép bỏ qua trường thông tin này. Hãy nhập tên danh mục"
+                  ? "Không được phép bỏ qua trường thông tin này."
                   : "Danh mục cần nhắc nhở"
               }
               value={isType}
@@ -146,7 +165,7 @@ const ModalAddReminder = ({ isUserId, isShowModal, setShowModal, setIsLoading }:
         </View>
         <View style={{ width: width - 30, paddingTop: 10 }}>
           <View style={styles.input}>
-            <Text>Đã mua:</Text>
+            <Text>Đã hoàn thành:</Text>
             <Checkbox checked={isBuy} onChange={(value) => setIsBuy(value?.target?.checked)} />
           </View>
         </View>
