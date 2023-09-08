@@ -84,51 +84,6 @@ const Home = () => {
             <ReminderComponent isUserId={nameRouteUserId} />
           </TabBar.Item>
           <TabBar.Item
-            title="Lịch"
-            icon={<Icon name="calendar" />}
-            selected={selectedTab === "calendar"}
-            onPress={() => setSelectedTab("calendar")}
-            selectedIcon={<Icon name="calendar" size={26} color="#1870bc" />}
-          >
-            <CalendarStrip
-              style={{
-                height: 90,
-                marginBottom: 10,
-              }}
-              iconContainer={{ flex: 0.1 }}
-              dateNumberStyle={{ color: "#000000", paddingTop: 10 }}
-              dateNameStyle={{ color: "#BBBBBB" }}
-              highlightDateNumberStyle={{
-                color: "#fff",
-                backgroundColor: "#1870bc",
-                marginTop: 10,
-                height: 35,
-                width: 35,
-                textAlign: "center",
-                borderRadius: 17.5,
-                overflow: "hidden",
-                paddingTop: 6,
-                fontWeight: "600",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              highlightDateNameStyle={{ color: "#1870bc", fontSize: 13 }}
-              disabledDateNameStyle={{ color: "grey" }}
-              disabledDateNumberStyle={{ color: "grey", paddingTop: 10 }}
-              selectedDate={new Date()}
-              onDateSelected={(date) => {
-                Toast.info(String(date));
-              }}
-              locale={{
-                // name: "vi",
-                config: {
-                  weekdaysShort: "CN_T2_T3_T4_T5_T6_T7".split("_"),
-                  weekdaysMin: "CN_T2_T3_T4_T5_T6_T7".split("_"),
-                },
-              }}
-            />
-          </TabBar.Item>
-          <TabBar.Item
             title="Cài đặt"
             icon={<Icon name="setting" />}
             selected={selectedTab === "setting"}

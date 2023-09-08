@@ -74,13 +74,13 @@ const ReminderCalendar = () => {
 
   const [status, requestPermission] = Calendar?.useCalendarPermissions();
 
-  // useEffect(() => {
-  //   requestPermission().then((value) => {
-  //     if (value?.status === "granted") {
-  //       Calendar?.getCalendarPermissionsAsync();
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    requestPermission().then((value) => {
+      if (value?.status === "granted") {
+        Calendar?.getCalendarPermissionsAsync();
+      }
+    });
+  }, []);
 
   return (
     <GestureHandlerRootView>
@@ -137,13 +137,6 @@ const ReminderCalendar = () => {
                 setDisableButtonEvent(true);
               }
             }}
-            // locale={{
-            //   name: "vi",
-            //   config: {
-            //     weekdaysShort: "CN_T2_T3_T4_T5_T6_T7"?.split("_"),
-            //     weekdaysMin: "CN_T2_T3_T4_T5_T6_T7"?.split("_"),
-            //   },
-            // }}
           />
           <Text style={{ paddingLeft: 10, fontWeight: "bold" }}>{`Hôm nay: ${moment()?.format(
             "DD/MM/YYYY HH:mm"
