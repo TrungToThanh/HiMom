@@ -26,7 +26,7 @@ const ModalAddEvent = ({
   setReload,
 }: Props) => {
   const { width, height } = useWindowDimensions();
-  const [timePicker, setTimePicker] = useState<any>(moment(currentDate).toDate());
+  const [timePicker, setTimePicker] = useState<any>(new Date(currentDate));
   const [valueNote, setValueNote] = useState("");
   const [valueNoteAdd, setValueNoteAdd] = useState("");
   const [isError, setIsError] = useState(false);

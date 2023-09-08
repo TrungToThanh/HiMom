@@ -36,9 +36,7 @@ const ReminderCalendar = () => {
 
   const { width, height } = useWindowDimensions();
 
-  const [currentDate, setCurrentDate] = useState<any>(
-    `${moment()?.format("YYYY")}-${moment()?.format("MM")}-${moment()?.format("DD")}`
-  );
+  const [currentDate, setCurrentDate] = useState<any>(null);
 
   const datesWhitelist = [
     {
@@ -129,26 +127,23 @@ const ReminderCalendar = () => {
             disabledDateNumberStyle={{ color: "grey", paddingTop: 10 }}
             iconContainer={{ flex: 0.1 }}
             datesWhitelist={datesWhitelist}
-            // selectedDate={new Date(currentDate)}
-            // onDateSelected={(date) => {
-            //   const selectedDate = `${moment(date).format("YYYY")}-${moment(date).format(
-            //     "MM"
-            //   )}-${moment(date).format("DD")}`;
-            //   setCurrentDate(selectedDate);
-            //   // getAllEvent(selectedDate);
-            //   if (moment(date) >= moment().subtract(1, "d")) {
-            //     setDisableButtonEvent(false);
-            //   } else {
-            //     setDisableButtonEvent(true);
-            //   }
-            // }}
-            locale={{
-              name: "vi",
-              config: {
-                weekdaysShort: "CN_T2_T3_T4_T5_T6_T7"?.split("_"),
-                weekdaysMin: "CN_T2_T3_T4_T5_T6_T7"?.split("_"),
-              },
+            selectedDate={currentDate === null ? new Date() : new Date(currentDate)}
+            onDateSelected={(date) => {
+              setCurrentDate(date);
+              // getAllEvent(selectedDate);
+              if (moment(date) >= moment().subtract(1, "d")) {
+                setDisableButtonEvent(false);
+              } else {
+                setDisableButtonEvent(true);
+              }
             }}
+            // locale={{
+            //   name: "vi",
+            //   config: {
+            //     weekdaysShort: "CN_T2_T3_T4_T5_T6_T7"?.split("_"),
+            //     weekdaysMin: "CN_T2_T3_T4_T5_T6_T7"?.split("_"),
+            //   },
+            // }}
           />
           <Text style={{ paddingLeft: 10, fontWeight: "bold" }}>{`Hôm nay: ${moment()?.format(
             "DD/MM/YYYY HH:mm"
