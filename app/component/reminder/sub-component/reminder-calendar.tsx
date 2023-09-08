@@ -145,8 +145,8 @@ const ReminderCalendar = () => {
             locale={{
               name: "vi",
               config: {
-                weekdaysShort: "CN_T2_T3_T4_T5_T6_T7".split("_"),
-                weekdaysMin: "CN_T2_T3_T4_T5_T6_T7".split("_"),
+                weekdaysShort: "CN_T2_T3_T4_T5_T6_T7"?.split("_"),
+                weekdaysMin: "CN_T2_T3_T4_T5_T6_T7"?.split("_"),
               },
             }}
           />
