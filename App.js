@@ -13,7 +13,7 @@ export default function App() {
   return (
     <Provider locale={enUS}>
       <View width={windowWidth} height={windowHeight}>
-        {/* <StatusBar animated={true} backgroundColor="blue" /> */}
+        <StatusBar animated={true} backgroundColor="#f2f2f2" />
         <MyRoutes />
       </View>
     </Provider>

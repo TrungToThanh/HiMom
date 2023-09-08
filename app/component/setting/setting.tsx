@@ -8,6 +8,8 @@ import { ResetDB, exportDb, importDb } from "../../../api/database";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faFileExport, faFileImport, faTrash } from "@fortawesome/free-solid-svg-icons";
 
+import { useNavigation } from "@react-navigation/native";
+
 interface Props {
   isShowDeleteButton?: boolean;
   listAccountBaby?: any;
@@ -20,10 +22,10 @@ const SettingAccount = ({
   nameRouteUserId,
   setIsLoading,
 }: Props) => {
+  const navigation = useNavigation();
   const [activePanel, setActivePanel] = useState<any>();
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-
   return (
     <View
       style={{
@@ -62,7 +64,8 @@ const SettingAccount = ({
                   },
                   {
                     text: "Xóa",
-                    onPress: () => ResetDB().then(() => DevSettings.reload()),
+                    // @ts-ignore
+                    onPress: () => ResetDB().then(() => navigation.navigate("Main")),
                   },
                 ]);
               }}

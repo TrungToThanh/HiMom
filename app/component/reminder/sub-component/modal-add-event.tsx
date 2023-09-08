@@ -32,11 +32,19 @@ const ModalAddEvent = ({
   const [isError, setIsError] = useState(false);
   const [isShowDatePicker, setShowDatePicker] = useState(false);
 
-  const defaultCalendarSource = {
-    type: "",
-    isLocalAccount: true,
-    name: nameCalenderSource,
-  };
+  async function getDefaultCalendarSource() {
+    const defaultCalendar = await Calendar.getDefaultCalendarAsync();
+    return defaultCalendar.source;
+  }
+
+  const defaultCalendarSource =
+    Platform.OS === "ios"
+      ? getDefaultCalendarSource()
+      : {
+          type: "",
+          isLocalAccount: true,
+          name: nameCalenderSource,
+        };
 
   const newCalendar = {
     title: "HiMomEvent",
@@ -100,21 +108,25 @@ const ModalAddEvent = ({
           if (checkExist) {
             calendarId = calendarIdExisted.id;
           } else {
+            //@ts-ignore
             calendarId = Calendar.createCalendarAsync(newCalendar);
           }
         })
         .then(() => {
           const event = {
             title: `HiMom: ${valueNote}`,
+            color: "blue",
             notes: `${calendarId.toString()}: ${valueNoteAdd}`,
             startDate: moment(timePicker).toDate(),
             endDate: moment(timePicker).toDate(),
-            timeZone: Localization.timezone,
+            ownerAccount: "personal",
+            accessLevel: Calendar.CalendarAccessLevel.OWNER,
           };
+
           Calendar.createEventAsync(calendarId.toString(), event).then((isRes) => {
             if (isRes) {
-              setReload();
               Toast.success("Đã thêm thành công!");
+              setReload();
             }
           });
         });

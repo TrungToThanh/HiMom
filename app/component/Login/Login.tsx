@@ -13,6 +13,7 @@ import { createProcessEventTable } from "../../../api/eventProcess/event";
 import dayjs from "dayjs";
 import { Asset } from "expo-asset";
 import { createProcessLineTable } from "../../../api/eventProcess/process line";
+import { imageBase64Default } from "../../const/type";
 
 interface Props {
   listAccountBaby: any;
@@ -59,7 +60,21 @@ const Login = ({ listAccountBaby }: Props) => {
           .subtract(280, "days")
           .format("DD-MM-YYYY");
 
-        createProcessEventTable(isAccount.id, String(dateObjectFirstDay), "");
+        const imageDefault = [
+          {
+            assetId: null,
+            base64: String(imageBase64Default),
+            type: "image",
+            duration: null,
+            exif: null,
+            height: 512,
+            rotation: null,
+            uri: `data:image/png;base64,${imageBase64Default}`,
+            width: 512,
+          },
+        ];
+
+        createProcessEventTable(isAccount.id, String(dateObjectFirstDay), imageDefault);
         createProcessLineTable(
           isAccount.id,
           String(dateObjectFirstDay),
@@ -74,6 +89,12 @@ const Login = ({ listAccountBaby }: Props) => {
       }
     }
   };
+
+  useEffect(() => {
+    setUserId(0);
+    setPasswordInput("");
+    setTypeInput(true);
+  }, []);
 
   return (
     <View
@@ -148,8 +169,8 @@ const Login = ({ listAccountBaby }: Props) => {
             maxLength={6}
             placeholder="Mã đăng nhập"
             onChangeText={(value) => setPasswordInput(value)}
-            keyboardType="phone-pad"
-            secureTextEntry={typeInput}
+            keyboardType="number-pad"
+            secureTextEntry
           />
           <View onTouchStart={() => setTypeInput(!typeInput)} style={{ marginTop: 5 }}>
             <FontAwesomeIcon icon={typeInput ? faEye : faEyeSlash} />

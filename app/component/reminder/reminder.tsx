@@ -4,15 +4,11 @@ import _ from "lodash";
 
 import { SegmentedControl, Text, View, WhiteSpace } from "@ant-design/react-native";
 
-import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { ImageBackground, useWindowDimensions } from "react-native";
 import ReminderCalendar from "./sub-component/reminder-calendar";
 import ReminderList from "./sub-component/reminder-list";
-
-import * as Calendar from "expo-calendar";
-import CalendarStrip from "react-native-calendar-strip";
 
 interface Props {
   isUserId: number;

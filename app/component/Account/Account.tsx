@@ -295,7 +295,8 @@ const Account = ({
                 if (isRes) {
                   setIsLoading();
                   Toast.info("Đã lưu thay đổi thành công.\n\rVui lòng đăng nhập lại!", 3);
-                  DevSettings.reload();
+                  // @ts-ignore
+                  navigation.navigate("Main");
                 } else {
                   Toast.fail("Thất bại!");
                 }
@@ -331,7 +332,8 @@ const Account = ({
       <WhiteSpace />
       <WhiteSpace />
       {!isSetting && (
-        <View onTouchStart={() => importDb()}>
+        // @ts-ignore
+        <View onTouchStart={() => importDb().then(() => navigation.navigate("Main"))}>
           <Text>Sử dụng dữ liệu có sẵn</Text>
         </View>
       )}

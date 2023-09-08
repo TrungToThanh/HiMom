@@ -15,8 +15,7 @@ import ImageView from "react-native-image-viewing";
 import dayjs from "dayjs";
 import { deleteAEvent } from "../../../api/eventProcess/event";
 import { ProcessBabyBase } from "../../const/type";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 import ModalAddProcess from "./sub-component/modal-add-process";
 import ProcessLine from "./sub-component/process-line";
 import { Video, ResizeMode } from "expo-av";
@@ -194,14 +193,12 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
             {listEventCook &&
               listEventCook?.length > 0 &&
               listEventCook?.map((item: ProcessBabyBase, indexItem) => {
-                let imageFirst;
                 const sourceImageItem =
                   // @ts-ignore
                   item?.image?.length > 0
                     ? // @ts-ignore
                       JSON?.parse(item?.image)
                     : "";
-                indexItem === 0 ? (imageFirst = sourceImageItem.uri) : undefined;
                 return (
                   <View key={indexItem}>
                     <View
@@ -356,7 +353,7 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                     onTouchStart={() => {
                                       item.image &&
                                         item.image?.length > 0 &&
-                                        setListImage(JSON?.parse(item.image));
+                                        setListImage(JSON?.parse(item?.image));
                                       setShowCurrentImage(true);
                                     }}
                                     style={{
@@ -368,8 +365,13 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                   >
                                     <Image
                                       // @ts-ignore
-                                      source={`data:image/png;base64,${imageItem.base64}`}
-                                      // source={imageItem}
+                                      source={
+                                        imageItem?.base64?.length > 0
+                                          ? `data:image/png;base64,${imageItem?.base64}`
+                                          : imageItem?.uri?.length > 0
+                                          ? imageItem?.uri
+                                          : null
+                                      }
                                       style={{
                                         height: 120,
                                         width: (windowWidth - 60) / 3,

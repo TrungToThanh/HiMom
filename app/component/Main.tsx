@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { View, Text, Dimensions } from "react-native";
 import { Button, WhiteSpace, ActivityIndicator, Result } from "@ant-design/react-native";
-
 import * as Font from "expo-font";
 
 import { getAllBabyInBabyList } from "../../api/login/login";
@@ -23,7 +23,6 @@ export default function Main() {
         require("@ant-design/icons-react-native/fonts/antoutline.ttf")
       );
       await Font.loadAsync("antfill", require("@ant-design/icons-react-native/fonts/antfill.ttf"));
-      setIsLoading(false);
     };
     loading();
   }, []);
@@ -33,6 +32,15 @@ export default function Main() {
   const isDisableButtonLogin = useMemo(() => {
     return !listAccountBaby ? true : false;
   }, [listAccountBaby]);
+
+ useFocusEffect(
+   React.useCallback(() => {
+     setIsLoading(true);
+     setTimeout(() => {
+       setIsLoading(false);
+     }, 300);
+   }, [])
+ );
 
   return (
     <View
@@ -96,7 +104,7 @@ export default function Main() {
               setIsLoading(true);
               setTimeout(() => {
                 setIsLoading(false);
-              }, 300);
+              }, 100);
               setIsShowLogin(true);
             }}
           />
