@@ -3,7 +3,11 @@
     "name": "HiMom",
     "slug": "blank",
     "version": "1.0.0",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "extra": {
       "eas": {
         "projectId": "07e7106d-d2c9-42f1-a65b-ebd20e6bb9b9"
@@ -11,7 +15,12 @@
     },
     "android": {
       "package": "com.trthanr.blank",
-      "icon": "./assets/icon.png"
+      "icon": "./assets/icon.png",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR"
+      ]
     },
     "splash": {
       "image": "./assets/pics/born.png"
@@ -37,6 +46,18 @@
         }
       ],
       "expo-localization"
-    ]
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/07e7106d-d2c9-42f1-a65b-ebd20e6bb9b9"
+    },
+    "ios": {
+      "infoPlist": {
+        "NSCalendarsUsageDescription": "The app needs to access your calendar.",
+        "NSRemindersUsageDescription": "Allow $(PRODUCT_NAME) to access your reminders"
+      }
+    }
   }
 }
