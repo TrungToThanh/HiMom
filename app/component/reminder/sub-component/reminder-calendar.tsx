@@ -7,13 +7,13 @@ import {
   Button,
   Result,
   Text,
+  Toast,
   View,
   WhiteSpace,
 } from "@ant-design/react-native";
 
 import * as Calendar from "expo-calendar";
 import CalendarStrip from "react-native-calendar-strip";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { ImageBackground, useWindowDimensions } from "react-native";
@@ -23,6 +23,7 @@ import { faAdd, faArrowCircleRight } from "@fortawesome/free-solid-svg-icons";
 
 import ModalAddEvent from "./modal-add-event";
 import moment from "moment";
+import EmptyData from "../../../const/no_data";
 
 const nameCalenderSource = "HiMomGoogleCalendar";
 
@@ -36,16 +37,13 @@ const ReminderCalendar = () => {
   const { width, height } = useWindowDimensions();
 
   const [currentDate, setCurrentDate] = useState<any>(
-    `${moment().format("YYYY")}-${moment().format("MM")}-${moment().format("DD")}`
+    `${moment()?.format("YYYY")}-${moment()?.format("MM")}-${moment()?.format("DD")}`
   );
-
-  const [status, requestPermission] = Calendar.useCalendarPermissions();
-  Calendar.getCalendarPermissionsAsync();
 
   const datesWhitelist = [
     {
-      start: moment().subtract(10, "days"),
-      end: moment().add(365, "days"),
+      start: moment()?.subtract(10, "days"),
+      end: moment()?.add(365, "days"),
     },
   ];
 
@@ -53,17 +51,17 @@ const ReminderCalendar = () => {
     async (selectedDate) => {
       setIsLoading(true);
       let listEvent: any;
-      await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT)
+      await Calendar?.getCalendarsAsync(Calendar.EntityTypes.EVENT)
         .then(async (item) => {
           if (item && item.length > 0) {
             const calendarIdExisted = item?.find(
               (childItem) => childItem?.source?.name === nameCalenderSource
             );
             let calendarId = calendarIdExisted?.id;
-            listEvent = await Calendar.getEventsAsync(
+            listEvent = await Calendar?.getEventsAsync(
               [calendarId],
-              moment(selectedDate).startOf("day").toDate(),
-              moment(selectedDate).endOf("day").toDate()
+              moment(selectedDate)?.startOf("day")?.toDate(),
+              moment(selectedDate)?.endOf("day")?.toDate()
             );
             setTodoList(listEvent);
           }
@@ -76,201 +74,214 @@ const ReminderCalendar = () => {
     [currentDate, todoList]
   );
 
-  useEffect(() => {
-    requestPermission();
-  }, [todoList]);
+  const [status, requestPermission] = Calendar?.useCalendarPermissions();
 
   useEffect(() => {
-    setTodoList([]);
+    requestPermission().then((value) => {
+      if (value?.status === "granted") {
+        Calendar?.getCalendarPermissionsAsync();
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     setShowEvent(false);
-    setDisableButtonEvent(true);
+    getAllEvent(currentDate);
   }, []);
 
   return (
     <GestureHandlerRootView>
-      <SafeAreaView>
-        <ModalAddEvent
-          currentDate={currentDate}
-          isShowEvent={isShowEvent}
-          setShowEvent={() => {
-            setShowEvent(false);
-          }}
-          setReload={() => getAllEvent(currentDate)}
-          nameCalenderSource={nameCalenderSource}
-        />
-        <CalendarStrip
-          headerText=" "
-          calendarAnimation={{ type: "sequence", duration: 30 }}
-          style={{
-            height: 90,
-            marginBottom: 10,
-          }}
-          dateNumberStyle={{ color: "#000000", paddingTop: 10 }}
-          dateNameStyle={{ color: "#BBBBBB" }}
-          highlightDateNumberStyle={{
-            color: "#fff",
-            backgroundColor: "#1870bc",
-            marginTop: 10,
-            height: 35,
-            width: 35,
-            textAlign: "center",
-            borderRadius: 17.5,
-            overflow: "hidden",
-            paddingTop: 6,
-            fontWeight: "600",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          highlightDateNameStyle={{ color: "#1870bc", fontSize: 13 }}
-          disabledDateNameStyle={{ color: "grey" }}
-          disabledDateNumberStyle={{ color: "grey", paddingTop: 10 }}
-          iconContainer={{ flex: 0.1 }}
-          datesWhitelist={datesWhitelist}
-          selectedDate={currentDate}
-          onDateSelected={(date) => {
-            const selectedDate = `${moment(date).format("YYYY")}-${moment(date).format(
-              "MM"
-            )}-${moment(date).format("DD")}`;
-            setCurrentDate(selectedDate);
-            getAllEvent(selectedDate);
-            if (moment(date) >= moment().subtract(1, "d")) {
-              setDisableButtonEvent(false);
-            } else {
-              setDisableButtonEvent(true);
-            }
-          }}
-          locale={{
-            name: "vi",
-            config: {
-              weekdaysShort: "CN_T2_T3_T4_T5_T6_T7".split("_"),
-              weekdaysMin: "CN_T2_T3_T4_T5_T6_T7".split("_"),
-            },
-          }}
-        />
-        <Text style={{ paddingLeft: 10, fontWeight: "bold" }}>{`Hôm nay: ${moment().format(
-          "DD/MM/YYYY hh:mm"
-        )}`}</Text>
-        <WhiteSpace />
-        <View
-          style={{
-            width: width - 20,
-            display: "flex",
-            alignSelf: "center",
-            justifyContent: "space-between",
-            flexDirection: "row",
-            marginBottom: 10,
-          }}
-        >
-          <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}>
-            Danh sách sự kiện:
-          </Text>
-          <Button
-            type="ghost"
-            size="small"
-            style={{ width: 110, backgroundColor: "transparent" }}
-            onPress={() => setShowEvent(true)}
-            disabled={isDisableButtonEvent}
-          >
-            <FontAwesomeIcon icon={faAdd} />
-            <Text style={{ fontSize: 13, fontWeight: "500" }}>Thêm sự kiện</Text>
-          </Button>
+      {status?.status !== "granted" ? (
+        <View>
+          <EmptyData />
         </View>
-        {isLoading ? (
-          <View
+      ) : (
+        <View>
+          <ModalAddEvent
+            currentDate={currentDate}
+            isShowEvent={isShowEvent}
+            setShowEvent={() => {
+              setShowEvent(false);
+            }}
+            setReload={() => getAllEvent(currentDate)}
+            nameCalenderSource={nameCalenderSource}
+          />
+          <CalendarStrip
+            headerText=" "
+            calendarAnimation={{ type: "sequence", duration: 30 }}
             style={{
-              backgroundColor: "transparent",
-              alignContent: "center",
+              height: 90,
+              marginBottom: 10,
+            }}
+            dateNumberStyle={{ color: "#000000", paddingTop: 10 }}
+            dateNameStyle={{ color: "#BBBBBB" }}
+            highlightDateNumberStyle={{
+              color: "#fff",
+              backgroundColor: "#1870bc",
+              marginTop: 10,
+              height: 35,
+              width: 35,
+              textAlign: "center",
+              borderRadius: 17.5,
+              overflow: "hidden",
+              paddingTop: 6,
+              fontWeight: "600",
               justifyContent: "center",
               alignItems: "center",
             }}
+            highlightDateNameStyle={{ color: "#1870bc", fontSize: 13 }}
+            disabledDateNameStyle={{ color: "grey" }}
+            disabledDateNumberStyle={{ color: "grey", paddingTop: 10 }}
+            iconContainer={{ flex: 0.1 }}
+            datesWhitelist={datesWhitelist}
+            selectedDate={currentDate}
+            onDateSelected={(date) => {
+              const selectedDate = `${moment(date).format("YYYY")}-${moment(date).format(
+                "MM"
+              )}-${moment(date).format("DD")}`;
+              setCurrentDate(selectedDate);
+              getAllEvent(selectedDate);
+              if (moment(date) >= moment().subtract(1, "d")) {
+                setDisableButtonEvent(false);
+              } else {
+                setDisableButtonEvent(true);
+              }
+            }}
+            locale={{
+              name: "vi",
+              config: {
+                weekdaysShort: "CN_T2_T3_T4_T5_T6_T7".split("_"),
+                weekdaysMin: "CN_T2_T3_T4_T5_T6_T7".split("_"),
+              },
+            }}
+          />
+          <Text style={{ paddingLeft: 10, fontWeight: "bold" }}>{`Hôm nay: ${moment()?.format(
+            "DD/MM/YYYY HH:mm"
+          )}`}</Text>
+          <WhiteSpace />
+          <View
+            style={{
+              width: width - 20,
+              display: "flex",
+              alignSelf: "center",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              marginBottom: 10,
+            }}
           >
-            {isLoading && <ActivityIndicator size="small" color="#1870bc" text="Tải dữ liệu..." />}
+            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}>
+              Danh sách sự kiện:
+            </Text>
+            <Button
+              type="ghost"
+              size="small"
+              style={{ width: 110, backgroundColor: "transparent" }}
+              onPress={() => setShowEvent(true)}
+              disabled={isDisableButtonEvent}
+            >
+              <FontAwesomeIcon icon={faAdd} />
+              <Text style={{ fontSize: 13, fontWeight: "500" }}>Thêm sự kiện</Text>
+            </Button>
           </View>
-        ) : (
-          <View>
-            {todoList?.length > 0 && !isLoading ? (
-              <View
-                style={{
-                  width: width,
-                  height: height - 280,
-                  backgroundColor: "transparent",
-                }}
-              >
-                <ScrollView style={{ backgroundColor: "transparent" }}>
-                  {todoList?.map((item, index) => (
-                    <View
-                      key={index}
-                      style={{
-                        width: width - 10,
-                        height: 40,
-                        backgroundColor: "transparent",
-                        borderColor: "#1870bc",
-                        borderWidth: 1,
-                        marginLeft: 5,
-                        marginTop: 10,
-                        borderRadius: 20,
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                      }}
-                    >
+          {isLoading ? (
+            <View
+              style={{
+                backgroundColor: "transparent",
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {isLoading && (
+                <ActivityIndicator size="small" color="#1870bc" text="Tải dữ liệu..." />
+              )}
+            </View>
+          ) : (
+            <View>
+              {todoList?.length > 0 && !isLoading ? (
+                <View
+                  style={{
+                    width: width,
+                    height: height - 280,
+                    backgroundColor: "transparent",
+                  }}
+                >
+                  <ScrollView style={{ backgroundColor: "transparent" }}>
+                    {todoList?.map((item, index) => (
                       <View
+                        key={index}
                         style={{
-                          display: "flex",
+                          width: width - 10,
+                          height: 40,
+                          backgroundColor: "transparent",
+                          borderColor: "#1870bc",
+                          borderWidth: 1,
+                          marginLeft: 5,
+                          marginTop: 10,
+                          borderRadius: 20,
                           flexDirection: "row",
-                          alignItems: "center",
-                          marginLeft: 10,
+                          justifyContent: "space-between",
                         }}
                       >
-                        <Text
+                        <View
                           style={{
-                            color: "black",
-                            width: 35,
-                            fontSize: 13,
-                            fontWeight: "500",
-                            marginRight: 10,
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginLeft: 10,
                           }}
                         >
-                          {String(moment(item?.startDate).format("HH"))}:
-                          {moment(item?.startDate).format("mm")}
-                        </Text>
+                          <Text
+                            style={{
+                              color: "black",
+                              width: 35,
+                              fontSize: 13,
+                              fontWeight: "500",
+                              marginRight: 10,
+                            }}
+                          >
+                            {String(moment(item?.startDate).format("HH"))}:
+                            {moment(item?.startDate).format("mm")}
+                          </Text>
+                          <Text
+                            style={{
+                              borderRightWidth: 1,
+                              borderColor: "#1870bc",
+                            }}
+                          ></Text>
+                          <Text
+                            style={{
+                              color: "black",
+                              paddingLeft: 10,
+                              fontSize: 15,
+                              fontWeight: "600",
+                            }}
+                          >
+                            {String(item?.title)?.replaceAll("HiMom:", "")}
+                          </Text>
+                        </View>
                         <Text
-                          style={{
-                            borderRightWidth: 1,
-                            borderColor: "#1870bc",
-                          }}
-                        ></Text>
-                        <Text
-                          style={{
-                            color: "black",
-                            paddingLeft: 10,
-                            fontSize: 15,
-                            fontWeight: "600",
-                          }}
+                          onPress={() => Calendar?.openEventInCalendar(item?.id)}
+                          style={{ margin: 10 }}
                         >
-                          {String(item?.title)?.replaceAll("HiMom:", "")}
+                          <FontAwesomeIcon icon={faArrowCircleRight} color="#1870bc" />
                         </Text>
                       </View>
-                      <Text
-                        onPress={() => Calendar?.openEventInCalendar(item?.id)}
-                        style={{ margin: 10 }}
-                      >
-                        <FontAwesomeIcon icon={faArrowCircleRight} color="#1870bc" />
-                      </Text>
-                    </View>
-                  ))}
-                </ScrollView>
-              </View>
-            ) : (
-              <Result
-                imgUrl={image}
-                title=""
-                message="Không có ghi chú"
-                style={{ backgroundColor: "transparent" }}
-              />
-            )}
-          </View>
-        )}
-      </SafeAreaView>
+                    ))}
+                  </ScrollView>
+                </View>
+              ) : (
+                <Result
+                  imgUrl={image}
+                  title=""
+                  message="Không có ghi chú"
+                  style={{ backgroundColor: "transparent" }}
+                />
+              )}
+            </View>
+          )}
+        </View>
+      )}
     </GestureHandlerRootView>
   );
 };

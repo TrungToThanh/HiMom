@@ -2,15 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import _ from "lodash";
 
-import {
-  ActivityIndicator,
-  Button,
-  Result,
-  SegmentedControl,
-  Text,
-  View,
-  WhiteSpace,
-} from "@ant-design/react-native";
+import { SegmentedControl, Text, View, WhiteSpace } from "@ant-design/react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, GestureHandlerRootView } from "react-native-gesture-handler";
@@ -18,7 +10,9 @@ import { ScrollView, GestureHandlerRootView } from "react-native-gesture-handler
 import { ImageBackground, useWindowDimensions } from "react-native";
 import ReminderCalendar from "./sub-component/reminder-calendar";
 import ReminderList from "./sub-component/reminder-list";
-import { getAllEventReminder } from "../../../api/reminder/reminder";
+
+import * as Calendar from "expo-calendar";
+import CalendarStrip from "react-native-calendar-strip";
 
 interface Props {
   isUserId: number;
@@ -59,7 +53,7 @@ const ReminderComponent = ({ isUserId }: Props) => {
             />
           </View>
           <View style={{ backgroundColor: "transparent" }}>
-            {isPanelActive == 0 ? <ReminderCalendar /> : <ReminderList isUserId={isUserId} />}
+            <ReminderList isUserId={isUserId} />
           </View>
         </ImageBackground>
       </SafeAreaView>

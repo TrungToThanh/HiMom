@@ -28,6 +28,7 @@ import HomeListShopping from "../shopping/home_list_shopping";
 import { getAllEvent } from "../../../api/eventProcess/event";
 import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/native";
+import ReminderCalendar from "../reminder/sub-component/reminder-calendar";
 
 const Home = () => {
   const route = useRoute();
@@ -61,65 +62,6 @@ const Home = () => {
     }, [listAccountBaby, listEvent])
   );
 
-  const tabs = [
-    {
-      title: (
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-          }}
-        >
-          <FontAwesomeIcon icon={faSeedling} color="green" />
-          <Text>Quá trình</Text>
-        </View>
-      ),
-    },
-    {
-      title: (
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-          }}
-        >
-          <FontAwesomeIcon icon={faBasketShopping} color="#e28743" />
-          <Text>Chuẩn bị</Text>
-        </View>
-      ),
-    },
-    {
-      title: (
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-          }}
-        >
-          <FontAwesomeIcon icon={faCalendarCheck} color="#d11d8e" />
-          <Text>Nhắc nhở</Text>
-        </View>
-      ),
-    },
-    {
-      title: (
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-          }}
-        >
-          <FontAwesomeIcon icon={faGear} color="#1870bc" />
-          <Text>Cài đặt</Text>
-        </View>
-      ),
-    },
-  ];
-
   return (
     <View style={{ width: width, height: height }}>
       {isDoneLoading ? (
@@ -149,12 +91,21 @@ const Home = () => {
           </TabBar.Item>
           <TabBar.Item
             title="Nhắc nhở"
-            icon={<Icon name="calendar" />}
+            icon={<Icon name="ordered-list" />}
             selected={selectedTab === "reminder"}
             onPress={() => setSelectedTab("reminder")}
-            selectedIcon={<Icon name="calendar" size={26} color="#1870bc" />}
+            selectedIcon={<Icon name="ordered-list" size={26} color="#1870bc" />}
           >
             <ReminderComponent isUserId={nameRouteUserId} />
+          </TabBar.Item>
+          <TabBar.Item
+            title="Lịch"
+            icon={<Icon name="calendar" />}
+            selected={selectedTab === "calendar"}
+            onPress={() => setSelectedTab("calendar")}
+            selectedIcon={<Icon name="calendar" size={26} color="#1870bc" />}
+          >
+            <ReminderCalendar />
           </TabBar.Item>
           <TabBar.Item
             title="Cài đặt"
