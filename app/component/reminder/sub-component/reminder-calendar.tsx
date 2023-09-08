@@ -138,9 +138,6 @@ const ReminderCalendar = () => {
               }
             }}
           />
-          <Text style={{ paddingLeft: 10, fontWeight: "bold" }}>{`Hôm nay: ${moment()?.format(
-            "DD/MM/YYYY HH:mm"
-          )}`}</Text>
           <WhiteSpace />
           <View
             style={{

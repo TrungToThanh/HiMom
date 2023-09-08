@@ -4,7 +4,7 @@ import _ from "lodash";
 
 import { SegmentedControl, Text, View, WhiteSpace } from "@ant-design/react-native";
 
-import { ScrollView, GestureHandlerRootView } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { ImageBackground, useWindowDimensions } from "react-native";
 import ReminderCalendar from "./sub-component/reminder-calendar";
