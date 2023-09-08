@@ -78,6 +78,7 @@ const ReminderCalendar = () => {
     requestPermission().then((value) => {
       if (value?.status === "granted") {
         Calendar?.getCalendarPermissionsAsync();
+        getAllEvent(new Date());
       }
     });
   }, []);

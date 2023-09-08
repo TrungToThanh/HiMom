@@ -15,6 +15,7 @@ import {
   WingBlank,
   Checkbox,
 } from "@ant-design/react-native";
+import RNRestart from "react-native-restart";
 import dayjs from "dayjs";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -228,7 +229,7 @@ const Account = ({
                 if (isRes) {
                   setIsLoading();
                   Toast.success("Đã xóa thành công! \n\r Vui lòng đăng nhập lại.");
-                  DevSettings.reload();
+                  () => RNRestart?.restart();
                 } else {
                   Toast.fail("Thất bại!");
                 }
@@ -297,6 +298,8 @@ const Account = ({
                   Toast.info("Đã lưu thay đổi thành công.\n\rVui lòng đăng nhập lại!", 3);
                   // @ts-ignore
                   navigation.navigate("Main");
+                  RNRestart?.restart();
+                  RNRestart?.Restart();
                 } else {
                   Toast.fail("Thất bại!");
                 }

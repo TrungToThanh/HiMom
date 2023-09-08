@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions, DevSettings } from "react-native";
-import { Accordion, WhiteSpace, Button, Modal } from "@ant-design/react-native";
+import { Accordion, WhiteSpace, Button, Modal, Toast } from "@ant-design/react-native";
 
 import Account from "../account/account";
 import InfoApp from "./sub-component/info_app";
 import { ResetDB, exportDb, importDb } from "../../../api/database";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faFileExport, faFileImport, faTrash } from "@fortawesome/free-solid-svg-icons";
-
 import { useNavigation } from "@react-navigation/native";
+import { Restart } from "fiction-expo-restart";
 
 interface Props {
   isShowDeleteButton?: boolean;
@@ -64,8 +64,13 @@ const SettingAccount = ({
                   },
                   {
                     text: "Xóa",
-                    // @ts-ignore
-                    onPress: () => ResetDB().then(() => navigation.navigate("Main")),
+                    onPress: () =>
+                      ResetDB().then(() => {
+                        // @ts-ignore
+                        navigation.navigate("Main");
+                        Toast.info("Hãy khởi động lại ứng dụng!");
+                        Restart();
+                      }),
                   },
                 ]);
               }}
