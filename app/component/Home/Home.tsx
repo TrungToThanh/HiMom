@@ -96,6 +96,25 @@ const Home = () => {
                 marginBottom: 10,
               }}
               iconContainer={{ flex: 0.1 }}
+              dateNumberStyle={{ color: "#000000", paddingTop: 10 }}
+              dateNameStyle={{ color: "#BBBBBB" }}
+              highlightDateNumberStyle={{
+                color: "#fff",
+                backgroundColor: "#1870bc",
+                marginTop: 10,
+                height: 35,
+                width: 35,
+                textAlign: "center",
+                borderRadius: 17.5,
+                overflow: "hidden",
+                paddingTop: 6,
+                fontWeight: "600",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              highlightDateNameStyle={{ color: "#1870bc", fontSize: 13 }}
+              disabledDateNameStyle={{ color: "grey" }}
+              disabledDateNumberStyle={{ color: "grey", paddingTop: 10 }}
             />
           </TabBar.Item>
           <TabBar.Item
