@@ -119,13 +119,13 @@ const Home = () => {
               onDateSelected={(date) => {
                 Toast.info(String(date));
               }}
-              locale={{
-                name: "vi",
-                config: {
-                  weekdaysShort: "CN_T2_T3_T4_T5_T6_T7".split("_"),
-                  weekdaysMin: "CN_T2_T3_T4_T5_T6_T7".split("_"),
-                },
-              }}
+              // locale={{
+              //   name: "vi",
+              //   config: {
+              //     weekdaysShort: "CN_T2_T3_T4_T5_T6_T7".split("_"),
+              //     weekdaysMin: "CN_T2_T3_T4_T5_T6_T7".split("_"),
+              //   },
+              // }}
             />
           </TabBar.Item>
           <TabBar.Item

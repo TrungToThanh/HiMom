@@ -129,19 +129,19 @@ const ReminderCalendar = () => {
             disabledDateNumberStyle={{ color: "grey", paddingTop: 10 }}
             iconContainer={{ flex: 0.1 }}
             datesWhitelist={datesWhitelist}
-            selectedDate={new Date(currentDate)}
-            onDateSelected={(date) => {
-              const selectedDate = `${moment(date).format("YYYY")}-${moment(date).format(
-                "MM"
-              )}-${moment(date).format("DD")}`;
-              setCurrentDate(selectedDate);
-              // getAllEvent(selectedDate);
-              if (moment(date) >= moment().subtract(1, "d")) {
-                setDisableButtonEvent(false);
-              } else {
-                setDisableButtonEvent(true);
-              }
-            }}
+            // selectedDate={new Date(currentDate)}
+            // onDateSelected={(date) => {
+            //   const selectedDate = `${moment(date).format("YYYY")}-${moment(date).format(
+            //     "MM"
+            //   )}-${moment(date).format("DD")}`;
+            //   setCurrentDate(selectedDate);
+            //   // getAllEvent(selectedDate);
+            //   if (moment(date) >= moment().subtract(1, "d")) {
+            //     setDisableButtonEvent(false);
+            //   } else {
+            //     setDisableButtonEvent(true);
+            //   }
+            // }}
             locale={{
               name: "vi",
               config: {
