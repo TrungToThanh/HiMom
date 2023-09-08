@@ -4,7 +4,7 @@ import moment from "moment";
 import * as Calendar from "expo-calendar";
 import * as Localization from "expo-localization";
 
-import { StyleSheet, useWindowDimensions } from "react-native";
+import { Platform, StyleSheet, useWindowDimensions } from "react-native";
 import { Modal, View, Text, Button, Toast } from "@ant-design/react-native";
 
 import Input from "@ant-design/react-native/lib/input-item/Input";
@@ -36,7 +36,7 @@ const ModalAddEvent = ({
     type: "",
     isLocalAccount: true,
     name: nameCalenderSource,
-  }; //only for android
+  };
 
   const newCalendar = {
     title: "HiMomEvent",

@@ -86,7 +86,7 @@ const ReminderCalendar = () => {
 
   useEffect(() => {
     setShowEvent(false);
-    getAllEvent(currentDate);
+    // getAllEvent(currentDate);
   }, []);
 
   return (
@@ -107,7 +107,7 @@ const ReminderCalendar = () => {
             nameCalenderSource={nameCalenderSource}
           />
           <CalendarStrip
-            headerText=" "
+            headerText="Lịch"
             calendarAnimation={{ type: "sequence", duration: 30 }}
             style={{
               height: 90,
@@ -134,7 +134,7 @@ const ReminderCalendar = () => {
             disabledDateNumberStyle={{ color: "grey", paddingTop: 10 }}
             iconContainer={{ flex: 0.1 }}
             datesWhitelist={datesWhitelist}
-            selectedDate={currentDate}
+            selectedDate={new Date(currentDate)}
             onDateSelected={(date) => {
               const selectedDate = `${moment(date).format("YYYY")}-${moment(date).format(
                 "MM"
@@ -198,7 +198,7 @@ const ReminderCalendar = () => {
             </View>
           ) : (
             <View>
-              {todoList?.length > 0 && !isLoading ? (
+              {todoList && todoList?.length > 0 && !isLoading ? (
                 <View
                   style={{
                     width: width,

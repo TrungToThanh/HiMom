@@ -1,24 +1,11 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
-import { Tabs, ActivityIndicator, Result, TabBar, Icon } from "@ant-design/react-native";
+import { TabBar, Icon } from "@ant-design/react-native";
+import CalendarStrip from "react-native-calendar-strip";
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  faBasketShopping,
-  faCalendarCheck,
-  faCheckSquare,
-  faEye,
-  faEyeSlash,
-  faGear,
-  faHomeUser,
-  faSeedling,
-  faStore,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
 import { getAllBabyInBabyList } from "../../../api/login/login";
 import { useRoute } from "@react-navigation/native";
-import MainShop from "../shopping/main_list_shopping";
 import ProcessBaby from "../process/process";
 
 import LoadingData from "../../const/loading";
@@ -26,9 +13,7 @@ import SettingAccount from "../setting/setting";
 import ReminderComponent from "../reminder/reminder";
 import HomeListShopping from "../shopping/home_list_shopping";
 import { getAllEvent } from "../../../api/eventProcess/event";
-import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/native";
-import ReminderCalendar from "../reminder/sub-component/reminder-calendar";
 
 const Home = () => {
   const route = useRoute();
@@ -105,7 +90,13 @@ const Home = () => {
             onPress={() => setSelectedTab("calendar")}
             selectedIcon={<Icon name="calendar" size={26} color="#1870bc" />}
           >
-            <ReminderCalendar />
+            <CalendarStrip
+              style={{
+                height: 90,
+                marginBottom: 10,
+              }}
+              iconContainer={{ flex: 0.1 }}
+            />
           </TabBar.Item>
           <TabBar.Item
             title="Cài đặt"

@@ -25,7 +25,7 @@ const ReminderComponent = ({ isUserId }: Props) => {
 
   return (
     <GestureHandlerRootView>
-      <SafeAreaView>
+      <View>
         <ImageBackground source={image} resizeMode="cover" style={{ width: width, height: height }}>
           <View
             style={{
@@ -47,16 +47,16 @@ const ReminderComponent = ({ isUserId }: Props) => {
             <WhiteSpace />
             <SegmentedControl
               selectedIndex={isPanelActive}
-              values={["Lịch", "Danh mục"]}
+              values={["Danh mục", "Lịch"]}
               style={{ width: 200, backgroundColor: "transparent" }}
               onChange={(e) => setPanelActive(e.nativeEvent.selectedSegmentIndex)}
             />
           </View>
           <View style={{ backgroundColor: "transparent" }}>
-            <ReminderList isUserId={isUserId} />
+            {isPanelActive === 0 ? <ReminderList isUserId={isUserId} /> : <ReminderCalendar />}
           </View>
         </ImageBackground>
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   );
 };
