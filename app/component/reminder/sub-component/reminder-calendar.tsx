@@ -76,18 +76,13 @@ const ReminderCalendar = () => {
 
   const [status, requestPermission] = Calendar?.useCalendarPermissions();
 
-  useEffect(() => {
-    requestPermission().then((value) => {
-      if (value?.status === "granted") {
-        Calendar?.getCalendarPermissionsAsync();
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    setShowEvent(false);
-    // getAllEvent(currentDate);
-  }, []);
+  // useEffect(() => {
+  //   requestPermission().then((value) => {
+  //     if (value?.status === "granted") {
+  //       Calendar?.getCalendarPermissionsAsync();
+  //     }
+  //   });
+  // }, []);
 
   return (
     <GestureHandlerRootView>
@@ -140,7 +135,7 @@ const ReminderCalendar = () => {
                 "MM"
               )}-${moment(date).format("DD")}`;
               setCurrentDate(selectedDate);
-              getAllEvent(selectedDate);
+              // getAllEvent(selectedDate);
               if (moment(date) >= moment().subtract(1, "d")) {
                 setDisableButtonEvent(false);
               } else {

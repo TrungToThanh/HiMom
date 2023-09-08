@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 
-import { TabBar, Icon } from "@ant-design/react-native";
+import { TabBar, Icon, Toast } from "@ant-design/react-native";
 import CalendarStrip from "react-native-calendar-strip";
 
 import { getAllBabyInBabyList } from "../../../api/login/login";
@@ -115,6 +115,17 @@ const Home = () => {
               highlightDateNameStyle={{ color: "#1870bc", fontSize: 13 }}
               disabledDateNameStyle={{ color: "grey" }}
               disabledDateNumberStyle={{ color: "grey", paddingTop: 10 }}
+              selectedDate={new Date()}
+              onDateSelected={(date) => {
+                Toast.info(String(date));
+              }}
+              locale={{
+                name: "vi",
+                config: {
+                  weekdaysShort: "CN_T2_T3_T4_T5_T6_T7".split("_"),
+                  weekdaysMin: "CN_T2_T3_T4_T5_T6_T7".split("_"),
+                },
+              }}
             />
           </TabBar.Item>
           <TabBar.Item
