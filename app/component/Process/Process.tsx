@@ -110,299 +110,297 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
   };
 
   return (
-    <GestureHandlerRootView>
-      <SafeAreaView>
-        <ImageBackground
-          source={imageBackground}
-          resizeMode="cover"
-          style={{ width: windowWidth, height: windowHeight }}
+    <View>
+      <ImageBackground
+        source={imageBackground}
+        resizeMode="cover"
+        style={{ width: windowWidth, height: windowHeight }}
+      >
+        <ImageView
+          images={listImageCurrent?.filter((item) => item.type !== "video")}
+          imageIndex={0}
+          visible={isShowCurrentImage}
+          onRequestClose={() => setShowCurrentImage(false)}
+        />
+        <ModalAddProcess
+          nameRouteUserId={nameRouteUserId}
+          isFirstDate={isFirstDate}
+          isDisplayModalAddEvent={isDisplayModalAddEvent}
+          setDisplayModalAddEvent={() => setDisplayModalAddEvent(false)}
+          setLoadingAgain={(value) => setLoadingAgain(value)}
+        />
+        <ModalViewProcess
+          nameRouteUserId={nameRouteUserId}
+          isFirstDate={isFirstDate}
+          isShowEvent={isShowEvent}
+          item={itemIdCurrent}
+          setShowEvent={() => setShowEvent(false)}
+          setLoadingAgain={(value) => setLoadingAgain(value)}
+        />
+        <View
+          style={{
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: "transparent",
+          }}
         >
-          <ImageView
-            images={listImageCurrent?.filter((item) => item.type !== "video")}
-            imageIndex={0}
-            visible={isShowCurrentImage}
-            onRequestClose={() => setShowCurrentImage(false)}
-          />
-          <ModalAddProcess
-            nameRouteUserId={nameRouteUserId}
-            isFirstDate={isFirstDate}
-            isDisplayModalAddEvent={isDisplayModalAddEvent}
-            setDisplayModalAddEvent={() => setDisplayModalAddEvent(false)}
-            setLoadingAgain={(value) => setLoadingAgain(value)}
-          />
-          <ModalViewProcess
-            nameRouteUserId={nameRouteUserId}
-            isFirstDate={isFirstDate}
-            isShowEvent={isShowEvent}
-            item={itemIdCurrent}
-            setShowEvent={() => setShowEvent(false)}
-            setLoadingAgain={(value) => setLoadingAgain(value)}
-          />
-          <View
+          <Text
             style={{
-              display: "flex",
-              alignItems: "center",
-              backgroundColor: "transparent",
+              marginTop: 20,
+              color: "#1870bc",
+              fontSize: 16,
+              fontWeight: "bold",
             }}
           >
-            <Text
-              style={{
-                marginTop: 20,
-                color: "#1870bc",
-                fontSize: 16,
-                fontWeight: "bold",
-              }}
-            >
-              Hành trình
-            </Text>
-          </View>
-          <HeaderProcess idUserCurrent={idUserCurrent} />
-          <WhiteSpace />
-          <View>
-            <ProcessLine
-              isFirstDate={isFirstDate}
-              idUserCurrent={idUserCurrent}
-              nameRouteUserId={nameRouteUserId}
-              setLoadingAgain={(value) => setLoadingAgain(value)}
-            />
-          </View>
-          <WhiteSpace />
-          <View
-            style={{
-              width: windowWidth - 20,
-              display: "flex",
-              alignSelf: "center",
-              justifyContent: "space-between",
-              flexDirection: "row",
-              marginBottom: 10,
-            }}
+            Hành trình
+          </Text>
+        </View>
+        <HeaderProcess idUserCurrent={idUserCurrent} />
+        <WhiteSpace />
+        <View>
+          <ProcessLine
+            isFirstDate={isFirstDate}
+            idUserCurrent={idUserCurrent}
+            nameRouteUserId={nameRouteUserId}
+            setLoadingAgain={(value) => setLoadingAgain(value)}
+          />
+        </View>
+        <WhiteSpace />
+        <View
+          style={{
+            width: windowWidth - 20,
+            display: "flex",
+            alignSelf: "center",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            marginBottom: 10,
+          }}
+        >
+          <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}>
+            Tiến trình phát triển:
+          </Text>
+          <Button
+            type="ghost"
+            size="small"
+            style={{ width: 110, backgroundColor: "transparent" }}
+            onPress={() => setDisplayModalAddEvent(true)}
           >
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#1870bc" }}>
-              Tiến trình phát triển:
-            </Text>
-            <Button
-              type="ghost"
-              size="small"
-              style={{ width: 110, backgroundColor: "transparent" }}
-              onPress={() => setDisplayModalAddEvent(true)}
-            >
-              <FontAwesomeIcon icon={faAdd} />
-              <Text style={{ fontSize: 13, fontWeight: "500" }}>Thêm sự kiện</Text>
-            </Button>
-          </View>
-          <ScrollView>
-            <View style={{ marginBottom: 100 }}>
-              {listEventCook &&
-                listEventCook?.length > 0 &&
-                listEventCook?.map((item: ProcessBabyBase, indexItem) => {
-                  let imageFirst;
-                  const sourceImageItem =
-                    // @ts-ignore
-                    item?.image?.length > 0
-                      ? // @ts-ignore
-                        JSON?.parse(item?.image)
-                      : "";
-                  indexItem === 0 ? (imageFirst = sourceImageItem.uri) : undefined;
-                  return (
-                    <View key={indexItem}>
+            <FontAwesomeIcon icon={faAdd} />
+            <Text style={{ fontSize: 13, fontWeight: "500" }}>Thêm sự kiện</Text>
+          </Button>
+        </View>
+        <ScrollView>
+          <View style={{ marginBottom: 100 }}>
+            {listEventCook &&
+              listEventCook?.length > 0 &&
+              listEventCook?.map((item: ProcessBabyBase, indexItem) => {
+                let imageFirst;
+                const sourceImageItem =
+                  // @ts-ignore
+                  item?.image?.length > 0
+                    ? // @ts-ignore
+                      JSON?.parse(item?.image)
+                    : "";
+                indexItem === 0 ? (imageFirst = sourceImageItem.uri) : undefined;
+                return (
+                  <View key={indexItem}>
+                    <View
+                      style={{
+                        minHeight: 50,
+                        width: windowWidth - 10,
+                        backgroundColor: "white",
+                        borderColor: "#dedce2",
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        margin: 5,
+                        padding: 5,
+                      }}
+                    >
                       <View
                         style={{
-                          minHeight: 50,
-                          width: windowWidth - 10,
-                          backgroundColor: "white",
-                          borderColor: "#dedce2",
-                          borderWidth: 1,
-                          borderRadius: 5,
-                          margin: 5,
-                          padding: 5,
+                          width: windowWidth - 20,
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
                         }}
                       >
                         <View
                           style={{
-                            width: windowWidth - 20,
                             display: "flex",
                             flexDirection: "row",
-                            justifyContent: "space-between",
                           }}
                         >
                           <View
                             style={{
                               display: "flex",
                               flexDirection: "row",
+                              alignItems: "center",
+                              margin: 5,
+                              borderWidth: 1,
+                              width: 25,
+                              borderRadius: 20,
+                              paddingLeft: 3,
+                              borderColor: "#b0aca8",
                             }}
                           >
-                            <View
+                            <FontAwesomeIcon icon={faUser} color="#4294ff" />
+                          </View>
+                          <View>
+                            <Text
                               style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                                margin: 5,
-                                borderWidth: 1,
-                                width: 25,
-                                borderRadius: 20,
-                                paddingLeft: 3,
-                                borderColor: "#b0aca8",
+                                fontSize: 14,
+                                fontWeight: "bold",
+                              }}
+                              adjustsFontSizeToFit
+                              lineBreakMode="clip"
+                            >
+                              {item?.event}
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                fontWeight: "bold",
+                                color: "#b0aca8",
                               }}
                             >
-                              <FontAwesomeIcon icon={faUser} color="#4294ff" />
-                            </View>
-                            <View>
-                              <Text
-                                style={{
-                                  fontSize: 14,
-                                  fontWeight: "bold",
-                                }}
-                                adjustsFontSizeToFit
-                                lineBreakMode="clip"
-                              >
-                                {item?.event}
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 12,
-                                  fontWeight: "bold",
-                                  color: "#b0aca8",
-                                }}
-                              >
-                                {item?.date}
-                              </Text>
-                            </View>
-                          </View>
-                          <View
-                            onTouchStart={() => {
-                              // setShowEvent(true);
-                              setItemIdCurrent(item);
-                              ActionSheet.showActionSheetWithOptions(
-                                {
-                                  options: ["Xóa sự kiện", "Chỉnh sửa", "Thoát"],
-                                  cancelButtonIndex: 2,
-                                  cancelButtonTintColor: "red",
-                                  destructiveButtonIndex: 0,
-                                },
-                                (index) => {
-                                  if (index === 0) {
-                                    handleDeleteEvent(item.id);
-                                  }
-                                  if (index === 1) {
-                                    setShowEvent(true);
-                                  }
-                                }
-                              );
-                            }}
-                          >
-                            <FontAwesomeIcon icon={faEllipsisV} />
+                              {item?.date}
+                            </Text>
                           </View>
                         </View>
-                        <WhiteSpace />
-                        <Text
-                          style={{
-                            fontSize: 13,
-                            fontWeight: "400",
-                            marginLeft: 5,
+                        <View
+                          onTouchStart={() => {
+                            // setShowEvent(true);
+                            setItemIdCurrent(item);
+                            ActionSheet.showActionSheetWithOptions(
+                              {
+                                options: ["Xóa sự kiện", "Chỉnh sửa", "Thoát"],
+                                cancelButtonIndex: 2,
+                                cancelButtonTintColor: "red",
+                                destructiveButtonIndex: 0,
+                              },
+                              (index) => {
+                                if (index === 0) {
+                                  handleDeleteEvent(item.id);
+                                }
+                                if (index === 1) {
+                                  setShowEvent(true);
+                                }
+                              }
+                            );
                           }}
                         >
-                          {item.description}
-                        </Text>
-                        <View>
-                          {sourceImageItem && sourceImageItem?.length > 0 && (
-                            <View>
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  display: "flex",
-                                  paddingTop: 10,
-                                  justifyContent: "space-evenly",
-                                }}
-                              >
-                                {sourceImageItem?.map((imageItem, indexImage) => {
-                                  if (imageItem.type === "video") {
-                                    return (
-                                      <View
-                                        key={indexImage}
-                                        style={{
-                                          borderWidth: 1,
-                                          borderRadius: 10,
-                                          borderColor: "#1870bc",
-                                          padding: 2,
-                                        }}
-                                        onTouchStart={() => {
-                                          video?.current?.presentFullscreenPlayer();
-                                          video?.current?.playAsync();
-                                        }}
-                                      >
-                                        <Video
-                                          ref={video}
-                                          style={{
-                                            height: 120,
-                                            width: (windowWidth - 60) / 3,
-                                          }}
-                                          source={imageItem}
-                                          volume={1}
-                                          useNativeControls={false}
-                                          resizeMode={ResizeMode.CONTAIN}
-                                          isLooping={false}
-                                        />
-                                        <FontAwesomeIcon
-                                          icon={faVideoCamera}
-                                          size={10}
-                                          style={{ position: "absolute", margin: 5 }}
-                                          color="red"
-                                        />
-                                      </View>
-                                    );
-                                  }
+                          <FontAwesomeIcon icon={faEllipsisV} />
+                        </View>
+                      </View>
+                      <WhiteSpace />
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          fontWeight: "400",
+                          marginLeft: 5,
+                        }}
+                      >
+                        {item.description}
+                      </Text>
+                      <View>
+                        {sourceImageItem && sourceImageItem?.length > 0 && (
+                          <View>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                display: "flex",
+                                paddingTop: 10,
+                                justifyContent: "space-evenly",
+                              }}
+                            >
+                              {sourceImageItem?.map((imageItem, indexImage) => {
+                                if (imageItem.type === "video") {
                                   return (
                                     <View
                                       key={indexImage}
-                                      onTouchStart={() => {
-                                        item.image &&
-                                          item.image?.length > 0 &&
-                                          setListImage(JSON?.parse(item.image));
-                                        setShowCurrentImage(true);
-                                      }}
                                       style={{
                                         borderWidth: 1,
                                         borderRadius: 10,
                                         borderColor: "#1870bc",
                                         padding: 2,
                                       }}
+                                      onTouchStart={() => {
+                                        video?.current?.presentFullscreenPlayer();
+                                        video?.current?.playAsync();
+                                      }}
                                     >
-                                      <Image
-                                        // @ts-ignore
-                                        source={`data:image/png;base64,${imageItem.base64}`}
-                                        // source={imageItem}
+                                      <Video
+                                        ref={video}
                                         style={{
                                           height: 120,
                                           width: (windowWidth - 60) / 3,
-                                          borderRadius: 10,
                                         }}
-                                        transition={1000}
-                                        allowDownscaling
-                                        contentFit="cover"
+                                        source={imageItem}
+                                        volume={1}
+                                        useNativeControls={false}
+                                        resizeMode={ResizeMode.CONTAIN}
+                                        isLooping={false}
                                       />
-
                                       <FontAwesomeIcon
-                                        icon={faImage}
+                                        icon={faVideoCamera}
                                         size={10}
                                         style={{ position: "absolute", margin: 5 }}
-                                        color="green"
+                                        color="red"
                                       />
                                     </View>
                                   );
-                                })}
-                              </View>
+                                }
+                                return (
+                                  <View
+                                    key={indexImage}
+                                    onTouchStart={() => {
+                                      item.image &&
+                                        item.image?.length > 0 &&
+                                        setListImage(JSON?.parse(item.image));
+                                      setShowCurrentImage(true);
+                                    }}
+                                    style={{
+                                      borderWidth: 1,
+                                      borderRadius: 10,
+                                      borderColor: "#1870bc",
+                                      padding: 2,
+                                    }}
+                                  >
+                                    <Image
+                                      // @ts-ignore
+                                      source={`data:image/png;base64,${imageItem.base64}`}
+                                      // source={imageItem}
+                                      style={{
+                                        height: 120,
+                                        width: (windowWidth - 60) / 3,
+                                        borderRadius: 10,
+                                      }}
+                                      transition={1000}
+                                      allowDownscaling
+                                      contentFit="cover"
+                                    />
+
+                                    <FontAwesomeIcon
+                                      icon={faImage}
+                                      size={10}
+                                      style={{ position: "absolute", margin: 5 }}
+                                      color="green"
+                                    />
+                                  </View>
+                                );
+                              })}
                             </View>
-                          )}
-                        </View>
+                          </View>
+                        )}
                       </View>
                     </View>
-                  );
-                })}
-            </View>
-          </ScrollView>
-        </ImageBackground>
-      </SafeAreaView>
-    </GestureHandlerRootView>
+                  </View>
+                );
+              })}
+          </View>
+        </ScrollView>
+      </ImageBackground>
+    </View>
   );
 };
 

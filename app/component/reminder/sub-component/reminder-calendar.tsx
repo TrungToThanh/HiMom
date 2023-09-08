@@ -100,7 +100,7 @@ const ReminderCalendar = () => {
             nameCalenderSource={nameCalenderSource}
           />
           <CalendarStrip
-            headerText="Lịch"
+            headerText=" "
             calendarAnimation={{ type: "sequence", duration: 30 }}
             style={{
               height: 90,
@@ -130,7 +130,7 @@ const ReminderCalendar = () => {
             selectedDate={currentDate === null ? new Date() : new Date(currentDate)}
             onDateSelected={(date) => {
               setCurrentDate(date);
-              // getAllEvent(selectedDate);
+              getAllEvent(date);
               if (moment(date) >= moment().subtract(1, "d")) {
                 setDisableButtonEvent(false);
               } else {
