@@ -22,6 +22,9 @@ import { Video, ResizeMode } from "expo-av";
 import ModalViewProcess from "./sub-component/modal-view-process";
 import HeaderProcess from "./sub-component/header-process";
 
+import firebase from "../../../api/firebase/firebase";
+import { getStorage, ref, deleteObject } from "firebase/storage";
+
 interface Props {
   listAccountBaby?: any;
   listEvent: any;
@@ -91,18 +94,27 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
           },
           {
             text: "Xóa",
-            onPress: () =>
-              deleteAEvent(nameRouteUserId, itemId).then((isRes) => {
-                setLoadingAgain(true);
-                setTimeout(() => {
-                  setLoadingAgain(false);
-                }, 100);
-                if (isRes) {
-                  Toast.success("Xóa thành công!");
-                } else {
-                  Toast.fail("Xóa thất bại!");
-                }
-              }),
+            onPress: () => {
+              const itemEvent = listEvent?.find((item) => +item.id === +itemId);
+              const linkFolder = itemEvent?.linkvideo;
+
+              const storage = firebase.firebase.storage().ref().child("HiMom");
+              storage.delete();
+
+              // console.log("storage", storage);
+
+              // deleteAEvent(nameRouteUserId, itemId).then((isRes) => {
+              //   setLoadingAgain(true);
+              //   setTimeout(() => {
+              //     setLoadingAgain(false);
+              //   }, 100);
+              //   if (isRes) {
+              //     Toast.success("Xóa thành công!");
+              //   } else {
+              //     Toast.fail("Xóa thất bại!");
+              //   }
+              // });
+            },
           },
         ])
       : Toast.fail("Không thể xóa sự kiện này!");

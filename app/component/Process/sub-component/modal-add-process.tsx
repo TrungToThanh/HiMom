@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import _ from "lodash";
 
 import * as ImagePicker from "expo-image-picker";
 import ImageView from "react-native-image-viewing";
@@ -25,6 +26,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faImage, faUpload, faUser, faVideoCamera } from "@fortawesome/free-solid-svg-icons";
 import { ResizeMode, Video } from "expo-av";
 
+import firebase from "../../../../api/firebase/firebase";
+import * as FileSystem from "expo-file-system";
+
 interface Props {
   isDisplayModalAddEvent?: boolean;
   setDisplayModalAddEvent?: () => void;
@@ -44,17 +48,20 @@ const ModalAddProcess = ({
 
   const [imageShow, setImageShow] = useState<any>(null);
 
-  const [isShowDatePicker, setIsShowDatePicker] = useState(false);
+  const [eventId, setEventId] = useState<any>();
+
   const [nameEvent, setNameEvent] = useState<any>("");
   const [dateEvent, setDateEvent] = useState<any>("");
   const [desEvent, setDesEvent] = useState<any>("");
   const [linkVideo, setLinkVideo] = useState<any>("");
   const [noteEvent, setNoteEvent] = useState<any>("");
   const [image, setImage] = useState<any>(null);
+
+  const [isShowDatePicker, setIsShowDatePicker] = useState(false);
   const [isShowCurrentImage, setShowCurrentImage] = useState(false);
 
-  const [isNameEvent, setCheckNameEvent] = useState(false);
-  const [isDateEvent, setCheckDateEvent] = useState(false);
+  const [isNameEventError, setCheckNameEvent] = useState(false);
+  const [isDateEventError, setCheckDateEvent] = useState(false);
 
   useEffect(() => {
     setNameEvent("");
@@ -68,7 +75,35 @@ const ModalAddProcess = ({
     setShowCurrentImage(false);
   }, [isDisplayModalAddEvent]);
 
-  const handleAddEvent = () => {
+  const handleAddEvent = async () => {
+    const uniqueId = _.uniqueId();
+
+    if (image && image?.length > 0) {
+      image?.map(async (item) => {
+        const uriFile = item.uri;
+
+        const { uri } = await FileSystem?.getInfoAsync(uriFile);
+        const blob: any = await new Promise((resovle, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = () => {
+            resovle(xhr.response);
+          };
+          xhr.onerror = (e) => {
+            // console.log(e);
+          };
+          xhr.responseType = "blob";
+          xhr.open("GET", uri, true);
+          xhr.send(null);
+        });
+        const filename = uriFile?.substring(uriFile?.lastIndexOf("/") + 1);
+        const isRes = firebase.firebase
+          ?.storage()
+          ?.ref()
+          ?.child(`HiMom/${nameRouteUserId}/${dateEvent}/${uniqueId}/${filename}`);
+        isRes?.put(blob);
+      });
+    }
+
     insertANewEvent(
       nameRouteUserId,
       nameEvent,
@@ -76,7 +111,7 @@ const ModalAddProcess = ({
       desEvent,
       noteEvent,
       image,
-      linkVideo
+      `HiMom/${nameRouteUserId}/${dateEvent}/${uniqueId}`
     ).then((isRes) => {
       setLoadingAgain(true);
       setTimeout(() => {
@@ -228,7 +263,7 @@ const ModalAddProcess = ({
                 </View>
                 <View>
                   <Input
-                    style={isNameEvent ? styles.inputItemError : styles.inputItem}
+                    style={isNameEventError ? styles.inputItemError : styles.inputItem}
                     multiline
                     maxLength={50}
                     placeholder="Tên sự kiện"
@@ -236,7 +271,7 @@ const ModalAddProcess = ({
                     onChangeText={(value) => setNameEvent(value)}
                   />
                   <Input
-                    style={isDateEvent ? styles.inputItemError : styles.inputItem}
+                    style={isDateEventError ? styles.inputItemError : styles.inputItem}
                     maxLength={11}
                     placeholder="Ngày xảy ra sự kiện"
                     value={dateEvent}
