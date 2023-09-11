@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { View, Text, Dimensions, ScrollView, ImageBackground } from "react-native";
 import { Image } from "expo-image";
 import { Button, WhiteSpace, Toast, Modal, ActionSheet } from "@ant-design/react-native";
@@ -35,6 +35,12 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
   const windowHeight = Dimensions.get("window").height;
   const imageBackground = require("../../../assets/background.jpg");
   const video = React.useRef(null);
+
+  const [listItemImageServer, setListItemImageServer] = useState<any>();
+  const [isShowImageServer, setShowImageServer] = useState(false);
+
+  const [listItemVideoServer, setListItemVideoServer] = useState<any>();
+  const [isShowImageVideoServer, setShowImageVideoServer] = useState(false);
 
   //Get value date
   const now = dayjs().format("DD-MM-YYYYY");
@@ -84,6 +90,37 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
     return b;
   }, [listEvent]);
 
+  const listImageFromSever = useCallback(async (itemId) => {
+    const listImagesServer: any = [];
+    const listVideoServer: any = [];
+
+    const itemEvent = listEvent?.find((item) => +item.id === +itemId);
+    const linkFolder = itemEvent?.linkvideo;
+    const reference = firebase.firebase?.storage()?.ref(linkFolder)?.listAll();
+    (await reference).items?.map((item) => {
+      if (String(item.name).endsWith(".mp4")) {
+        item.getDownloadURL().then((itemDetail) => {
+          listVideoServer?.push({
+            uri: itemDetail,
+          });
+          setListItemVideoServer(listVideoServer);
+          console.log(listVideoServer);
+        });
+      } else {
+        item.getDownloadURL().then((itemDetail) => {
+          listImagesServer?.push({
+            uri: itemDetail,
+          });
+          setListItemImageServer(listImagesServer);
+        });
+      }
+    });
+    setTimeout(() => {
+      setShowImageVideoServer(true);
+      console.log("listItemImageServer", listItemImageServer);
+    }, 300);
+  }, []);
+
   const handleDeleteEvent = (itemId) => {
     +itemId !== 1
       ? Modal.alert("Xóa sự kiện", "Bạn có thật sự muốn xóa sự kiện này?", [
@@ -125,6 +162,114 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
         resizeMode="cover"
         style={{ width: windowWidth, height: windowHeight }}
       >
+        <Modal
+          visible={isShowImageVideoServer}
+          onClose={() => {
+            setShowImageVideoServer(false);
+            setShowImageServer(false);
+            setListItemImageServer(null);
+            setListItemVideoServer(null);
+          }}
+          transparent
+          animateAppear
+          animationType="fade"
+          footer={[
+            {
+              text: "Thoát",
+              onPress: () => {
+                setShowImageVideoServer(false);
+                setShowImageServer(false);
+                setListItemImageServer(null);
+                setListItemVideoServer(null);
+              },
+              style: "cancel",
+            },
+          ]}
+          style={{ width: windowWidth }}
+        >
+          <View>
+            {!listItemImageServer && !listItemVideoServer && <Text>Không có dữ liệu</Text>}
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "center",
+              }}
+            >
+              {listItemVideoServer?.length > 0 ? (
+                <View>
+                  {listItemVideoServer?.map((item, index) => {
+                    return (
+                      <Video
+                        key={index}
+                        style={{
+                          height: 230,
+                          width: windowWidth - 60,
+                        }}
+                        source={{
+                          uri: item.uri,
+                        }}
+                        volume={1}
+                        useNativeControls={true}
+                        resizeMode={ResizeMode.CONTAIN}
+                        isLooping={false}
+                      />
+                    );
+                  })}
+                </View>
+              ) : (
+                <Text></Text>
+              )}
+            </View>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "center",
+              }}
+            >
+              {listItemImageServer?.length > 0 ? (
+                <View
+                  onTouchStart={() => setShowImageServer(true)}
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                >
+                  {listItemImageServer?.map((item, index) => {
+                    return (
+                      <Image
+                        key={index + 10}
+                        // @ts-ignore
+                        source={{ uri: item.uri }}
+                        style={{
+                          height: 120,
+                          width: (windowWidth - 60) / 3,
+                          borderRadius: 10,
+                          borderWidth: 1,
+                          margin: 10,
+                        }}
+                        allowDownscaling
+                        contentFit="cover"
+                      />
+                    );
+                  })}
+                </View>
+              ) : (
+                <Text> </Text>
+              )}
+            </View>
+            <ImageView
+              images={listItemImageServer}
+              imageIndex={0}
+              visible={isShowImageServer}
+              onRequestClose={() => setShowImageServer(false)}
+            />
+          </View>
+        </Modal>
+
         <ImageView
           images={listImageCurrent?.filter((item) => item.type !== "video")}
           imageIndex={0}
@@ -280,7 +425,12 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                             setItemIdCurrent(item);
                             ActionSheet.showActionSheetWithOptions(
                               {
-                                options: ["Xóa sự kiện", "Chỉnh sửa", "Thoát"],
+                                options: [
+                                  "Xóa sự kiện",
+                                  "Chỉnh sửa",
+                                  "Xem video/ảnh từ Cloud",
+                                  "Thoát",
+                                ],
                                 cancelButtonIndex: 2,
                                 cancelButtonTintColor: "red",
                                 destructiveButtonIndex: 0,
@@ -291,6 +441,9 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
                                 }
                                 if (index === 1) {
                                   setShowEvent(true);
+                                }
+                                if (index === 2) {
+                                  listImageFromSever(item.id);
                                 }
                               }
                             );
