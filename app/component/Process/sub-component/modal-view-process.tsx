@@ -32,6 +32,9 @@ import moment from "moment";
 import { ProcessBabyBase } from "../../../const/type";
 import { ResizeMode, Video } from "expo-av";
 
+import firebase from "../../../../api/firebase/firebase";
+import * as FileSystem from "expo-file-system";
+
 interface Props {
   isShowEvent?: boolean;
   setShowEvent?: () => void;
@@ -85,12 +88,45 @@ const ModalViewProcess = ({
             JSON?.parse(item?.image)
           : "";
       setImage(sourceImageItem);
-      setLinkVideo("");
+      setLinkVideo(item.linkvideo);
       setNoteEvent("");
     }
   }, [isShowEvent]);
 
-  const handleSaveEvent = () => {
+  const handleSaveEvent = async () => {
+    if (nameEvent?.trim() === "") setCheckNameEvent(true);
+    if (dateEvent?.trim() === "") setCheckDateEvent(true);
+
+    if (nameEvent?.trim() === "" || dateEvent?.trim() === "") {
+      return Toast.fail("Vui lòng kiểm tra: ngày sự kiện và tên sự kiện");
+    }
+
+    const reference = firebase.firebase?.storage()?.ref(linkVideo)?.listAll();
+    (await reference).items?.map((item) => item?.delete());
+
+    if (image && image?.length > 0) {
+      image?.map(async (item) => {
+        const uriFile = item.uri;
+
+        const { uri } = await FileSystem?.getInfoAsync(uriFile);
+        const blob: any = await new Promise((resovle, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = () => {
+            resovle(xhr.response);
+          };
+          xhr.onerror = (e) => {
+            // console.log(e);
+          };
+          xhr.responseType = "blob";
+          xhr.open("GET", uri, true);
+          xhr.send(null);
+        });
+        const filename = uriFile?.substring(uriFile?.lastIndexOf("/") + 1);
+        const isRes = firebase.firebase?.storage()?.ref()?.child(`${linkVideo}/${filename}`);
+        isRes?.put(blob);
+      });
+    }
+
     itemId &&
       updateAEvent(
         nameRouteUserId,
@@ -102,23 +138,16 @@ const ModalViewProcess = ({
         linkVideo,
         itemId
       ).then((isRes) => {
-        if (nameEvent?.trim() === "") setCheckNameEvent(true);
-        if (dateEvent?.trim() === "") setCheckDateEvent(true);
-
-        if (nameEvent?.trim() === "" || dateEvent?.trim() === "") {
-          Toast.fail("Vui lòng kiểm tra: ngày sự kiện và tên sự kiện");
+        setLoadingAgain(true);
+        setTimeout(() => {
+          setLoadingAgain(false);
+        }, 100);
+        if (isRes) {
+          Toast.success("Cập nhập thành công!");
         } else {
-          setLoadingAgain(true);
-          setTimeout(() => {
-            setLoadingAgain(false);
-          }, 500);
-          if (isRes) {
-            Toast.success("Cập nhập thành công!");
-          } else {
-            Toast.fail("Thất bại!");
-          }
-          setShowEvent();
+          Toast.fail("Thất bại!");
         }
+        setShowEvent();
       });
   };
 
@@ -393,7 +422,7 @@ const ModalViewProcess = ({
               {image && image?.length > 0 && (
                 <View
                   style={styles.input}
-                  onTouchStart={() => {
+                  onTouchStart={async () => {
                     setImage(null);
                     Keyboard.dismiss();
                   }}

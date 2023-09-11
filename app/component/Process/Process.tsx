@@ -23,7 +23,6 @@ import ModalViewProcess from "./sub-component/modal-view-process";
 import HeaderProcess from "./sub-component/header-process";
 
 import firebase from "../../../api/firebase/firebase";
-import { getStorage, ref, deleteObject } from "firebase/storage";
 
 interface Props {
   listAccountBaby?: any;
@@ -94,26 +93,25 @@ const ProcessBaby = ({ listAccountBaby, listEvent, nameRouteUserId, setLoadingAg
           },
           {
             text: "Xóa",
-            onPress: () => {
+            onPress: async () => {
               const itemEvent = listEvent?.find((item) => +item.id === +itemId);
+
               const linkFolder = itemEvent?.linkvideo;
 
-              const storage = firebase.firebase.storage().ref().child("HiMom");
-              storage.delete();
+              const reference = firebase.firebase?.storage()?.ref(linkFolder)?.listAll();
+              (await reference).items?.map((item) => item?.delete());
 
-              // console.log("storage", storage);
-
-              // deleteAEvent(nameRouteUserId, itemId).then((isRes) => {
-              //   setLoadingAgain(true);
-              //   setTimeout(() => {
-              //     setLoadingAgain(false);
-              //   }, 100);
-              //   if (isRes) {
-              //     Toast.success("Xóa thành công!");
-              //   } else {
-              //     Toast.fail("Xóa thất bại!");
-              //   }
-              // });
+              deleteAEvent(nameRouteUserId, itemId).then((isRes) => {
+                setLoadingAgain(true);
+                setTimeout(() => {
+                  setLoadingAgain(false);
+                }, 100);
+                if (isRes) {
+                  Toast.success("Xóa thành công!");
+                } else {
+                  Toast.fail("Xóa thất bại!");
+                }
+              });
             },
           },
         ])
