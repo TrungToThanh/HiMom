@@ -5,6 +5,7 @@ import { Toast } from "@ant-design/react-native";
 import * as DocumentPicker from "expo-document-picker";
 import { useState } from "react";
 import { DevSettings } from "react-native";
+import firebase from "./firebase/firebase";
 
 export const nameDB = "newDB1.db";
 
@@ -69,4 +70,38 @@ export const ResetDB = () => {
   return new Promise(function (resolve) {
     resolve(true);
   });
+};
+
+export const UploadDatabase = async () => {
+  if (Platform.OS === "android") {
+    const infoDatabase = await FileSystem?.getInfoAsync(
+      FileSystem.documentDirectory + `SQLite/${nameDB}`
+    );
+
+    if (infoDatabase.exists && !infoDatabase.isDirectory) {
+      const { uri } = await FileSystem?.getInfoAsync(
+        FileSystem.documentDirectory + `SQLite/${nameDB}`
+      );
+
+      const blob = await new Promise((resovle, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+          resovle(xhr.response);
+        };
+        xhr.onerror = (e) => {
+          console.log(e);
+        };
+        xhr.responseType = "blob";
+        xhr.open("GET", uri, true);
+        xhr.send(null);
+      });
+      const isRes = firebase.firebase?.storage()?.ref()?.child(`HiMom/database/${nameDB}`);
+      isRes?.put(blob);
+    } else {
+      console.log("Permission not granted");
+      // FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync(
+      //   FileSystem.documentDirectory + `SQLite/${nameDB}`
+      // );
+    }
+  }
 };

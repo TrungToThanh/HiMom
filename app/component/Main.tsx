@@ -7,6 +7,7 @@ import * as Font from "expo-font";
 import { getAllBabyInBabyList } from "../../api/login/login";
 import Login from "./login/login";
 import Account from "./account/account";
+import { UploadDatabase } from "../../api/database";
 
 export default function Main() {
   const image = require("../../assets/pics/born.png");
@@ -33,14 +34,15 @@ export default function Main() {
     return !listAccountBaby ? true : false;
   }, [listAccountBaby]);
 
- useFocusEffect(
-   React.useCallback(() => {
-     setIsLoading(true);
-     setTimeout(() => {
-       setIsLoading(false);
-     }, 300);
-   }, [])
- );
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        UploadDatabase();
+      }, 300);
+    }, [])
+  );
 
   return (
     <View

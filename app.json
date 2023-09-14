@@ -3,11 +3,7 @@
     "name": "HiMom",
     "slug": "blank",
     "version": "1.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "extra": {
       "eas": {
         "projectId": "07e7106d-d2c9-42f1-a65b-ebd20e6bb9b9"
@@ -19,7 +15,10 @@
       "permissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.READ_CALENDAR",
-        "android.permission.WRITE_CALENDAR"
+        "android.permission.WRITE_CALENDAR",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.INTERNET"
       ]
     },
     "splash": {
