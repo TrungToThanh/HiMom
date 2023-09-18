@@ -14,6 +14,11 @@ import dayjs from "dayjs";
 import { Asset } from "expo-asset";
 import { createProcessLineTable } from "../../../api/eventProcess/process line";
 import { imageBase64Default } from "../../const/type";
+import { LoginDatabase } from "../../../api/database";
+
+import * as Network from "expo-network";
+import { Platform } from "react-native";
+import * as Application from "expo-application";
 
 interface Props {
   listAccountBaby: any;
@@ -29,7 +34,16 @@ const Login = ({ listAccountBaby }: Props) => {
 
   const [typeInput, setTypeInput] = useState(true);
 
+  const uniqueId =
+    Platform.OS === "ios" ? Application.getIosIdForVendorAsync() : Application.androidId;
+
   const handleLogin = async () => {
+    Network.getNetworkStateAsync().then((item) => {
+      if (item.isConnected && listAccountBaby?.length > 0) {
+        LoginDatabase(uniqueId);
+      }
+    });
+
     if (listAccountBaby && listAccountBaby?.length > 0) {
       const isHasAccount = listAccountBaby.some(
         (item) => +item.id === +userId && String(item.password) === String(passwordInput)

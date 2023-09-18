@@ -7,7 +7,7 @@ import * as Font from "expo-font";
 import { getAllBabyInBabyList } from "../../api/login/login";
 import Login from "./login/login";
 import Account from "./account/account";
-import { UploadDatabase } from "../../api/database";
+import { LoginDatabase, UploadDatabase } from "../../api/database";
 
 export default function Main() {
   const image = require("../../assets/pics/born.png");
@@ -39,7 +39,6 @@ export default function Main() {
       setIsLoading(true);
       setTimeout(() => {
         setIsLoading(false);
-        UploadDatabase();
       }, 300);
     }, [])
   );

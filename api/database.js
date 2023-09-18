@@ -5,7 +5,11 @@ import { Toast } from "@ant-design/react-native";
 import * as DocumentPicker from "expo-document-picker";
 import { useState } from "react";
 import { DevSettings } from "react-native";
-import firebase from "./firebase/firebase";
+import firebase, { firebaseConfig } from "./firebase/firebase";
+import { getDatabase, ref, set,push,onValue, update } from "firebase/database";
+import { initializeApp } from "firebase/app";
+
+import _ from 'lodash'
 
 export const nameDB = "newDB1.db";
 
@@ -72,7 +76,7 @@ export const ResetDB = () => {
   });
 };
 
-export const UploadDatabase = async () => {
+export const UploadDatabase = async (uniqueId,uniqueNumberDatabase) => {
   if (Platform.OS === "android") {
     const infoDatabase = await FileSystem?.getInfoAsync(
       FileSystem.documentDirectory + `SQLite/${nameDB}`
@@ -95,7 +99,7 @@ export const UploadDatabase = async () => {
         xhr.open("GET", uri, true);
         xhr.send(null);
       });
-      const isRes = firebase.firebase?.storage()?.ref()?.child(`HiMom/database/${nameDB}`);
+      const isRes = firebase.firebase?.storage()?.ref()?.child(`HiMom/database/${uniqueId}/${uniqueNumberDatabase}/${nameDB}`);
       isRes?.put(blob);
     } else {
       console.log("Permission not granted");
@@ -105,3 +109,45 @@ export const UploadDatabase = async () => {
     }
   }
 };
+
+export const LoginDatabase = async (uniqueId) => {
+  const fbConfig = {
+    apiKey: "AIzaSyDZRS7NAaqKNYQxuFHAPzl0bjtNF1vjNJs",
+    authDomain: "himom-4abb5.firebaseapp.com",
+    projectId: "himom-4abb5",
+    storageBucket: "himom-4abb5.appspot.com",
+    messagingSenderId: "718883397267",
+    appId: "1:718883397267:web:eeff2d30ad255e683a7766",
+    measurementId: "G-ESX60GJSTE",
+    databaseURL: "https://himom-4abb5-default-rtdb.asia-southeast1.firebasedatabase.app",
+  };
+  
+  let firebase = initializeApp(fbConfig);
+  if(uniqueId){
+    const db = getDatabase(firebase)
+    const postListRef = ref(db, 'userId');
+    let isHasAcc = false
+    let uniqueNumberDatabase
+
+    onValue(postListRef, async(snapshot) => {
+      if(snapshot?.val() !== null){
+        snapshot?.forEach((childSnapshot) => {
+          if(isHasAcc) return;
+          console.log(childSnapshot, childSnapshot.toJSON().deviceId,String( childSnapshot.toJSON()?.deviceId) === String(uniqueId),uniqueId  )
+          if(String(childSnapshot?.toJSON()?.deviceId) === String(uniqueId) ){
+          isHasAcc = true
+          uniqueNumberDatabase = childSnapshot?.toJSON()?.uniqueNumberDatabase
+          UploadDatabase(uniqueId,uniqueNumberDatabase)
+         }
+         });
+      }else{
+        const newPostRef = push(postListRef);
+        uniqueNumberDatabase = _.uniqueId()
+        set(newPostRef, {deviceId:uniqueId, uniqueNumberDatabase: uniqueNumberDatabase })
+        UploadDatabase(uniqueId,uniqueNumberDatabase)
+      }
+    }, {
+      onlyOnce: true
+    });
+  }
+}
