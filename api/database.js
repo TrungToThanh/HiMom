@@ -6,7 +6,7 @@ import * as DocumentPicker from "expo-document-picker";
 import { useState } from "react";
 import { DevSettings } from "react-native";
 import firebase, { firebaseConfig } from "./firebase/firebase";
-import { getDatabase, ref, set,push,onValue, update } from "firebase/database";
+import { getDatabase, ref, set,push,onValue, update, remove } from "firebase/database";
 import { initializeApp } from "firebase/app";
 
 import _ from 'lodash'
@@ -103,14 +103,12 @@ export const UploadDatabase = async (uniqueId,uniqueNumberDatabase) => {
       isRes?.put(blob);
     } else {
       console.log("Permission not granted");
-      // FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync(
-      //   FileSystem.documentDirectory + `SQLite/${nameDB}`
-      // );
     }
   }
 };
 
-export const LoginDatabase = async (uniqueId) => {
+export const LoginDatabase = async (uniqueId,listAccountBaby) => {
+  console.log('1',uniqueId,listAccountBaby)
   const fbConfig = {
     apiKey: "AIzaSyDZRS7NAaqKNYQxuFHAPzl0bjtNF1vjNJs",
     authDomain: "himom-4abb5.firebaseapp.com",
@@ -126,28 +124,42 @@ export const LoginDatabase = async (uniqueId) => {
   if(uniqueId){
     const db = getDatabase(firebase)
     const postListRef = ref(db, 'userId');
+    const newPostRef = push(postListRef);
+    //  remove(postListRef)
+    // set(newPostRef, {deviceId:'uniqueId', uniqueNumberDatabase: 'uniqueNumberDatabase', process:listAccountBaby })
+    update(postListRef, {deviceId:'uniqueId4', uniqueNumberDatabase: 'uniqueNumberDatabase', process:{}})
     let isHasAcc = false
     let uniqueNumberDatabase
-
     onValue(postListRef, async(snapshot) => {
-      if(snapshot?.val() !== null){
-        snapshot?.forEach((childSnapshot) => {
-          if(isHasAcc) return;
-          console.log(childSnapshot, childSnapshot.toJSON().deviceId,String( childSnapshot.toJSON()?.deviceId) === String(uniqueId),uniqueId  )
-          if(String(childSnapshot?.toJSON()?.deviceId) === String(uniqueId) ){
-          isHasAcc = true
-          uniqueNumberDatabase = childSnapshot?.toJSON()?.uniqueNumberDatabase
-          UploadDatabase(uniqueId,uniqueNumberDatabase)
-         }
-         });
-      }else{
-        const newPostRef = push(postListRef);
-        uniqueNumberDatabase = _.uniqueId()
-        set(newPostRef, {deviceId:uniqueId, uniqueNumberDatabase: uniqueNumberDatabase })
-        UploadDatabase(uniqueId,uniqueNumberDatabase)
-      }
-    }, {
-      onlyOnce: true
-    });
+      console.log('2')
+      // update(newPostRef,{})
+      // remove(postListRef)
+      // remove(newPostRef)
+      // set(newPostRef, {deviceId:'uniqueId', uniqueNumberDatabase: 'uniqueNumberDatabase', process:JSON.stringify(listAccountBaby) })
+    })
+    // onValue(postListRef, async(snapshot) => {
+    //   if(snapshot.exists){
+    //     update(newPostRef,{})
+    //   }
+    //   // if(snapshot?.val() !== null){
+    //   //   snapshot?.forEach((childSnapshot) => {
+    //   //     if(isHasAcc) return;
+    //   //     if(String(childSnapshot?.toJSON()?.deviceId) === String(uniqueId) ){
+    //   //     isHasAcc = true
+    //   //     // uniqueNumberDatabase = childSnapshot?.toJSON()?.uniqueNumberDatabase
+    //   //     // UploadDatabase(uniqueId,uniqueNumberDatabase)
+    //   //     update(newPostRef, '')
+    //   //    }
+    //   //    });
+    //   // }
+    //     // uniqueNumberDatabase = _.uniqueId()
+        
+
+    //     // set(newPostRef, {deviceId:uniqueId, uniqueNumberDatabase: uniqueNumberDatabase, process:listEventProcessLine  })
+    //     // UploadDatabase(uniqueId,uniqueNumberDatabase)
+      
+    // }, {
+    //   onlyOnce: true
+    // });
   }
 }

@@ -8,6 +8,8 @@ import { getAllBabyInBabyList } from "../../api/login/login";
 import Login from "./login/login";
 import Account from "./account/account";
 import { LoginDatabase, UploadDatabase } from "../../api/database";
+import Input from "@ant-design/react-native/lib/input-item/Input";
+import ParentAcc from "./account/parent/parentAcc";
 
 export default function Main() {
   const image = require("../../assets/pics/born.png");
@@ -58,7 +60,8 @@ export default function Main() {
         message={"Chúng ta là một gia đình"}
         style={{ width: windowWidth, marginTop: 50, backgroundColor: "#f2f2f2" }}
       />
-      <View
+      <ParentAcc />
+      {/* <View
         style={{
           flexDirection: "row",
           width: windowWidth,
@@ -110,7 +113,7 @@ export default function Main() {
             }}
           />
         )}
-      </View>
+      </View> */}
     </View>
   );
 }

@@ -39,8 +39,8 @@ const Login = ({ listAccountBaby }: Props) => {
 
   const handleLogin = async () => {
     Network.getNetworkStateAsync().then((item) => {
-      if (item.isConnected && listAccountBaby?.length > 0) {
-        LoginDatabase(uniqueId);
+      if (item.isConnected && listAccountBaby?.length > 0 && Number(userId) >= 0) {
+        // LoginDatabase(uniqueId, listAccountBaby);
       }
     });
 
