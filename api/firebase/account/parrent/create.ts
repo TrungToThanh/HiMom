@@ -37,6 +37,7 @@ export const FbAccParentCreate = async (name, password) => {
           name: name,
           password: password,
           avatar: "",
+          account: "",
         });
         Alert.alert("Đăng ký tài khoản", "Tạo thành công!");
         resolveAll(true);
