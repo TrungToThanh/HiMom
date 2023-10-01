@@ -7,6 +7,7 @@ import DetailShopList from "./shopping/detail_list_shopping";
 import Main from "./main";
 import Home from "./home/home";
 import MainShop from "./shopping/main_list_shopping";
+import BabyAcc from "./account/baby/babyAcc";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,15 @@ function MyStack() {
           title: "Màn hình đăng nhập",
           headerShown: false,
         }}
+      />
+      <Stack.Screen
+        name="BabyAcc"
+        component={BabyAcc}
+        options={{
+          title: "Màn hình đăng nhập Baby",
+          headerShown: false,
+        }}
+        getId={({ params }) => params.nameParentUserId}
       />
       <Stack.Screen
         name="Home"

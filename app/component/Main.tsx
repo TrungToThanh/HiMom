@@ -10,6 +10,9 @@ import Account from "./account/account";
 import { LoginDatabase, UploadDatabase } from "../../api/database";
 import Input from "@ant-design/react-native/lib/input-item/Input";
 import ParentAcc from "./account/parent/parentAcc";
+import InternetStatus from "./utils/internet-status";
+import * as Network from "expo-network";
+import BabyAcc from "./account/baby/babyAcc";
 
 export default function Main() {
   const image = require("../../assets/pics/born.png");
@@ -45,6 +48,14 @@ export default function Main() {
     }, [])
   );
 
+  const isInternetStatus = useMemo(() => {
+    let isConnected = false;
+    Network.getNetworkStateAsync().then((item) => {
+      isConnected = item.isConnected;
+    });
+    return isConnected;
+  }, []);
+
   return (
     <View
       style={{
@@ -60,7 +71,9 @@ export default function Main() {
         message={"Chúng ta là một gia đình"}
         style={{ width: windowWidth, marginTop: 50, backgroundColor: "#f2f2f2" }}
       />
-      <ParentAcc />
+      {isInternetStatus ? <InternetStatus /> : <ParentAcc />}
+      {/* {isInternetStatus ? <InternetStatus /> : <BabyAcc />} */}
+
       {/* <View
         style={{
           flexDirection: "row",

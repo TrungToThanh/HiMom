@@ -1,29 +1,19 @@
 import React, { useState } from "react";
 import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
-
 import { Toast } from "@ant-design/react-native";
-import { useNavigation } from "@react-navigation/native";
-import { FbAccParentLogin } from "../../../../api/firebase/account/parrent/login";
+import { FbAccBabyLogin } from "../../../../api/firebase/account/baby/login";
 
-const ParentAccLogin = () => {
-  const navigation = useNavigation();
-
-  const [nameParentUser, setNameParentUser] = useState("");
-  const [passwordParentUser, setPasswordParentUser] = useState("");
+const BabyAccLogin = () => {
+  const [nameBabyUser, setNameBabyUser] = useState("");
+  const [passwordBabyUser, setPasswordBabyUser] = useState("");
 
   const handleLogin = () => {
-    if (!nameParentUser || !passwordParentUser) {
+    const isError = !nameBabyUser || !passwordBabyUser;
+    if (isError) {
       Toast.fail("Vui lòng kiểm tra và nhập đầy đủ thông tin!");
       return;
     }
-
-    FbAccParentLogin(nameParentUser, passwordParentUser).then((accountId?: string) => {
-      console.log("value", accountId);
-      if (accountId) {
-        //@ts-ignore
-        navigation.navigate("BabyAcc", { nameParentUserId: accountId });
-      }
-    });
+    FbAccBabyLogin(nameBabyUser, passwordBabyUser);
   };
   return (
     <View>
@@ -31,13 +21,13 @@ const ParentAccLogin = () => {
         style={styles.input}
         clearButtonMode="always"
         placeholder="Tên tài khoản"
-        onChangeText={(value) => setNameParentUser(value?.trim())}
+        onChangeText={(value) => setNameBabyUser(value?.trim())}
       />
       <TextInput
         style={styles.input}
         placeholder="Mật khẩu"
         secureTextEntry={true}
-        onChangeText={(value) => setPasswordParentUser(value?.trim())}
+        onChangeText={(value) => setPasswordBabyUser(value?.trim())}
       />
       <View style={{ padding: 20 }}>
         <Button onPress={() => handleLogin()} title="Đăng nhập" />
@@ -46,7 +36,7 @@ const ParentAccLogin = () => {
   );
 };
 
-export default ParentAccLogin;
+export default BabyAccLogin;
 
 const styles = StyleSheet.create({
   input: {

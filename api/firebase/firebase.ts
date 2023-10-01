@@ -29,3 +29,14 @@ if (!firebase.apps?.length) {
 }
 
 export default { firebase };
+
+export const fbConfig = {
+  apiKey: "AIzaSyDZRS7NAaqKNYQxuFHAPzl0bjtNF1vjNJs",
+  authDomain: "himom-4abb5.firebaseapp.com",
+  projectId: "himom-4abb5",
+  storageBucket: "himom-4abb5.appspot.com",
+  messagingSenderId: "718883397267",
+  appId: "1:718883397267:web:eeff2d30ad255e683a7766",
+  measurementId: "G-ESX60GJSTE",
+  databaseURL: "https://himom-4abb5-default-rtdb.asia-southeast1.firebasedatabase.app",
+};
