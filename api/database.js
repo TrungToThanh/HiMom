@@ -108,7 +108,6 @@ export const UploadDatabase = async (uniqueId,uniqueNumberDatabase) => {
 };
 
 export const LoginDatabase = async (uniqueId,listAccountBaby) => {
-  console.log('1',uniqueId,listAccountBaby)
   const fbConfig = {
     apiKey: "AIzaSyDZRS7NAaqKNYQxuFHAPzl0bjtNF1vjNJs",
     authDomain: "himom-4abb5.firebaseapp.com",
@@ -131,7 +130,6 @@ export const LoginDatabase = async (uniqueId,listAccountBaby) => {
     let isHasAcc = false
     let uniqueNumberDatabase
     onValue(postListRef, async(snapshot) => {
-      console.log('2')
       // update(newPostRef,{})
       // remove(postListRef)
       // remove(newPostRef)

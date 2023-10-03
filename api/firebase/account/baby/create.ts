@@ -4,7 +4,6 @@ import { Alert } from "react-native";
 import { fbConfig } from "../../firebase";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, push, onValue } from "firebase/database";
-import dayjs from "dayjs";
 import { imageBase64Default } from "../../../../app/const/type";
 import { FbAccParentUpdateWhenCreateBaby } from "../parrent/update";
 
@@ -22,7 +21,6 @@ export const FbAccBabyCreate = async ({
   isParentCreate,
   expectBirthdayBaby,
 }: Props) => {
-  console.log(isBorn, nameBaby, passwordBaby, isParentCreate, expectBirthdayBaby);
   let firebase = initializeApp(fbConfig);
   const db = getDatabase(firebase);
   const postListRef = ref(db, "babyId");
@@ -63,7 +61,7 @@ export const FbAccBabyCreate = async ({
               nameEvent: "Nhịp đập đầu tiên! 💓",
               contentEvent: "Cả nhà đều vui",
               dateEvent: expectBirthdayBaby,
-              imageEvent: imageBase64Default,
+              imageEvent: [imageBase64Default],
               videoEvent: "",
               noteEvent: "",
               dateCreateEvent: new Date().toISOString(),

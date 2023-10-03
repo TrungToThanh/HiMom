@@ -14,10 +14,17 @@ const BabyAcc = () => {
   const { width, height } = useWindowDimensions();
   const [isLogin, setIsLogin] = useState(true);
 
-  const nameParentUserId = useMemo(() => {
+  const accountParentId = useMemo(() => {
     if (route) {
       /* @ts-ignore */
-      return route?.params?.nameParentUserId;
+      return route?.params?.accountParentId;
+    }
+  }, [route]);
+
+  const listAccBabyOfParent = useMemo(() => {
+    if (route) {
+      /* @ts-ignore */
+      return route?.params?.accountBabyOfParent;
     }
   }, [route]);
 
@@ -58,12 +65,12 @@ const BabyAcc = () => {
         </View>
         <View style={{ padding: 10 }}>
           {isLogin ? (
-            <BabyAccLogin />
-          ) : (
-            <BabyAccCreate
-              nameParentUserId={nameParentUserId}
-              setIsLogin={() => setIsLogin(true)}
+            <BabyAccLogin
+              listAccBabyOfParent={listAccBabyOfParent}
+              accountParentId={accountParentId}
             />
+          ) : (
+            <BabyAccCreate accountParentId={accountParentId} setIsLogin={() => setIsLogin(true)} />
           )}
         </View>
       </View>

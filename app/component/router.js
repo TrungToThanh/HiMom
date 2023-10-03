@@ -29,7 +29,7 @@ function MyStack() {
           title: "Màn hình đăng nhập Baby",
           headerShown: false,
         }}
-        getId={({ params }) => params.nameParentUserId}
+        getId={({ params }) => {params.accountParentId, params.accountBabyOfParent}}
       />
       <Stack.Screen
         name="Home"
@@ -38,7 +38,7 @@ function MyStack() {
           title: "Màn hình chính",
           headerShown: false,
         }}
-        getId={({ params }) => params.userId}
+        getId={({ params }) => {params.accountParentId, params.accountBabyId}}
       />
       <Stack.Screen
         name="MainShop"

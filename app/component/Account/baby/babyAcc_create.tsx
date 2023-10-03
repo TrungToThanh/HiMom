@@ -9,10 +9,10 @@ import moment from "moment";
 
 type Props = {
   setIsLogin: () => void;
-  nameParentUserId: any;
+  accountParentId: any;
 };
 
-const BabyAccCreate = ({ nameParentUserId, setIsLogin }: Props) => {
+const BabyAccCreate = ({ accountParentId, setIsLogin }: Props) => {
   const [isBorn, setIsBorn] = useState(false);
   const [nameBabyUser, setNameBabyUser] = useState("");
   const [passwordBabyUser, setPasswordBabyUser] = useState("");
@@ -33,9 +33,9 @@ const BabyAccCreate = ({ nameParentUserId, setIsLogin }: Props) => {
       isBorn: isBorn,
       nameBaby: nameBabyUser,
       passwordBaby: passwordBabyUser,
-      isParentCreate: _.isObject(nameParentUserId)
-        ? nameParentUserId.nameParentUserId
-        : nameParentUserId,
+      isParentCreate: _.isObject(accountParentId)
+        ? accountParentId.accountParentId
+        : accountParentId,
       expectBirthdayBaby: expectBirthdayBaby,
     }).then((isSuccess) => {
       if (isSuccess) setIsLogin();

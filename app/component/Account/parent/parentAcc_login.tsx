@@ -4,6 +4,7 @@ import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { Toast } from "@ant-design/react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FbAccParentLogin } from "../../../../api/firebase/account/parrent/login";
+import { isParentType } from "../../../const/default-type";
 
 const ParentAccLogin = () => {
   const navigation = useNavigation();
@@ -17,11 +18,13 @@ const ParentAccLogin = () => {
       return;
     }
 
-    FbAccParentLogin(nameParentUser, passwordParentUser).then((accountId?: string) => {
-      console.log("value", accountId);
-      if (accountId) {
+    FbAccParentLogin(nameParentUser, passwordParentUser).then((acc?: isParentType) => {
+      if (acc) {
         //@ts-ignore
-        navigation.navigate("BabyAcc", { nameParentUserId: accountId });
+        navigation.navigate("BabyAcc", {
+          accountParentId: acc.uniqueId,
+          accountBabyOfParent: acc.account,
+        });
       }
     });
   };

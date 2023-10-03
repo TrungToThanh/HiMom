@@ -4,6 +4,7 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { initializeApp } from "firebase/app";
 
 import { fbConfig } from "../../firebase";
+import { isParentType } from "../../../../app/const/default-type";
 
 export const FbAccParentLogin = async (name, password) => {
   let firebase = initializeApp(fbConfig);
@@ -27,11 +28,11 @@ export const FbAccParentLogin = async (name, password) => {
 
     stepOne.finally(() => {
       if (arrayListParentAcc && arrayListParentAcc.length > 0) {
-        const isHasAcc = arrayListParentAcc?.find(
+        const isHasAcc: isParentType | undefined = arrayListParentAcc?.find(
           (item) => String(item.name) === String(name) && String(item.password) === String(password)
         );
-        if (isHasAcc && isHasAcc.uniqueId) {
-          resolveAll(isHasAcc.uniqueId);
+        if (isHasAcc) {
+          resolveAll(isHasAcc);
         } else {
           Alert.alert("Đăng nhập", "Vui lòng kiểm tra lại tài khoản và mã đăng nhập");
           resolveAll(undefined);
