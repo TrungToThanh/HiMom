@@ -8,6 +8,7 @@ import Main from "./main";
 import Home from "./home/home";
 import MainShop from "./shopping/main_list_shopping";
 import BabyAcc from "./account/baby/babyAcc";
+import ProcessBabyPostNewEvent from "./process/process-add/process-add";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,15 @@ function MyStack() {
         options={{
           title: "Màn hình chính",
           headerShown: false,
+        }}
+        getId={({ params }) => {params.accountParentId, params.accountBabyId}}
+      />
+      <Stack.Screen
+        name="ProcessBabyPostNewEvent"
+        component={ProcessBabyPostNewEvent}
+        options={{
+          title: "Tạo nội dung mới",
+          headerShown: true,
         }}
         getId={({ params }) => {params.accountParentId, params.accountBabyId}}
       />

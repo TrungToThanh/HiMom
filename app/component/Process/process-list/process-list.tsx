@@ -60,7 +60,7 @@ const ProcessBabyList = ({ accountParentId, accountBabyId }: Props) => {
                       <ContentReact />
                       <Button size="small">Bình luận</Button>
                     </View>
-                    <ContentComment />
+                    {/* <ContentComment /> */}
                   </View>
                 </View>
               );

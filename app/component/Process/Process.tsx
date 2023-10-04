@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { View, ScrollView, ImageBackground, useWindowDimensions } from "react-native";
 import ProcessBabyList from "./process-list/process-list";
 import ProcessBabyAdd from "./process-add/process-add";
+import CardNewPost from "./card-new-post/card-new-post";
 
 interface Props {
   accountParentId: any;
@@ -19,7 +20,7 @@ const ProcessBaby = ({ accountParentId, accountBabyId }: Props) => {
         style={{ width: width, height: height }}
       >
         <ProcessBabyList accountParentId={accountParentId} accountBabyId={accountBabyId} />
-        <ProcessBabyAdd accountParentId={accountParentId} accountBabyId={accountBabyId} />
+        <CardNewPost accountParentId={accountParentId} accountBabyId={accountBabyId} />
       </ImageBackground>
     </View>
   );

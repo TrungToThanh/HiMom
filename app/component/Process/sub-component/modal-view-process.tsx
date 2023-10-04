@@ -114,9 +114,7 @@ const ModalViewProcess = ({
           xhr.onload = () => {
             resovle(xhr.response);
           };
-          xhr.onerror = (e) => {
-            // console.log(e);
-          };
+          xhr.onerror = (e) => {};
           xhr.responseType = "blob";
           xhr.open("GET", uri, true);
           xhr.send(null);

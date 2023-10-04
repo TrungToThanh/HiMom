@@ -3,16 +3,15 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
-export const ContentPermissionAdd = () => {
+type Props = {
+  setEnableComment: (value) => void;
+};
+export const ContentPermissionAdd = ({ setEnableComment }: Props) => {
   return (
     <View style={styles.div}>
       <View style={styles.divUpload}>
         <Text>Cho phép bình luận</Text>
-        <Checkbox />
-      </View>
-      <View style={styles.divUpload}>
-        <Text>Cho phép thả tim</Text>
-        <Checkbox />
+        <Checkbox onChange={(value) => setEnableComment(value)} defaultChecked={true} />
       </View>
     </View>
   );
@@ -20,7 +19,7 @@ export const ContentPermissionAdd = () => {
 
 const styles = StyleSheet.create({
   div: {
-    height: 50,
+    height: 30,
     borderColor: "green",
     borderWidth: 1,
     borderRadius: 6,

@@ -15,8 +15,6 @@ type Props = {
 export const ContentAttachment = ({ listImage, listVideo }: Props) => {
   const { width } = useWindowDimensions();
   const video = React.useRef(null);
-
-  console.log("listImage", listImage);
   return (
     <View
       style={{
