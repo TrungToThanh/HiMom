@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { Text, View, useWindowDimensions } from "react-native";
 
 import { TabBar, Icon, Toast } from "@ant-design/react-native";
 import CalendarStrip from "react-native-calendar-strip";
@@ -36,6 +36,12 @@ const Home = () => {
     }
   }, [route]);
 
+  if (!accountParentId || !accountBabyId)
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
   return (
     <View style={{ width: width, height: height }}>
       <TabBar unselectedTintColor="black" barTintColor="white">

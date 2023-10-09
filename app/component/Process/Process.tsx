@@ -3,6 +3,7 @@ import { View, ScrollView, ImageBackground, useWindowDimensions } from "react-na
 import ProcessBabyList from "./process-list/process-list";
 import ProcessBabyAdd from "./process-add/process-add";
 import CardNewPost from "./card-new-post/card-new-post";
+import { WhiteSpace } from "@ant-design/react-native";
 
 interface Props {
   accountParentId: any;
@@ -19,8 +20,12 @@ const ProcessBaby = ({ accountParentId, accountBabyId }: Props) => {
         resizeMode="cover"
         style={{ width: width, height: height }}
       >
-        <ProcessBabyList accountParentId={accountParentId} accountBabyId={accountBabyId} />
-        <CardNewPost accountParentId={accountParentId} accountBabyId={accountBabyId} />
+        <ScrollView>
+          <ProcessBabyList accountParentId={accountParentId} accountBabyId={accountBabyId} />
+          <CardNewPost accountParentId={accountParentId} accountBabyId={accountBabyId} />
+          <WhiteSpace size="xl" />
+          <View style={{ marginBottom: 100 }}></View>
+        </ScrollView>
       </ImageBackground>
     </View>
   );

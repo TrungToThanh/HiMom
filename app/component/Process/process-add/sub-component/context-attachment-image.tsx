@@ -6,9 +6,9 @@ import { Keyboard, StyleSheet, Text, useWindowDimensions } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 type Props = {
-  setListImageAddNew: (list) => void;
+  setListAttachmentAddNew: (list) => void;
 };
-export const ContentAttachmentAddImage = ({ setListImageAddNew }: Props) => {
+export const ContentAttachmentAddImage = ({ setListAttachmentAddNew }: Props) => {
   const { width } = useWindowDimensions();
   const video = React.useRef(null);
 
@@ -16,7 +16,7 @@ export const ContentAttachmentAddImage = ({ setListImageAddNew }: Props) => {
 
   const handleSelectPic = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
       quality: 1,
       base64: false,
@@ -25,13 +25,14 @@ export const ContentAttachmentAddImage = ({ setListImageAddNew }: Props) => {
     });
 
     if (!result.canceled) {
-      setListImageAddNew(result.assets);
+      setListAttachmentAddNew(result.assets);
+      console.log(result.assets);
       setShowButton(result.assets.length > 0 ? true : false);
     }
   };
 
   const handleDeleteAllPicture = () => {
-    setListImageAddNew(null);
+    setListAttachmentAddNew(null);
     setShowButton(false);
   };
 
@@ -46,7 +47,7 @@ export const ContentAttachmentAddImage = ({ setListImageAddNew }: Props) => {
           }}
         >
           <FontAwesomeIcon icon={faImages} />
-          <Text> Đính kèm ảnh </Text>
+          <Text> Đính kèm ảnh/video </Text>
         </View>
         {isShowButton && (
           <View>

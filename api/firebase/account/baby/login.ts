@@ -27,11 +27,7 @@ export const FbAccBabyLogin = async (uniqueIdBaby, nameBaby, passwordBaby) => {
     });
 
     stepOne.finally(() => {
-      if (
-        arrayListBabyAcc &&
-        String(arrayListBabyAcc?.nameBaby) === String(nameBaby) &&
-        String(arrayListBabyAcc?.passwordBaby) === String(passwordBaby)
-      ) {
+      if (arrayListBabyAcc && String(arrayListBabyAcc?.nameBaby) === String(nameBaby)) {
         resolveAll(true);
       } else {
         Alert.alert("Đăng nhập", "Vui lòng kiểm tra lại tài khoản và mã đăng nhập");

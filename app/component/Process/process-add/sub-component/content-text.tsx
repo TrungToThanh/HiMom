@@ -8,11 +8,10 @@ import { ResizeMode, Video } from "expo-av";
 
 type Props = {
   setContent: (value) => void;
-  listImageAddNew: any;
-  listVideoAddNew: any;
+  listAttachmentAddNew: any;
 };
 
-export const ContentTextAdd = ({ setContent, listImageAddNew, listVideoAddNew }: Props) => {
+export const ContentTextAdd = ({ setContent, listAttachmentAddNew }: Props) => {
   const { width } = useWindowDimensions();
   return (
     <View style={styles.div}>
@@ -23,38 +22,39 @@ export const ContentTextAdd = ({ setContent, listImageAddNew, listVideoAddNew }:
         placeholder="Nhập nội dung"
         onChangeText={(value) => setContent(value)}
       />
-      <View style={styles.divImages}>
-        {listImageAddNew?.map((itemImage: ImageUpload, index) => {
+      <View>
+        {listAttachmentAddNew?.map((itemSource: ImageUpload, index) => {
+          if (itemSource.type === "image") {
+            return (
+              <View style={styles.divImages} key={index}>
+                <Image
+                  source={itemSource}
+                  style={{
+                    height: width / 3 - 20,
+                    width: width / 3 - 20,
+                    borderRadius: 10,
+                  }}
+                  transition={1000}
+                  allowDownscaling
+                  contentFit="cover"
+                />
+              </View>
+            );
+          }
           return (
-            <Image
-              key={index}
-              source={itemImage}
-              style={{
-                height: width / 3 - 20,
-                width: width / 3 - 20,
-                borderRadius: 10,
-              }}
-              transition={1000}
-              allowDownscaling
-              contentFit="cover"
-            />
-          );
-        })}
-      </View>
-      <View style={styles.divVideo}>
-        {listVideoAddNew?.map((itemVideo) => {
-          return (
-            <Video
-              style={{
-                height: 300,
-                width: width - 40,
-              }}
-              source={itemVideo}
-              volume={1}
-              useNativeControls={true}
-              resizeMode={ResizeMode.CONTAIN}
-              isLooping
-            />
+            <View style={styles.divVideo} key={index}>
+              <Video
+                style={{
+                  height: 300,
+                  width: width - 40,
+                }}
+                source={itemSource}
+                volume={1}
+                useNativeControls={true}
+                resizeMode={ResizeMode.CONTAIN}
+                isLooping
+              />
+            </View>
           );
         })}
       </View>

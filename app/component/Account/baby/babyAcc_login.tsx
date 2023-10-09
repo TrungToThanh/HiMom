@@ -30,20 +30,25 @@ const BabyAccLogin = ({ listAccBabyOfParent, accountParentId }: Props) => {
   const [uniqueIdBaby, setUniqueIdBaby] = useState("");
 
   const handleLogin = () => {
-    const isError = !nameBabyUser || !passwordBabyUser;
+    const isError = !nameBabyUser;
     if (isError) {
       Toast.fail("Vui lòng kiểm tra và nhập đầy đủ thông tin!");
       return;
     }
-    FbAccBabyLogin(uniqueIdBaby, nameBabyUser, passwordBabyUser).then((isSuccess) => {
-      if (isSuccess) {
-        //@ts-ignore
-        navigation.navigate("Home", {
-          accountParentId: accountParentId,
-          accountBabyId: uniqueIdBaby,
-        });
-      }
+    //@ts-ignore
+    navigation.navigate("Home", {
+      accountParentId: accountParentId,
+      accountBabyId: uniqueIdBaby,
     });
+    // FbAccBabyLogin(uniqueIdBaby, nameBabyUser, passwordBabyUser).then((isSuccess) => {
+    //   if (isSuccess) {
+    //     //@ts-ignore
+    //     navigation.navigate("Home", {
+    //       accountParentId: accountParentId,
+    //       accountBabyId: uniqueIdBaby,
+    //     });
+    //   }
+    // });
   };
 
   const listAccountBaby = Object?.values(listAccBabyOfParent) || undefined;

@@ -11,6 +11,7 @@ import { ContentAttachmentAddVideo } from "./sub-component/context-attachment-vi
 import { ImageUpload } from "../../../const/type";
 import { FbProcessPostNewEvent } from "../../../../api/firebase/process/postNewEvent";
 import { useNavigation } from "@react-navigation/native";
+import * as FileSystem from "expo-file-system";
 
 const ProcessBabyPostNewEvent = () => {
   const { width, height } = useWindowDimensions();
@@ -32,16 +33,11 @@ const ProcessBabyPostNewEvent = () => {
   }, [route]);
 
   const [content, setContent] = useState("");
-  const [listImageAddNew, setListImageAddNew] = useState<any>();
-  const [listVideoAddNew, setListVideoAddNew] = useState<any>();
+  const [listAttachmentAddNew, setListAttachmentAddNew] = useState<any>();
   const [enableComment, setEnableComment] = useState(true);
 
   const handlePostNewEvent = () => {
-    if (
-      !content &&
-      (!listImageAddNew || listImageAddNew?.length < 1) &&
-      (!listVideoAddNew || listVideoAddNew?.length < 1)
-    ) {
+    if (!content && (!listAttachmentAddNew || listAttachmentAddNew?.length < 1)) {
       return Alert.alert("Thông báo!", "Vui lòng nhập thông tin bài mới!");
     }
 
@@ -49,8 +45,7 @@ const ProcessBabyPostNewEvent = () => {
       accountParentId,
       accountBabyId,
       content,
-      listImageAddNew,
-      listVideoAddNew,
+      listAttachmentAddNew,
       enableComment,
     }).then(() => {
       navigation.goBack();
@@ -78,11 +73,11 @@ const ProcessBabyPostNewEvent = () => {
           />
           <ContentTextAdd
             setContent={(value) => setContent(value)}
-            listImageAddNew={listImageAddNew}
-            listVideoAddNew={listVideoAddNew}
+            listAttachmentAddNew={listAttachmentAddNew}
           />
-          <ContentAttachmentAddImage setListImageAddNew={(list) => setListImageAddNew(list)} />
-          <ContentAttachmentAddVideo setListVideoAddNew={(list) => setListVideoAddNew(list)} />
+          <ContentAttachmentAddImage
+            setListAttachmentAddNew={(list) => setListAttachmentAddNew(list)}
+          />
           <ContentPermissionAdd setEnableComment={(value) => setEnableComment(value)} />
         </View>
       </ScrollView>
