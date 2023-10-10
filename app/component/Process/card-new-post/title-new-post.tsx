@@ -7,7 +7,10 @@ import React from "react";
 import { useWindowDimensions } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
-export const TitleNewPost = () => {
+type Props = {
+  accountParentName: string;
+};
+export const TitleNewPost = ({ accountParentName }: Props) => {
   const { width } = useWindowDimensions();
   return (
     <View
@@ -39,7 +42,7 @@ export const TitleNewPost = () => {
             fontWeight: "bold",
           }}
         >
-          Mom
+          {accountParentName || ""}
         </Text>
 
         <Text

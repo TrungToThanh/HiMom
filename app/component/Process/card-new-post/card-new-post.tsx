@@ -11,9 +11,10 @@ import { useNavigation } from "@react-navigation/native";
 type Props = {
   accountParentId: any;
   accountBabyId: any;
+  accountParentName: string;
 };
 
-function CardNewPost({ accountParentId, accountBabyId }: Props) {
+function CardNewPost({ accountParentId, accountBabyId, accountParentName }: Props) {
   const { width, height } = useWindowDimensions();
   const navigation = useNavigation();
 
@@ -22,6 +23,7 @@ function CardNewPost({ accountParentId, accountBabyId }: Props) {
     navigation.navigate("ProcessBabyPostNewEvent", {
       accountParentId: accountParentId,
       accountBabyId: accountBabyId,
+      accountParentName: accountParentName,
     });
   };
   return (
@@ -39,7 +41,7 @@ function CardNewPost({ accountParentId, accountBabyId }: Props) {
         }}
         onTouchStart={() => handleClickCardNewPost()}
       >
-        <TitleNewPost />
+        <TitleNewPost accountParentName={accountParentName} />
         <Text> Bạn đang nghĩ gì ....</Text>
       </View>
     </GestureHandlerRootView>

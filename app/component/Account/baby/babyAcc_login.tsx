@@ -18,15 +18,15 @@ import { useNavigation } from "@react-navigation/native";
 type Props = {
   listAccBabyOfParent: any;
   accountParentId: any;
+  accountParentName: string;
 };
 
-const BabyAccLogin = ({ listAccBabyOfParent, accountParentId }: Props) => {
+const BabyAccLogin = ({ listAccBabyOfParent, accountParentId, accountParentName }: Props) => {
   const RadioItem = Radio.RadioItem;
   const navigation = useNavigation();
   const { width } = useWindowDimensions();
 
   const [nameBabyUser, setNameBabyUser] = useState("");
-  const [passwordBabyUser, setPasswordBabyUser] = useState("");
   const [uniqueIdBaby, setUniqueIdBaby] = useState("");
 
   const handleLogin = () => {
@@ -39,20 +39,14 @@ const BabyAccLogin = ({ listAccBabyOfParent, accountParentId }: Props) => {
     navigation.navigate("Home", {
       accountParentId: accountParentId,
       accountBabyId: uniqueIdBaby,
+      accountParentName: accountParentName,
     });
-    // FbAccBabyLogin(uniqueIdBaby, nameBabyUser, passwordBabyUser).then((isSuccess) => {
-    //   if (isSuccess) {
-    //     //@ts-ignore
-    //     navigation.navigate("Home", {
-    //       accountParentId: accountParentId,
-    //       accountBabyId: uniqueIdBaby,
-    //     });
-    //   }
-    // });
   };
 
   const listAccountBaby = Object?.values(listAccBabyOfParent) || undefined;
 
+  if (!listAccountBaby || listAccountBaby?.length < 1)
+    return <Text>Không có tài khoản! Hãy tạo tài khoản!</Text>;
   return (
     <View>
       <Radio.Group
@@ -63,6 +57,7 @@ const BabyAccLogin = ({ listAccBabyOfParent, accountParentId }: Props) => {
           backgroundColor: "#f2f2f2",
         }}
       >
+        <Text>Danh sách Baby của {accountParentName}: </Text>
         {listAccountBaby &&
           listAccountBaby?.map((item: { uniqueIdBaby: string; nameAccount: string }, index) => (
             <RadioItem
@@ -92,14 +87,7 @@ const BabyAccLogin = ({ listAccBabyOfParent, accountParentId }: Props) => {
               </Text>
             </RadioItem>
           ))}
-        {!listAccountBaby && <Text>Vui lòng tạo tài khoản</Text>}
       </Radio.Group>
-      <TextInput
-        style={styles.input}
-        placeholder="Mật khẩu"
-        secureTextEntry={true}
-        onChangeText={(value) => setPasswordBabyUser(value?.trim())}
-      />
       <View style={{ padding: 20 }}>
         <Button onPress={() => handleLogin()} title="Đăng nhập" />
       </View>

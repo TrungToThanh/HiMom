@@ -30,7 +30,7 @@ function MyStack() {
           title: "Màn hình đăng nhập Baby",
           headerShown: false,
         }}
-        getId={({ params }) => {params.accountParentId, params.accountBabyOfParent}}
+        getId={({ params }) => {params.accountParentId, params.accountBabyOfParent, params.accountParentName}}
       />
       <Stack.Screen
         name="Home"
@@ -39,7 +39,7 @@ function MyStack() {
           title: "Màn hình chính",
           headerShown: false,
         }}
-        getId={({ params }) => {params.accountParentId, params.accountBabyId}}
+        getId={({ params }) => {params.accountParentId, params.accountBabyId, params.accountParentName}}
       />
       <Stack.Screen
         name="ProcessBabyPostNewEvent"
@@ -48,7 +48,7 @@ function MyStack() {
           title: "Tạo nội dung mới",
           headerShown: true,
         }}
-        getId={({ params }) => {params.accountParentId, params.accountBabyId}}
+        getId={({ params }) => {params.accountParentId, params.accountBabyId, params.accountParentName}}
       />
       <Stack.Screen
         name="MainShop"

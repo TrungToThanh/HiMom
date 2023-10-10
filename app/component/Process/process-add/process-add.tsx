@@ -4,14 +4,12 @@ import { Button, WhiteSpace } from "@ant-design/react-native";
 import { ContentTextAdd } from "./sub-component/content-text";
 import { TitleProcessAdd } from "./sub-component/title";
 import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
-import { ContentAttachmentAddImage } from "./sub-component/context-attachment-image";
+import { ContentAttachmentAdd } from "./sub-component/context-attachment-add";
 import { ContentPermissionAdd } from "./sub-component/content-permission";
 import { useRoute } from "@react-navigation/native";
-import { ContentAttachmentAddVideo } from "./sub-component/context-attachment-video";
 import { ImageUpload } from "../../../const/type";
 import { FbProcessPostNewEvent } from "../../../../api/firebase/process/postNewEvent";
 import { useNavigation } from "@react-navigation/native";
-import * as FileSystem from "expo-file-system";
 
 const ProcessBabyPostNewEvent = () => {
   const { width, height } = useWindowDimensions();
@@ -22,6 +20,13 @@ const ProcessBabyPostNewEvent = () => {
     if (route) {
       /* @ts-ignore */
       return route?.params?.accountParentId;
+    }
+  }, [route]);
+
+  const accountParentName = useMemo(() => {
+    if (route) {
+      /* @ts-ignore */
+      return route?.params?.accountParentName;
     }
   }, [route]);
 
@@ -68,16 +73,14 @@ const ProcessBabyPostNewEvent = () => {
         >
           <WhiteSpace size="xl" />
           <TitleProcessAdd
-            accountParentId={accountParentId}
+            accountParentName={accountParentName}
             handlePostNewEvent={handlePostNewEvent}
           />
           <ContentTextAdd
             setContent={(value) => setContent(value)}
             listAttachmentAddNew={listAttachmentAddNew}
           />
-          <ContentAttachmentAddImage
-            setListAttachmentAddNew={(list) => setListAttachmentAddNew(list)}
-          />
+          <ContentAttachmentAdd setListAttachmentAddNew={(list) => setListAttachmentAddNew(list)} />
           <ContentPermissionAdd setEnableComment={(value) => setEnableComment(value)} />
         </View>
       </ScrollView>

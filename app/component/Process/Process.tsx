@@ -8,8 +8,9 @@ import { WhiteSpace } from "@ant-design/react-native";
 interface Props {
   accountParentId: any;
   accountBabyId: any;
+  accountParentName: string;
 }
-const ProcessBaby = ({ accountParentId, accountBabyId }: Props) => {
+const ProcessBaby = ({ accountParentId, accountBabyId, accountParentName }: Props) => {
   const { width, height } = useWindowDimensions();
   const imageBackground = require("../../../assets/background.jpg");
 
@@ -21,8 +22,12 @@ const ProcessBaby = ({ accountParentId, accountBabyId }: Props) => {
         style={{ width: width, height: height }}
       >
         <ScrollView>
+          <CardNewPost
+            accountParentId={accountParentId}
+            accountBabyId={accountBabyId}
+            accountParentName={accountParentName}
+          />
           <ProcessBabyList accountParentId={accountParentId} accountBabyId={accountBabyId} />
-          <CardNewPost accountParentId={accountParentId} accountBabyId={accountBabyId} />
           <WhiteSpace size="xl" />
           <View style={{ marginBottom: 100 }}></View>
         </ScrollView>

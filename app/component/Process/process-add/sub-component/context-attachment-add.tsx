@@ -6,32 +6,30 @@ import { Keyboard, StyleSheet, Text, useWindowDimensions } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 type Props = {
-  setListVideoAddNew: (list) => void;
+  setListAttachmentAddNew: (list) => void;
 };
-
-export const ContentAttachmentAddVideo = ({ setListVideoAddNew }: Props) => {
-  const { width } = useWindowDimensions();
-  const video = React.useRef(null);
+export const ContentAttachmentAdd = ({ setListAttachmentAddNew }: Props) => {
   const [isShowButton, setShowButton] = useState(false);
 
   const handleSelectPic = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
       quality: 1,
       base64: false,
-      selectionLimit: 1,
+      selectionLimit: 3,
       allowsMultipleSelection: true,
     });
 
     if (!result.canceled) {
-      setListVideoAddNew(result.assets);
+      setListAttachmentAddNew(result.assets);
+      console.log(result.assets);
       setShowButton(result.assets.length > 0 ? true : false);
     }
   };
 
   const handleDeleteAllPicture = () => {
-    setListVideoAddNew(null);
+    setListAttachmentAddNew(null);
     setShowButton(false);
   };
 
@@ -45,8 +43,8 @@ export const ContentAttachmentAddVideo = ({ setListVideoAddNew }: Props) => {
             Keyboard.dismiss();
           }}
         >
-          <FontAwesomeIcon icon={faVideoCamera} />
-          <Text> Đính kèm video </Text>
+          <FontAwesomeIcon icon={faImages} />
+          <Text> Đính kèm ảnh/video </Text>
         </View>
         {isShowButton && (
           <View>

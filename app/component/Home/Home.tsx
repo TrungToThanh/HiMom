@@ -29,6 +29,13 @@ const Home = () => {
     }
   }, [route]);
 
+  const accountParentName = useMemo(() => {
+    if (route) {
+      /* @ts-ignore */
+      return route?.params?.accountParentName;
+    }
+  }, [route]);
+
   const accountBabyId = useMemo(() => {
     if (route) {
       /* @ts-ignore */
@@ -52,7 +59,11 @@ const Home = () => {
           onPress={() => setSelectedTab("process")}
           selectedIcon={<Icon name="home" size={26} color="#1870bc" />}
         >
-          <ProcessBaby accountParentId={accountParentId} accountBabyId={accountBabyId} />
+          <ProcessBaby
+            accountParentId={accountParentId}
+            accountBabyId={accountBabyId}
+            accountParentName={accountParentName}
+          />
         </TabBar.Item>
         <TabBar.Item
           title="Chuẩn bị"

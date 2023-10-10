@@ -61,8 +61,12 @@ export const FbAccBabyCreate = async ({
               nameEvent: "Nhịp đập đầu tiên! 💓",
               contentEvent: "Cả nhà đều vui",
               dateEvent: expectBirthdayBaby,
-              imageEvent: [imageBase64Default],
-              videoEvent: "",
+              attachmentList: [
+                {
+                  type: "image",
+                  uri: "https://firebasestorage.googleapis.com/v0/b/himom-4abb5.appspot.com/o/HiMom%2Fasset%2FfirstBeat.png?alt=media&token=ebbf635d-398c-4983-a1f9-1ebe33261952&_gl=1*17fefpr*_ga*MTM4NzYwMzI3LjE2OTQwOTExMTM.*_ga_CW55HF8NVT*MTY5Njk0ODIxNy4zNi4xLjE2OTY5NDg2NjUuMzAuMC4w",
+                },
+              ],
               noteEvent: "",
               dateCreateEvent: new Date().toISOString(),
               isShowEvent: true,

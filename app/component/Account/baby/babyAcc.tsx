@@ -21,6 +21,13 @@ const BabyAcc = () => {
     }
   }, [route]);
 
+  const accountParentName = useMemo(() => {
+    if (route) {
+      /* @ts-ignore */
+      return route?.params?.accountParentName;
+    }
+  }, [route]);
+
   const listAccBabyOfParent = useMemo(() => {
     if (route) {
       /* @ts-ignore */
@@ -68,6 +75,7 @@ const BabyAcc = () => {
             <BabyAccLogin
               listAccBabyOfParent={listAccBabyOfParent}
               accountParentId={accountParentId}
+              accountParentName={accountParentName}
             />
           ) : (
             <BabyAccCreate accountParentId={accountParentId} setIsLogin={() => setIsLogin(true)} />

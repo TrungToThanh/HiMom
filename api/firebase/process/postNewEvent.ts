@@ -25,51 +25,48 @@ export const FbProcessPostNewEvent = async ({
   const db = getDatabase(firebaseRealtimeData);
   const postListRef = ref(db, "babyId/" + `${accountBabyId}/processLife/details`);
   const newPostRef = push(postListRef);
-  const linkImage = String(newPostRef).substring(
+  const listAttachment = String(newPostRef).substring(
     String(newPostRef).indexOf("babyId/"),
     String(newPostRef).length
   );
-  //Upload to storage
 
+  //Upload to storage
   var storage = firebase.firebase.storage();
   var storageRef = storage.ref();
 
   const stepOne = new Promise(function (resolveStepOne) {
-    const stepUploadAllImages = new Promise((resolveUploadAllImage) => {
-      if (listAttachmentAddNew && listAttachmentAddNew.length >= 0) {
-        listAttachmentAddNew?.map(async (item, index) => {
-          const uriFile = item.uri;
-          const { uri } = await FileSystem?.getInfoAsync(uriFile);
-          const blob: any = await new Promise((resovle, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.onload = () => {
-              resovle(xhr.response);
-            };
-            xhr.onerror = (e) => {
-              // console.log(e);
-            };
-            xhr.responseType = "blob";
-            xhr.open("GET", uri, true);
-            xhr.send(null);
-          });
-          const filename = uriFile?.substring(uriFile?.lastIndexOf("/") + 1, uriFile.length);
-          const isRes = firebase.firebase
-            ?.storage()
-            ?.ref()
-            ?.child(`HiMom/${linkImage}/${filename}`);
-          await isRes?.put(blob);
-          if (index === listAttachmentAddNew.length - 1) resolveUploadAllImage(true);
+    if (listAttachmentAddNew && listAttachmentAddNew.length >= 0) {
+      listAttachmentAddNew?.map(async (item, index) => {
+        const uriFile = item.uri;
+        const { uri } = await FileSystem?.getInfoAsync(uriFile);
+        const blob: any = await new Promise((resovle, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = () => {
+            resovle(xhr.response);
+          };
+          xhr.onerror = (e) => {
+            // console.log(e);
+          };
+          xhr.responseType = "blob";
+          xhr.open("GET", uri, true);
+          xhr.send(null);
         });
-      }
-    });
-
-    Promise.all([stepUploadAllImages]).finally(() => resolveStepOne(true));
+        const filename = uriFile?.substring(uriFile?.lastIndexOf("/") + 1, uriFile.length);
+        const isRes = firebase.firebase
+          ?.storage()
+          ?.ref()
+          ?.child(`HiMom/${listAttachment}/${filename}`);
+        await isRes?.put(blob);
+        if (index === listAttachmentAddNew.length - 1) resolveStepOne(true);
+      });
+    }
   });
 
+  //Get link of firebase and upload realtime database
   stepOne
     .then(async (isSuccess) => {
       const getLinkUrl = async () => {
-        let arrayLink: any = [];
+        let listAttachmentAddNewCook: any = [];
 
         await listAttachmentAddNew?.map(async (item, index) => {
           const fileNameCook = await item?.uri?.substring(
@@ -79,10 +76,10 @@ export const FbProcessPostNewEvent = async ({
 
           if (fileNameCook) {
             const get = await storageRef
-              .child(`HiMom/${linkImage}${String(fileNameCook) ?? ""}`)
+              .child(`HiMom/${listAttachment}${String(fileNameCook) ?? ""}`)
               .getDownloadURL();
 
-            await arrayLink.push({
+            await listAttachmentAddNewCook.push({
               height: item?.height || 300,
               width: item?.width || 400,
               uri: get.toString() || item?.uri,
@@ -90,14 +87,11 @@ export const FbProcessPostNewEvent = async ({
             });
 
             if (index === listAttachmentAddNew?.length - 1) {
-              console.log(arrayLink);
-
               const data = {
                 nameEvent: accountParentId,
                 contentEvent: content,
                 dateEvent: dayjs(new Date()).format("DD-MM-YYYY HH:ss"),
-                imageEvent: arrayLink || listAttachmentAddNew,
-                videoEvent: "",
+                attachmentList: listAttachmentAddNewCook || listAttachmentAddNew,
                 noteEvent: "",
                 dateCreateEvent: dayjs(new Date()).format("DD-MM-YYYY HH:ss"),
                 isShowEvent: true,

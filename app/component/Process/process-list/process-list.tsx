@@ -4,10 +4,9 @@ import { Button, WhiteSpace } from "@ant-design/react-native";
 import { FbAccBabyGetProcess } from "../../../../api/firebase/process/getProcess";
 import { TitleProcess } from "./sub-componet/title";
 import { ContentText } from "./sub-componet/content-text";
-import { ContentAttachmentImage } from "./sub-componet/context-attachment-image";
+import { ContentAttachment } from "./sub-componet/context-attachment";
 import { ContentReact } from "./sub-componet/content-react";
 import { ContentComment } from "./sub-componet/content-comment";
-import { ContentAttachmentVideo } from "./sub-componet/context-attachment-video";
 
 interface Props {
   accountParentId: any;
@@ -28,9 +27,10 @@ const ProcessBabyList = ({ accountParentId, accountBabyId }: Props) => {
       {listEventCook &&
         listEventCook?.length > 0 &&
         listEventCook?.map((item, indexItem) => {
-          const listImage: any = Object.values(item?.imageEvent)
-            ? Object.values(item?.imageEvent)
-            : undefined;
+          const listAttachment: any =
+            item?.attachmentList && Object.values(item?.attachmentList)
+              ? Object.values(item?.attachmentList)
+              : undefined;
 
           return (
             <View key={indexItem}>
@@ -49,7 +49,7 @@ const ProcessBabyList = ({ accountParentId, accountBabyId }: Props) => {
                 <TitleProcess item={item} />
                 <WhiteSpace />
                 <ContentText item={item} />
-                <ContentAttachmentImage listImage={listImage} />
+                <ContentAttachment listAttachment={listAttachment} />
                 <WhiteSpace />
                 <View
                   style={{
