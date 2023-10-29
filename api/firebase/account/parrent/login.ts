@@ -41,30 +41,3 @@ export const FbAccParentLogin = async (name, password) => {
     });
   });
 };
-
-// export const LoginDatabase = async (uniqueId, listAccountBaby) => {
-//   console.log("1", uniqueId, listAccountBaby);
-
-//   let firebase = initializeApp(fbConfig);
-//   if (uniqueId) {
-//     const db = getDatabase(firebase);
-//     const postListRef = ref(db, "userId");
-//     const newPostRef = push(postListRef);
-//     //  remove(postListRef)
-//     // set(newPostRef, {deviceId:'uniqueId', uniqueNumberDatabase: 'uniqueNumberDatabase', process:listAccountBaby })
-//     update(postListRef, {
-//       deviceId: "uniqueId4",
-//       uniqueNumberDatabase: "uniqueNumberDatabase",
-//       process: {},
-//     });
-//     let isHasAcc = false;
-//     let uniqueNumberDatabase;
-//     onValue(postListRef, async (snapshot) => {
-//       console.log("2");
-//       // update(newPostRef,{})
-//       // remove(postListRef)
-//       // remove(newPostRef)
-//       // set(newPostRef, {deviceId:'uniqueId', uniqueNumberDatabase: 'uniqueNumberDatabase', process:JSON.stringify(listAccountBaby) })
-//     });
-//   }
-// };

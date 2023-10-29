@@ -16,6 +16,7 @@ const BabyAccCreate = ({ accountParentId, setIsLogin }: Props) => {
   const [isBorn, setIsBorn] = useState(false);
   const [nameBabyUser, setNameBabyUser] = useState("");
   const [passwordBabyUser, setPasswordBabyUser] = useState("");
+  const [relationShip, setRelationShip] = useState("");
   const [expectBirthdayBaby, setExpectBirthdayBaby] = useState(
     dayjs(new Date()).format("DD-MM-YYYY")
   );
@@ -37,6 +38,7 @@ const BabyAccCreate = ({ accountParentId, setIsLogin }: Props) => {
         ? accountParentId.accountParentId
         : accountParentId,
       expectBirthdayBaby: expectBirthdayBaby,
+      relationShip: relationShip,
     }).then((isSuccess) => {
       if (isSuccess) setIsLogin();
     });
@@ -54,6 +56,12 @@ const BabyAccCreate = ({ accountParentId, setIsLogin }: Props) => {
         placeholder="Mật khẩu"
         secureTextEntry={true}
         onChangeText={(value) => setPasswordBabyUser(value?.trim())}
+      />
+      <TextInput
+        style={styles.input}
+        clearButtonMode="always"
+        placeholder="Mối quan hệ"
+        onChangeText={(value) => setRelationShip(value?.trim())}
       />
       <Checkbox style={styles.checkbox} onChange={(value) => setIsBorn(value.target.checked)}>
         Đã sinh

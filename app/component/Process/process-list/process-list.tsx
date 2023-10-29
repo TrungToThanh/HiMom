@@ -11,8 +11,9 @@ import { ContentComment } from "./sub-componet/content-comment";
 interface Props {
   accountParentId: any;
   accountBabyId: any;
+  nameBabyUser: string;
 }
-const ProcessBabyList = ({ accountParentId, accountBabyId }: Props) => {
+const ProcessBabyList = ({ accountParentId, accountBabyId, nameBabyUser }: Props) => {
   const { width, height } = useWindowDimensions();
   const [listEventCook, setListEvent] = useState<any>();
 
@@ -46,7 +47,7 @@ const ProcessBabyList = ({ accountParentId, accountBabyId }: Props) => {
                   padding: 5,
                 }}
               >
-                <TitleProcess item={item} />
+                <TitleProcess item={item} nameBabyUser={nameBabyUser} />
                 <WhiteSpace />
                 <ContentText item={item} />
                 <ContentAttachment listAttachment={listAttachment} />

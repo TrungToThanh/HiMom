@@ -2,18 +2,9 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Text, View, useWindowDimensions } from "react-native";
 
 import { TabBar, Icon, Toast } from "@ant-design/react-native";
-import CalendarStrip from "react-native-calendar-strip";
 
-import { getAllBabyInBabyList } from "../../../api/login/login";
 import { useRoute } from "@react-navigation/native";
 import ProcessBaby from "../process/process";
-
-import LoadingData from "../../const/loading";
-import SettingAccount from "../setting/setting";
-import ReminderComponent from "../reminder/reminder";
-import HomeListShopping from "../shopping/home_list_shopping";
-import { getAllEvent } from "../../../api/eventProcess/event";
-import { useFocusEffect } from "@react-navigation/native";
 
 const Home = () => {
   const route = useRoute();
@@ -43,6 +34,22 @@ const Home = () => {
     }
   }, [route]);
 
+  const relationShip = useMemo(() => {
+    if (route) {
+      /* @ts-ignore */
+      return route?.params?.relationShip;
+    }
+  }, [route]);
+
+  const nameBabyUser = useMemo(() => {
+    if (route) {
+      /* @ts-ignore */
+      return route?.params?.nameBabyUser;
+    }
+  }, [route]);
+
+  console.log("nameBabyUserHOme", nameBabyUser);
+
   if (!accountParentId || !accountBabyId)
     return (
       <View>
@@ -63,6 +70,8 @@ const Home = () => {
             accountParentId={accountParentId}
             accountBabyId={accountBabyId}
             accountParentName={accountParentName}
+            relationShip={relationShip}
+            nameBabyUser={nameBabyUser}
           />
         </TabBar.Item>
         <TabBar.Item

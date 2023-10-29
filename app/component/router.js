@@ -4,11 +4,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import DetailShopList from "./shopping/detail_list_shopping";
-import Main from "./main";
-import Home from "./home/home";
+
 import MainShop from "./shopping/main_list_shopping";
 import BabyAcc from "./account/baby/babyAcc";
 import ProcessBabyPostNewEvent from "./process/process-add/process-add";
+import Main from "./main";
+import Home from "./home/home";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -39,7 +41,7 @@ function MyStack() {
           title: "Màn hình chính",
           headerShown: false,
         }}
-        getId={({ params }) => {params.accountParentId, params.accountBabyId, params.accountParentName}}
+        getId={({ params }) => {params.accountParentId, params.accountBabyId, params.accountParentName, params.relationShip, params.nameBabyUser}}
       />
       <Stack.Screen
         name="ProcessBabyPostNewEvent"
@@ -48,7 +50,7 @@ function MyStack() {
           title: "Tạo nội dung mới",
           headerShown: true,
         }}
-        getId={({ params }) => {params.accountParentId, params.accountBabyId, params.accountParentName}}
+        getId={({ params }) => {params.accountParentId, params.accountBabyId, params.accountParentName, params.relationShip, params.nameBabyUser}}
       />
       <Stack.Screen
         name="MainShop"

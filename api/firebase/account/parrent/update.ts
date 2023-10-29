@@ -5,7 +5,12 @@ import { fbConfig } from "../../firebase";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, remove, onValue, update, push } from "firebase/database";
 
-export const FbAccParentUpdateWhenCreateBaby = async (uniqueId, uniqueIdBaby, nameAccountBaby) => {
+export const FbAccParentUpdateWhenCreateBaby = async (
+  uniqueId,
+  uniqueIdBaby,
+  nameAccountBaby,
+  relationShip
+) => {
   let firebase = initializeApp(fbConfig);
   const db = getDatabase(firebase);
   const postListRef = ref(db, "parentId");
@@ -32,6 +37,7 @@ export const FbAccParentUpdateWhenCreateBaby = async (uniqueId, uniqueIdBaby, na
       const acc = {
         uniqueIdBaby: uniqueIdBaby,
         nameAccount: nameAccountBaby,
+        relationShip: relationShip,
         permission: {
           account: {
             view: true,

@@ -23,7 +23,6 @@ export const ContentAttachmentAdd = ({ setListAttachmentAddNew }: Props) => {
 
     if (!result.canceled) {
       setListAttachmentAddNew(result.assets);
-      console.log(result.assets);
       setShowButton(result.assets.length > 0 ? true : false);
     }
   };

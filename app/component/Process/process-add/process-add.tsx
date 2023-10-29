@@ -37,9 +37,25 @@ const ProcessBabyPostNewEvent = () => {
     }
   }, [route]);
 
+  const relationShip = useMemo(() => {
+    if (route) {
+      /* @ts-ignore */
+      return route?.params?.relationShip;
+    }
+  }, [route]);
+
+  const nameBabyUser = useMemo(() => {
+    if (route) {
+      /* @ts-ignore */
+      return route?.params?.nameBabyUser;
+    }
+  }, [route]);
+
   const [content, setContent] = useState("");
   const [listAttachmentAddNew, setListAttachmentAddNew] = useState<any>();
   const [enableComment, setEnableComment] = useState(true);
+  const [status, setStatus] = useState("nhắn gửi");
+  const [relationShipCook, setRelationShipCook] = useState(relationShip);
 
   const handlePostNewEvent = () => {
     if (!content && (!listAttachmentAddNew || listAttachmentAddNew?.length < 1)) {
@@ -52,6 +68,8 @@ const ProcessBabyPostNewEvent = () => {
       content,
       listAttachmentAddNew,
       enableComment,
+      status,
+      relationShip: relationShipCook,
     }).then(() => {
       navigation.goBack();
     });
@@ -73,8 +91,13 @@ const ProcessBabyPostNewEvent = () => {
         >
           <WhiteSpace size="xl" />
           <TitleProcessAdd
-            accountParentName={accountParentName}
+            relationShip={relationShip}
             handlePostNewEvent={handlePostNewEvent}
+            status={status}
+            setStatus={(value) => setStatus(value)}
+            relationShipCook={relationShipCook}
+            setRelationShipCook={(value) => setRelationShipCook(value)}
+            nameBabyUser={nameBabyUser}
           />
           <ContentTextAdd
             setContent={(value) => setContent(value)}

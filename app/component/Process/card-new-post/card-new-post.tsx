@@ -12,9 +12,17 @@ type Props = {
   accountParentId: any;
   accountBabyId: any;
   accountParentName: string;
+  relationShip: string;
+  nameBabyUser: string;
 };
 
-function CardNewPost({ accountParentId, accountBabyId, accountParentName }: Props) {
+function CardNewPost({
+  accountParentId,
+  accountBabyId,
+  accountParentName,
+  relationShip,
+  nameBabyUser,
+}: Props) {
   const { width, height } = useWindowDimensions();
   const navigation = useNavigation();
 
@@ -24,6 +32,8 @@ function CardNewPost({ accountParentId, accountBabyId, accountParentName }: Prop
       accountParentId: accountParentId,
       accountBabyId: accountBabyId,
       accountParentName: accountParentName,
+      relationShip: relationShip,
+      nameBabyUser: nameBabyUser,
     });
   };
   return (
@@ -41,7 +51,7 @@ function CardNewPost({ accountParentId, accountBabyId, accountParentName }: Prop
         }}
         onTouchStart={() => handleClickCardNewPost()}
       >
-        <TitleNewPost accountParentName={accountParentName} />
+        <TitleNewPost accountParentName={relationShip} />
         <Text> Bạn đang nghĩ gì ....</Text>
       </View>
     </GestureHandlerRootView>

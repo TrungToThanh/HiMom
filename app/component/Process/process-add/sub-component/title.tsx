@@ -3,42 +3,57 @@ import Input from "@ant-design/react-native/lib/input-item/Input";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Alert, useWindowDimensions } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 type Props = {
-  accountParentName: any;
+  relationShip: any;
   handlePostNewEvent: () => void;
+  status: string;
+  setStatus: (value: string) => void;
+  relationShipCook: string;
+  setRelationShipCook: (value: string) => void;
+  nameBabyUser: string;
 };
-export const TitleProcessAdd = ({ accountParentName, handlePostNewEvent }: Props) => {
+export const TitleProcessAdd = ({
+  relationShip,
+  handlePostNewEvent,
+  status,
+  setStatus,
+  relationShipCook,
+  setRelationShipCook,
+  nameBabyUser,
+}: Props) => {
   const RadioItem = Radio.RadioItem;
   const { width } = useWindowDimensions();
-  const [status, setStatus] = useState("nhắn gửi");
 
-  const handleChooseStatus = () => {
+  const handleChooseStatus = useCallback(() => {
     Modal.prompt(
       "Trạng thái",
       <View>
-        <Text> Hãy nhập trạng thái</Text>
-        <Radio.Group>
-          <RadioItem key={0} value={"Nhắn gửi"} onChange={() => setStatus("Nhắn gửi")}>
-            <Text>Nhắn gửi</Text>
-          </RadioItem>
-          <RadioItem key={1} value={"Mong đợi"} onChange={() => setStatus("Mong đợi")}>
-            <Text>Mong đợi</Text>
-          </RadioItem>
-          <RadioItem key={2} value={"Yêu thương"} onChange={() => setStatus("Yêu thương")}>
-            <Text>Yêu thương</Text>
-          </RadioItem>
-        </Radio.Group>
+        <Text> Hãy nhập trạng thái như: </Text>
+        <Text> "Nhắn gửi", "Yêu thương", "Mong đợi" ....</Text>
       </View>,
       (value: any) => setStatus(value),
       "",
-      "yêu thương",
+      "",
       ["Hãy nhập trạng thái!"]
     );
-  };
+  }, []);
+  const handleRelationShipCook = useCallback(() => {
+    Modal.prompt(
+      "Mối quan hệ",
+      <View>
+        <Text> Hãy nhập mối quan hệ như: </Text>
+        <Text> "Bố", "Mẹ", "Bố và Mẹ" ....</Text>
+      </View>,
+      (value: any) => setRelationShipCook(value),
+      "",
+      "",
+      ["Hãy nhập mối quan hệ!"]
+    );
+  }, []);
   return (
     <View
       style={{
@@ -77,11 +92,12 @@ export const TitleProcessAdd = ({ accountParentName, handlePostNewEvent }: Props
                 fontWeight: "bold",
               }}
             >
-              {accountParentName ?? ""} {status} Jennie
+              <Text onPress={() => handleRelationShipCook()}> {relationShipCook ?? ""} </Text>
+              <Text style={{ color: "red" }} onPress={() => handleChooseStatus()}>
+                {`  ${status}  `}
+              </Text>
+              <Text>{nameBabyUser}</Text>
             </Text>
-            <Button size="small" onPress={() => handleChooseStatus()}>
-              Trạng thái
-            </Button>
           </View>
 
           <Text

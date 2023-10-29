@@ -19,7 +19,6 @@ const ParentAccLogin = () => {
     }
 
     FbAccParentLogin(nameParentUser, passwordParentUser).then((acc?: isParentType) => {
-      console.log(acc);
       if (acc) {
         //@ts-ignore
         navigation.navigate("BabyAcc", {

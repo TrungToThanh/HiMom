@@ -28,6 +28,7 @@ const BabyAccLogin = ({ listAccBabyOfParent, accountParentId, accountParentName 
 
   const [nameBabyUser, setNameBabyUser] = useState("");
   const [uniqueIdBaby, setUniqueIdBaby] = useState("");
+  const [relationShip, setRelationship] = useState("");
 
   const handleLogin = () => {
     const isError = !nameBabyUser;
@@ -40,6 +41,8 @@ const BabyAccLogin = ({ listAccBabyOfParent, accountParentId, accountParentName 
       accountParentId: accountParentId,
       accountBabyId: uniqueIdBaby,
       accountParentName: accountParentName,
+      relationShip: relationShip,
+      nameBabyUser: nameBabyUser,
     });
   };
 
@@ -59,34 +62,38 @@ const BabyAccLogin = ({ listAccBabyOfParent, accountParentId, accountParentName 
       >
         <Text>Danh sách Baby của {accountParentName}: </Text>
         {listAccountBaby &&
-          listAccountBaby?.map((item: { uniqueIdBaby: string; nameAccount: string }, index) => (
-            <RadioItem
-              key={index}
-              value={item.uniqueIdBaby}
-              style={{
-                backgroundColor: "#f2f2f2",
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: "#dadada",
-                marginTop: 5,
-              }}
-              onChange={() => {
-                setUniqueIdBaby(item.uniqueIdBaby), setNameBabyUser(item.nameAccount);
-              }}
-            >
-              <FontAwesomeIcon icon={faUser} color="#4294ff" />
-              <Text
+          listAccountBaby?.map(
+            (item: { uniqueIdBaby: string; nameAccount: string; relationShip: string }, index) => (
+              <RadioItem
+                key={index}
+                value={item.uniqueIdBaby}
                 style={{
-                  height: "100%",
-                  textAlignVertical: "center",
-                  fontSize: 14,
-                  fontWeight: "600",
+                  backgroundColor: "#f2f2f2",
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: "#dadada",
+                  marginTop: 5,
+                }}
+                onChange={() => {
+                  setUniqueIdBaby(item.uniqueIdBaby),
+                    setNameBabyUser(item.nameAccount),
+                    setRelationship(item.relationShip);
                 }}
               >
-                {item.nameAccount}
-              </Text>
-            </RadioItem>
-          ))}
+                <FontAwesomeIcon icon={faUser} color="#4294ff" />
+                <Text
+                  style={{
+                    height: "100%",
+                    textAlignVertical: "center",
+                    fontSize: 14,
+                    fontWeight: "600",
+                  }}
+                >
+                  {item.nameAccount}
+                </Text>
+              </RadioItem>
+            )
+          )}
       </Radio.Group>
       <View style={{ padding: 20 }}>
         <Button onPress={() => handleLogin()} title="Đăng nhập" />

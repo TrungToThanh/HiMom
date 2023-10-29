@@ -4,7 +4,6 @@ import { Alert } from "react-native";
 import { fbConfig } from "../../firebase";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, push, onValue } from "firebase/database";
-import { imageBase64Default } from "../../../../app/const/type";
 import { FbAccParentUpdateWhenCreateBaby } from "../parrent/update";
 
 type Props = {
@@ -13,6 +12,7 @@ type Props = {
   passwordBaby: string;
   isParentCreate: string;
   expectBirthdayBaby: string;
+  relationShip: string;
 };
 export const FbAccBabyCreate = async ({
   isBorn = false,
@@ -20,6 +20,7 @@ export const FbAccBabyCreate = async ({
   passwordBaby,
   isParentCreate,
   expectBirthdayBaby,
+  relationShip,
 }: Props) => {
   let firebase = initializeApp(fbConfig);
   const db = getDatabase(firebase);
@@ -58,8 +59,8 @@ export const FbAccBabyCreate = async ({
         processLife: {
           details: [
             {
-              nameEvent: "Nhịp đập đầu tiên! 💓",
-              contentEvent: "Cả nhà đều vui",
+              nameEvent: isParentCreate,
+              contentEvent: "Nhịp đập đầu tiên! 💓",
               dateEvent: expectBirthdayBaby,
               attachmentList: [
                 {
@@ -71,6 +72,8 @@ export const FbAccBabyCreate = async ({
               dateCreateEvent: new Date().toISOString(),
               isShowEvent: true,
               dateDeleteEvent: "",
+              status: "bất ngờ",
+              relationShip: "Cả nhà",
             },
           ],
         },
@@ -89,7 +92,7 @@ export const FbAccBabyCreate = async ({
         resolveAll(undefined);
       } else {
         set(newPostRef, data);
-        FbAccParentUpdateWhenCreateBaby(isParentCreate, uniqueIdBaby, nameBaby);
+        FbAccParentUpdateWhenCreateBaby(isParentCreate, uniqueIdBaby, nameBaby, relationShip);
         Alert.alert("Đăng ký tài khoản", "Tạo thành công!");
         resolveAll(true);
       }

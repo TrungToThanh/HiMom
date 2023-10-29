@@ -13,6 +13,8 @@ type Props = {
   content: string | null;
   listAttachmentAddNew: any;
   enableComment: boolean;
+  status: string;
+  relationShip: string;
 };
 export const FbProcessPostNewEvent = async ({
   accountParentId,
@@ -20,6 +22,8 @@ export const FbProcessPostNewEvent = async ({
   content,
   listAttachmentAddNew,
   enableComment,
+  status,
+  relationShip,
 }: Props) => {
   let firebaseRealtimeData = initializeApp(fbConfig);
   const db = getDatabase(firebaseRealtimeData);
@@ -59,52 +63,72 @@ export const FbProcessPostNewEvent = async ({
         await isRes?.put(blob);
         if (index === listAttachmentAddNew.length - 1) resolveStepOne(true);
       });
+    } else {
+      const data = {
+        nameEvent: accountParentId,
+        contentEvent: content,
+        dateEvent: dayjs(new Date()).format("DD-MM-YYYY HH:ss"),
+        attachmentList: "",
+        noteEvent: "",
+        dateCreateEvent: dayjs(new Date()).format("DD-MM-YYYY HH:ss"),
+        isShowEvent: true,
+        dateDeleteEvent: "",
+        isEnableComment: enableComment ?? false,
+        react: "",
+        status: status,
+        relationShip: relationShip,
+      };
+      set(newPostRef, data);
     }
   });
 
   //Get link of firebase and upload realtime database
   stepOne
     .then(async (isSuccess) => {
-      const getLinkUrl = async () => {
-        let listAttachmentAddNewCook: any = [];
+      if (isSuccess) {
+        const getLinkUrl = async () => {
+          let listAttachmentAddNewCook: any = [];
 
-        await listAttachmentAddNew?.map(async (item, index) => {
-          const fileNameCook = await item?.uri?.substring(
-            item?.uri?.lastIndexOf("/"),
-            item?.uri?.length
-          );
+          await listAttachmentAddNew?.map(async (item, index) => {
+            const fileNameCook = await item?.uri?.substring(
+              item?.uri?.lastIndexOf("/"),
+              item?.uri?.length
+            );
 
-          if (fileNameCook) {
-            const get = await storageRef
-              .child(`HiMom/${listAttachment}${String(fileNameCook) ?? ""}`)
-              .getDownloadURL();
+            if (fileNameCook) {
+              const get = await storageRef
+                .child(`HiMom/${listAttachment}${String(fileNameCook) ?? ""}`)
+                .getDownloadURL();
 
-            await listAttachmentAddNewCook.push({
-              height: item?.height || 300,
-              width: item?.width || 400,
-              uri: get.toString() || item?.uri,
-              type: item.type,
-            });
+              await listAttachmentAddNewCook.push({
+                height: item?.height || 300,
+                width: item?.width || 400,
+                uri: get.toString() || item?.uri,
+                type: item.type,
+              });
 
-            if (index === listAttachmentAddNew?.length - 1) {
-              const data = {
-                nameEvent: accountParentId,
-                contentEvent: content,
-                dateEvent: dayjs(new Date()).format("DD-MM-YYYY HH:ss"),
-                attachmentList: listAttachmentAddNewCook || listAttachmentAddNew,
-                noteEvent: "",
-                dateCreateEvent: dayjs(new Date()).format("DD-MM-YYYY HH:ss"),
-                isShowEvent: true,
-                dateDeleteEvent: "",
-                isEnableComment: enableComment ?? false,
-                react: "",
-              };
-              set(newPostRef, data);
+              if (index === listAttachmentAddNew?.length - 1) {
+                const data = {
+                  nameEvent: accountParentId,
+                  contentEvent: content,
+                  dateEvent: dayjs(new Date()).format("DD-MM-YYYY HH:ss"),
+                  attachmentList: listAttachmentAddNewCook || listAttachmentAddNew,
+                  noteEvent: "",
+                  dateCreateEvent: dayjs(new Date()).format("DD-MM-YYYY HH:ss"),
+                  isShowEvent: true,
+                  dateDeleteEvent: "",
+                  isEnableComment: enableComment ?? false,
+                  react: "",
+                  status: status,
+                  relationShip: relationShip,
+                };
+                set(newPostRef, data);
+              }
             }
-          }
-        });
-      };
-      await getLinkUrl();
+          });
+        };
+        await getLinkUrl();
+      }
     })
     .catch((error) => console.log(error));
 };

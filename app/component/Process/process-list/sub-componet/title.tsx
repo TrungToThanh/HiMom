@@ -6,8 +6,9 @@ import { useWindowDimensions } from "react-native";
 
 type Props = {
   item: any;
+  nameBabyUser: string;
 };
-export const TitleProcess = ({ item }: Props) => {
+export const TitleProcess = ({ item, nameBabyUser }: Props) => {
   const { width } = useWindowDimensions();
   return (
     <View
@@ -33,16 +34,19 @@ export const TitleProcess = ({ item }: Props) => {
         <FontAwesomeIcon icon={faUser} color="#4294ff" />
       </View>
       <View>
-        <Text
-          style={{
-            fontSize: 14,
-            fontWeight: "bold",
-          }}
-          adjustsFontSizeToFit
-          lineBreakMode="clip"
-        >
-          {item?.nameEvent}
-        </Text>
+        <View style={{ display: "flex", flexDirection: "row" }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "bold",
+            }}
+          >
+            {item?.relationShip || ""}
+            <Text style={{ color: "red" }}>{`  ${item?.status || ""}  `}</Text>
+            <Text>{nameBabyUser}</Text>
+          </Text>
+        </View>
+
         <Text
           style={{
             fontSize: 12,

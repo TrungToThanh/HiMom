@@ -9,8 +9,16 @@ interface Props {
   accountParentId: any;
   accountBabyId: any;
   accountParentName: string;
+  relationShip: string;
+  nameBabyUser: string;
 }
-const ProcessBaby = ({ accountParentId, accountBabyId, accountParentName }: Props) => {
+const ProcessBaby = ({
+  accountParentId,
+  accountBabyId,
+  accountParentName,
+  relationShip,
+  nameBabyUser,
+}: Props) => {
   const { width, height } = useWindowDimensions();
   const imageBackground = require("../../../assets/background.jpg");
 
@@ -23,11 +31,17 @@ const ProcessBaby = ({ accountParentId, accountBabyId, accountParentName }: Prop
       >
         <ScrollView>
           <CardNewPost
+            relationShip={relationShip}
             accountParentId={accountParentId}
             accountBabyId={accountBabyId}
             accountParentName={accountParentName}
+            nameBabyUser={nameBabyUser}
           />
-          <ProcessBabyList accountParentId={accountParentId} accountBabyId={accountBabyId} />
+          <ProcessBabyList
+            accountParentId={accountParentId}
+            accountBabyId={accountBabyId}
+            nameBabyUser={nameBabyUser}
+          />
           <WhiteSpace size="xl" />
           <View style={{ marginBottom: 100 }}></View>
         </ScrollView>
