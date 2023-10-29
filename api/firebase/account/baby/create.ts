@@ -59,7 +59,8 @@ export const FbAccBabyCreate = async ({
         processLife: {
           details: [
             {
-              nameEvent: isParentCreate,
+              nameEvent: 0,
+              isParentCreate: isParentCreate,
               contentEvent: "Nhịp đập đầu tiên! 💓",
               dateEvent: expectBirthdayBaby,
               attachmentList: [
@@ -74,6 +75,8 @@ export const FbAccBabyCreate = async ({
               dateDeleteEvent: "",
               status: "bất ngờ",
               relationShip: "Cả nhà",
+              react: "99",
+              whoReact: "",
             },
           ],
         },

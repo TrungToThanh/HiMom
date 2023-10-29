@@ -59,7 +59,7 @@ const ProcessBabyList = ({ accountParentId, accountBabyId, nameBabyUser }: Props
                     justifyContent: "space-between",
                   }}
                 >
-                  <ContentReact />
+                  <ContentReact item={item} accountBabyId={accountBabyId} />
                   <Button size="small">Bình luận</Button>
                 </View>
                 {/* <ContentComment /> */}

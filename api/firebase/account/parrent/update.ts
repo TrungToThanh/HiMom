@@ -1,9 +1,8 @@
 import _ from "lodash";
-import { Alert } from "react-native";
 
 import { fbConfig } from "../../firebase";
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, remove, onValue, update, push } from "firebase/database";
+import { getDatabase, ref, set, onValue, push } from "firebase/database";
 
 export const FbAccParentUpdateWhenCreateBaby = async (
   uniqueId,

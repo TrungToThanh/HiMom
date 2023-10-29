@@ -33,6 +33,10 @@ export const FbProcessPostNewEvent = async ({
     String(newPostRef).indexOf("babyId/"),
     String(newPostRef).length
   );
+  const keyPost = String(newPostRef).substring(
+    String(newPostRef).lastIndexOf("/") + 1,
+    String(newPostRef).length
+  );
 
   //Upload to storage
   var storage = firebase.firebase.storage();
@@ -65,7 +69,8 @@ export const FbProcessPostNewEvent = async ({
       });
     } else {
       const data = {
-        nameEvent: accountParentId,
+        nameEvent: keyPost || "",
+        isParentCreate: accountParentId,
         contentEvent: content,
         dateEvent: dayjs(new Date()).format("DD-MM-YYYY HH:ss"),
         attachmentList: "",
@@ -74,9 +79,10 @@ export const FbProcessPostNewEvent = async ({
         isShowEvent: true,
         dateDeleteEvent: "",
         isEnableComment: enableComment ?? false,
-        react: "",
+        react: "99",
         status: status,
         relationShip: relationShip,
+        whoReact: "",
       };
       set(newPostRef, data);
     }
@@ -109,7 +115,8 @@ export const FbProcessPostNewEvent = async ({
 
               if (index === listAttachmentAddNew?.length - 1) {
                 const data = {
-                  nameEvent: accountParentId,
+                  nameEvent: keyPost || "",
+                  isParentCreate: accountParentId,
                   contentEvent: content,
                   dateEvent: dayjs(new Date()).format("DD-MM-YYYY HH:ss"),
                   attachmentList: listAttachmentAddNewCook || listAttachmentAddNew,
@@ -118,9 +125,10 @@ export const FbProcessPostNewEvent = async ({
                   isShowEvent: true,
                   dateDeleteEvent: "",
                   isEnableComment: enableComment ?? false,
-                  react: "",
+                  react: "99",
                   status: status,
                   relationShip: relationShip,
+                  whoReact: "",
                 };
                 set(newPostRef, data);
               }
