@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Text, View, useWindowDimensions } from "react-native";
 
 import { TabBar, Icon, Toast } from "@ant-design/react-native";
@@ -47,8 +47,6 @@ const Home = () => {
       return route?.params?.nameBabyUser;
     }
   }, [route]);
-
-  console.log("nameBabyUserHOme", nameBabyUser);
 
   if (!accountParentId || !accountBabyId)
     return (

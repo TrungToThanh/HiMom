@@ -1,19 +1,21 @@
 import _ from "lodash";
-import { Alert } from "react-native";
 
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, push, onValue, update, remove, child } from "firebase/database";
+import { getDatabase, ref, update, remove } from "firebase/database";
 import { fbConfig } from "../firebase";
+import { Alert } from "react-native";
 
 type Props = {
   accountBabyId: string;
-  newReact: string | number;
   nameEvent: string;
 };
-export const FbProcessUpdateReact = async ({ accountBabyId, newReact, nameEvent }: Props) => {
+export const FbProcessDeleteAPost = async ({ accountBabyId, nameEvent }: Props) => {
   let firebase = initializeApp(fbConfig);
   const db = getDatabase(firebase);
   const postListRef = ref(db, "babyId/" + `${accountBabyId}/processLife/details/${nameEvent}`);
 
-  update(postListRef, { react: newReact });
+  remove(postListRef).then((isRes) => {
+    console.log(isRes);
+    Alert.alert("Xóa bài viết", "Đã xóa thành công!");
+  });
 };

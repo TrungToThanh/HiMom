@@ -16,12 +16,20 @@ interface Props {
 const ProcessBabyList = ({ accountParentId, accountBabyId, nameBabyUser }: Props) => {
   const { width, height } = useWindowDimensions();
   const [listEventCook, setListEvent] = useState<any>();
+  const [isReload, setReload] = useState(false);
 
   useEffect(() => {
     FbAccBabyGetProcess(accountBabyId).then((value) => {
       setListEvent(value);
     });
-  }, []);
+  }, [isReload]);
+
+  useEffect(() => {
+    setReload(true);
+    setTimeout(() => {
+      setReload(false);
+    }, 100);
+  }, [isReload]);
 
   return (
     <View>
@@ -47,7 +55,18 @@ const ProcessBabyList = ({ accountParentId, accountBabyId, nameBabyUser }: Props
                   padding: 5,
                 }}
               >
-                <TitleProcess item={item} nameBabyUser={nameBabyUser} />
+                <TitleProcess
+                  item={item}
+                  nameBabyUser={nameBabyUser}
+                  accountParentId={accountParentId}
+                  accountBabyId={accountBabyId}
+                  setReload={() => {
+                    setReload(true),
+                      setTimeout(() => {
+                        setReload(false);
+                      }, 0);
+                  }}
+                />
                 <WhiteSpace />
                 <ContentText item={item} />
                 <ContentAttachment listAttachment={listAttachment} />
