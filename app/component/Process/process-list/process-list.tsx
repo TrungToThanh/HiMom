@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { View, ScrollView, ImageBackground, useWindowDimensions } from "react-native";
 import { Button, WhiteSpace } from "@ant-design/react-native";
 import { FbAccBabyGetProcess } from "../../../../api/firebase/process/getProcess";
@@ -7,6 +7,7 @@ import { ContentText } from "./sub-componet/content-text";
 import { ContentAttachment } from "./sub-componet/context-attachment";
 import { ContentReact } from "./sub-componet/content-react";
 import { ContentComment } from "./sub-componet/content-comment";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface Props {
   accountParentId: any;
@@ -24,12 +25,14 @@ const ProcessBabyList = ({ accountParentId, accountBabyId, nameBabyUser }: Props
     });
   }, [isReload]);
 
-  useEffect(() => {
-    setReload(true);
-    setTimeout(() => {
-      setReload(false);
-    }, 100);
-  }, [isReload]);
+  useFocusEffect(
+    React.useCallback(() => {
+      setReload(true);
+      setTimeout(() => {
+        setReload(false);
+      }, 100);
+    }, [isReload])
+  );
 
   return (
     <View>

@@ -15,7 +15,6 @@ export const FbProcessDeleteAPost = async ({ accountBabyId, nameEvent }: Props) 
   const postListRef = ref(db, "babyId/" + `${accountBabyId}/processLife/details/${nameEvent}`);
 
   remove(postListRef).then((isRes) => {
-    console.log(isRes);
     Alert.alert("Xóa bài viết", "Đã xóa thành công!");
   });
 };

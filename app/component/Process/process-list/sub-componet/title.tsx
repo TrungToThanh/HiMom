@@ -33,8 +33,10 @@ export const TitleProcess = ({
         destructiveButtonIndex: 2,
       },
       (buttonIndex: any) => {
-        console.log(buttonIndex);
-        FbProcessDeleteAPost({ accountBabyId, nameEvent: item?.nameEvent }).then(() => setReload());
+        if (buttonIndex === 1)
+          FbProcessDeleteAPost({ accountBabyId, nameEvent: item?.nameEvent }).then(() =>
+            setReload()
+          );
       }
     );
   };
