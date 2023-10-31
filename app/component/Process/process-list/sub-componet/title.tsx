@@ -83,9 +83,9 @@ export const TitleProcess = ({
             <Text style={{ color: "red" }}>{`  ${item?.status || ""}  `}</Text>
             <Text>{nameBabyUser}</Text>
           </Text>
-          <Text onPress={showActionSheet}>
+          <View onTouchStart={showActionSheet}>
             <FontAwesomeIcon icon={faEllipsisVertical} color="green" />
-          </Text>
+          </View>
         </View>
 
         <Text
