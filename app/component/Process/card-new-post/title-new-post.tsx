@@ -15,9 +15,10 @@ export const TitleNewPost = ({ accountParentName }: Props) => {
   return (
     <View
       style={{
-        width: width - 20,
+        width: width,
         display: "flex",
         flexDirection: "row",
+        backgroundColor: "white",
       }}
     >
       <View
@@ -28,6 +29,7 @@ export const TitleNewPost = ({ accountParentName }: Props) => {
           margin: 10,
           borderWidth: 1,
           width: 25,
+          height: 25,
           borderRadius: 20,
           paddingLeft: 3,
           borderColor: "#b0aca8",

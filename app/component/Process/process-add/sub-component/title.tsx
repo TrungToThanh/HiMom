@@ -74,17 +74,19 @@ export const TitleProcessAdd = ({
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            margin: 10,
+            marginLeft: 10,
             borderWidth: 1,
             width: 25,
+            height: 25,
             borderRadius: 20,
-            paddingLeft: 3,
+            paddingLeft: 4,
             borderColor: "#b0aca8",
+            alignSelf: "center",
           }}
         >
           <FontAwesomeIcon icon={faUser} color="#4294ff" />
         </View>
-        <View>
+        <View style={{ paddingLeft: 4 }}>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <Text
               style={{
@@ -111,15 +113,21 @@ export const TitleProcessAdd = ({
           </Text>
         </View>
       </View>
-      <View>
-        <Button
-          type="ghost"
-          size="small"
-          style={{ height: 30, marginRight: 10 }}
-          onPress={handlePostNewEvent}
-        >
-          Đăng bài viết
-        </Button>
+      <View
+        style={{
+          width: 80,
+          height: 34,
+          borderColor: "#1977F3",
+          borderWidth: 1,
+          borderStyle: "solid",
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 14,
+          marginRight: 10,
+        }}
+        onTouchStart={handlePostNewEvent}
+      >
+        <Text>Đăng bài</Text>
       </View>
     </View>
   );

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { View, ScrollView, ImageBackground, useWindowDimensions } from "react-native";
+import { View, ScrollView, ImageBackground, useWindowDimensions, StyleSheet } from "react-native";
 import { Button, WhiteSpace } from "@ant-design/react-native";
 import { FbAccBabyGetProcess } from "../../../../api/firebase/process/getProcess";
 import { TitleProcess } from "./sub-componet/title";
@@ -8,6 +8,8 @@ import { ContentAttachment } from "./sub-componet/context-attachment";
 import { ContentReact } from "./sub-componet/content-react";
 import { ContentComment } from "./sub-componet/content-comment";
 import { useFocusEffect } from "@react-navigation/native";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faMessage, faShare, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   accountParentId: any;
@@ -46,18 +48,7 @@ const ProcessBabyList = ({ accountParentId, accountBabyId, nameBabyUser }: Props
 
           return (
             <View key={indexItem}>
-              <View
-                style={{
-                  minHeight: 50,
-                  width: width - 10,
-                  backgroundColor: "white",
-                  borderColor: "#dedce2",
-                  borderWidth: 1,
-                  borderRadius: 5,
-                  margin: 5,
-                  padding: 5,
-                }}
-              >
+              <View style={styles.container}>
                 <TitleProcess
                   item={item}
                   nameBabyUser={nameBabyUser}
@@ -74,16 +65,7 @@ const ProcessBabyList = ({ accountParentId, accountBabyId, nameBabyUser }: Props
                 <ContentText item={item} />
                 <ContentAttachment listAttachment={listAttachment} />
                 <WhiteSpace />
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <ContentReact item={item} accountBabyId={accountBabyId} />
-                  <Button size="small">Bình luận</Button>
-                </View>
+                <ContentReact item={item} accountBabyId={accountBabyId} />
                 {/* <ContentComment /> */}
               </View>
             </View>
@@ -94,3 +76,21 @@ const ProcessBabyList = ({ accountParentId, accountBabyId, nameBabyUser }: Props
 };
 
 export default ProcessBabyList;
+const styles = StyleSheet.create({
+  container: {
+    minHeight: 50,
+    width: "98%",
+    backgroundColor: "white",
+    borderRadius: 14,
+    margin: 5,
+    padding: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 2,
+  },
+});

@@ -4,6 +4,7 @@ import ProcessBabyList from "./process-list/process-list";
 import ProcessBabyAdd from "./process-add/process-add";
 import CardNewPost from "./card-new-post/card-new-post";
 import { WhiteSpace } from "@ant-design/react-native";
+import { HeaderNewPost } from "./card-new-post/header";
 
 interface Props {
   accountParentId: any;
@@ -23,29 +24,24 @@ const ProcessBaby = ({
   const imageBackground = require("../../../assets/background.jpg");
 
   return (
-    <View>
-      <ImageBackground
-        source={imageBackground}
-        resizeMode="cover"
-        style={{ width: width, height: height }}
-      >
-        <ScrollView>
-          <CardNewPost
-            relationShip={relationShip}
-            accountParentId={accountParentId}
-            accountBabyId={accountBabyId}
-            accountParentName={accountParentName}
-            nameBabyUser={nameBabyUser}
-          />
-          <ProcessBabyList
-            accountParentId={accountParentId}
-            accountBabyId={accountBabyId}
-            nameBabyUser={nameBabyUser}
-          />
-          <WhiteSpace size="xl" />
-          <View style={{ marginBottom: 100 }}></View>
-        </ScrollView>
-      </ImageBackground>
+    <View style={{ backgroundColor: "#FAFBFC" }}>
+      <ScrollView>
+        <HeaderNewPost nameBabyUser={nameBabyUser} />
+        <CardNewPost
+          relationShip={relationShip}
+          accountParentId={accountParentId}
+          accountBabyId={accountBabyId}
+          accountParentName={accountParentName}
+          nameBabyUser={nameBabyUser}
+        />
+        <ProcessBabyList
+          accountParentId={accountParentId}
+          accountBabyId={accountBabyId}
+          nameBabyUser={nameBabyUser}
+        />
+        <WhiteSpace size="xl" />
+        <View style={{ marginBottom: 100 }}></View>
+      </ScrollView>
     </View>
   );
 };

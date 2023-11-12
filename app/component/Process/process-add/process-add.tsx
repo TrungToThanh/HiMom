@@ -87,6 +87,18 @@ const ProcessBabyPostNewEvent = () => {
             borderRadius: 5,
             margin: 5,
             padding: 5,
+            borderBottomLeftRadius: 16,
+            borderBottomRightRadius: 16,
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 2,
           }}
         >
           <WhiteSpace size="xl" />

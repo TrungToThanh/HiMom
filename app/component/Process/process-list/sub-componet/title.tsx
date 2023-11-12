@@ -1,5 +1,12 @@
 import { ActionSheet, Button, Text, View } from "@ant-design/react-native";
-import { faEllipsisVertical, faRemove, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEllipsisH,
+  faEllipsisVertical,
+  faRemove,
+  faStar,
+  faTrash,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React from "react";
 import { useWindowDimensions } from "react-native";
@@ -57,6 +64,7 @@ export const TitleProcess = ({
           margin: 5,
           borderWidth: 1,
           width: 25,
+          height: 25,
           borderRadius: 20,
           paddingLeft: 3,
           borderColor: "#b0aca8",
@@ -73,18 +81,51 @@ export const TitleProcess = ({
             justifyContent: "space-between",
           }}
         >
-          <Text
+          <View>
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "bold",
+              }}
+            >
+              {item?.relationShip || ""}
+              <Text style={{ color: "red" }}>{`  ${item?.status || ""}  `}</Text>
+              <Text>{nameBabyUser}</Text>
+            </Text>
+          </View>
+          <View
             style={{
-              fontSize: 14,
-              fontWeight: "bold",
+              width: 50,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
             }}
           >
-            {item?.relationShip || ""}
-            <Text style={{ color: "red" }}>{`  ${item?.status || ""}  `}</Text>
-            <Text>{nameBabyUser}</Text>
-          </Text>
-          <View onTouchStart={showActionSheet}>
-            <FontAwesomeIcon icon={faEllipsisVertical} color="green" />
+            <View
+              style={{
+                backgroundColor: "#EFF2F7",
+                borderRadius: 50,
+                width: 22,
+                height: 22,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <FontAwesomeIcon icon={faStar} color="#2196F3" />
+            </View>
+            <View
+              style={{
+                backgroundColor: "#EFF2F7",
+                borderRadius: 50,
+                width: 22,
+                height: 22,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onTouchStart={showActionSheet}
+            >
+              <FontAwesomeIcon icon={faEllipsisH} />
+            </View>
           </View>
         </View>
 
