@@ -10,6 +10,7 @@ import { ContentComment } from "./sub-componet/content-comment";
 import { useFocusEffect } from "@react-navigation/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faMessage, faShare, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import { ReactAndComment } from "./sub-componet/react-and-comment";
 
 interface Props {
   accountParentId: any;
@@ -65,8 +66,7 @@ const ProcessBabyList = ({ accountParentId, accountBabyId, nameBabyUser }: Props
                 <ContentText item={item} />
                 <ContentAttachment listAttachment={listAttachment} />
                 <WhiteSpace />
-                <ContentReact item={item} accountBabyId={accountBabyId} />
-                {/* <ContentComment /> */}
+                <ReactAndComment item={item} accountBabyId={accountBabyId} />
               </View>
             </View>
           );

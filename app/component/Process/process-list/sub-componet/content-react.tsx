@@ -8,9 +8,10 @@ import { StyleSheet } from "react-native";
 type Props = {
   item: any;
   accountBabyId: string;
+  setShowComment: () => void;
 };
 
-export const ContentReact = ({ item, accountBabyId }: Props) => {
+export const ContentReact = ({ item, accountBabyId, setShowComment }: Props) => {
   const [react, setReact] = useState(Number(item?.react) || 99);
 
   const handleReact = useCallback(() => {
@@ -34,7 +35,7 @@ export const ContentReact = ({ item, accountBabyId }: Props) => {
         <View style={styles.textButton} onTouchStart={handleReact}>
           <FontAwesomeIcon icon={faThumbsUp} color="#2D3F7B" />
         </View>
-        <View style={styles.textButton}>
+        <View style={styles.textButton} onTouchStart={() => setShowComment()}>
           <FontAwesomeIcon icon={faMessage} color="#2D3F7B" />
         </View>
         <View style={styles.textButton}>

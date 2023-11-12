@@ -24,7 +24,7 @@ const ProcessBaby = ({
   const imageBackground = require("../../../assets/background.jpg");
 
   return (
-    <View style={{ backgroundColor: "#FAFBFC" }}>
+    <View style={{ backgroundColor: "#FAFBFC", minHeight: height }}>
       <ScrollView>
         <HeaderNewPost nameBabyUser={nameBabyUser} />
         <CardNewPost
