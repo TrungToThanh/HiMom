@@ -77,11 +77,12 @@ export const FbAccBabyCreate = async ({
               relationShip: "Cả nhà",
               react: "99",
               whoReact: "",
+              commentList: "",
             },
           ],
         },
-        prepare: [],
-        reminder: [],
+        prepare: "",
+        reminder: "",
       };
 
       const isHasAcc = arrayListBabyAcc?.find(

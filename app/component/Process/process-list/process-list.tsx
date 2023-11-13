@@ -1,15 +1,13 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { View, ScrollView, ImageBackground, useWindowDimensions, StyleSheet } from "react-native";
+import { View, useWindowDimensions, StyleSheet } from "react-native";
 import { Button, WhiteSpace } from "@ant-design/react-native";
 import { FbAccBabyGetProcess } from "../../../../api/firebase/process/getProcess";
 import { TitleProcess } from "./sub-componet/title";
 import { ContentText } from "./sub-componet/content-text";
 import { ContentAttachment } from "./sub-componet/context-attachment";
-import { ContentReact } from "./sub-componet/content-react";
-import { ContentComment } from "./sub-componet/content-comment";
+
 import { useFocusEffect } from "@react-navigation/native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faMessage, faShare, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+
 import { ReactAndComment } from "./sub-componet/react-and-comment";
 
 interface Props {

@@ -83,6 +83,7 @@ export const FbProcessPostNewEvent = async ({
         status: status,
         relationShip: relationShip,
         whoReact: "",
+        commentList: "",
       };
       set(newPostRef, data);
     }
@@ -129,6 +130,7 @@ export const FbProcessPostNewEvent = async ({
                   status: status,
                   relationShip: relationShip,
                   whoReact: "",
+                  commentList: "",
                 };
                 set(newPostRef, data);
               }

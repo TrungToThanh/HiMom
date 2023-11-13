@@ -1,9 +1,6 @@
-import { InputItem, Text, View, WhiteSpace, WingBlank } from "@ant-design/react-native";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { View } from "@ant-design/react-native";
 import React, { useState } from "react";
-import { StyleSheet, useWindowDimensions } from "react-native";
-import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ContentReact } from "./content-react";
 import { ContentComment } from "./content-comment";
 
@@ -21,7 +18,7 @@ export const ReactAndComment = ({ item, accountBabyId }: Prop) => {
           accountBabyId={accountBabyId}
           setShowComment={() => setShowComment(!isShowComment)}
         />
-        {isShowComment && <ContentComment />}
+        {isShowComment && <ContentComment item={item} accountBabyId={accountBabyId} />}
       </View>
     </GestureHandlerRootView>
   );
