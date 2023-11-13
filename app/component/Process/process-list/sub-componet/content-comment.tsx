@@ -6,7 +6,7 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";
 import { FbProcessUpdateComment } from "../../../../../api/firebase/process/updateComment";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 
 type Props = {
   item: any;
@@ -30,13 +30,13 @@ export const ContentComment = ({ item, accountBabyId }: Props) => {
   }, [currentValueComment]);
 
   const listComment = useMemo(() => {
-    console.log(Object.values(item.commentList));
     if (item.commentList) {
       return Object.values(item.commentList);
     } else {
       return [];
     }
   }, []);
+
   return (
     <GestureHandlerRootView>
       <View style={{ borderTopWidth: 1, borderColor: "#E5E8EB", marginTop: 10 }}>

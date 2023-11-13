@@ -128,12 +128,12 @@ export const TitleProcess = ({
             </View>
           </View>
         </View>
-
         <Text
           style={{
             fontSize: 12,
             fontWeight: "bold",
             color: "#b0aca8",
+            marginTop: -2,
           }}
         >
           {item?.dateEvent}
