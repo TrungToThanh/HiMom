@@ -5,13 +5,16 @@ import { TabBar, Icon, Toast } from "@ant-design/react-native";
 
 import { useRoute } from "@react-navigation/native";
 import ProcessBaby from "../process/process";
+import { FbAccBabyGetInfoBasic } from "../../../api/firebase/account/baby/getInfoOfOnePerson";
+import { useFocusEffect } from "@react-navigation/native";
+import { InfoParent } from "../setting/info-parent";
 
 const Home = () => {
   const route = useRoute();
 
   const { width, height } = useWindowDimensions();
-
   const [selectedTab, setSelectedTab] = useState("process");
+  const [isInfoBasicBaby, setInfoBasicBaby] = useState<any>();
 
   const accountParentId = useMemo(() => {
     if (route) {
@@ -48,6 +51,21 @@ const Home = () => {
     }
   }, [route]);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const handleGetAvatar = async () => {
+        if (accountBabyId) {
+          await FbAccBabyGetInfoBasic({ accountBabyId }).then((value) => {
+            value && setInfoBasicBaby(value);
+          });
+        }
+      };
+      setTimeout(() => {
+        handleGetAvatar();
+      }, 0);
+    }, [accountBabyId])
+  );
+
   if (!accountParentId || !accountBabyId)
     return (
       <View>
@@ -70,6 +88,7 @@ const Home = () => {
             accountParentName={accountParentName}
             relationShip={relationShip}
             nameBabyUser={nameBabyUser}
+            isInfoBasic={isInfoBasicBaby}
           />
         </TabBar.Item>
         <TabBar.Item
@@ -97,17 +116,7 @@ const Home = () => {
           onPress={() => setSelectedTab("setting")}
           selectedIcon={<Icon name="setting" size={26} color="#1870bc" />}
         >
-          {/* <SettingAccount
-            nameRouteUserId={nameRouteUserId}
-            listAccountBaby={listAccountBaby}
-            isShowDeleteButton={true}
-            setIsLoading={() => {
-              setIsLoading(true);
-              setTimeout(() => {
-                setIsLoading(false);
-              }, 300);
-            }}
-          /> */}
+          <InfoParent accountParentId={accountParentId} />
         </TabBar.Item>
       </TabBar>
     </View>

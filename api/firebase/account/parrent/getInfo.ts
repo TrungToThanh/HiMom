@@ -6,12 +6,12 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, push, onValue, update, remove } from "firebase/database";
 
 type Props = {
-  accountBabyId: string;
+  accountId: string;
 };
-export const FbAccBabyGetInfoBasic = async ({ accountBabyId }: Props) => {
+export const FbAccParentGetInfoBasic = async ({ accountId }: Props) => {
   let firebase = initializeApp(fbConfig);
   const db = getDatabase(firebase);
-  const postListRef = ref(db, `babyId/${accountBabyId}/profile`);
+  const postListRef = ref(db, `parentId/${accountId}`);
   let basicInfo: any;
   return new Promise(function (resolveAll) {
     onValue(postListRef, async (snapshot) => {

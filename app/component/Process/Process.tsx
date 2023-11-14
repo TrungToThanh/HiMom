@@ -32,6 +32,7 @@ interface Props {
   accountParentName: string;
   relationShip: string;
   nameBabyUser: string;
+  isInfoBasic: any;
 }
 const ProcessBaby = ({
   accountParentId,
@@ -39,20 +40,13 @@ const ProcessBaby = ({
   accountParentName,
   relationShip,
   nameBabyUser,
+  isInfoBasic,
 }: Props) => {
   const { width, height } = useWindowDimensions();
   const imageBackground = require("../../../assets/background.jpg");
   const [isShowDrawer, setIsShowDrawer] = useState(false);
-  const [isInfoBasic, setInfoBasic] = useState<any>();
-  const [changeImage, setChangeImage] = useState<any>();
 
-  useEffect(() => {
-    if (accountBabyId) {
-      FbAccBabyGetInfoBasic({ accountBabyId }).then((value) => {
-        setInfoBasic(value);
-      });
-    }
-  }, [accountBabyId]);
+  const [changeImage, setChangeImage] = useState<any>();
 
   const handleSelectPic = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
